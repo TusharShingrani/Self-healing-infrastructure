@@ -17,6 +17,8 @@ Configurations, used by the experiment:
     C   healing with rules plus knowledge. Adds recall and prevention.
 """
 
+import time
+from collections import Counter
 from dataclasses import dataclass, field
 
 from .actions import CATALOGUE, HIGH_RISK
@@ -62,10 +64,26 @@ class Healer:
         self.open_incident = None       # {"tick", "early_signs"}
         self._attempts = {}             # cause -> escalation level already tried
 
+        # Visibility only. None of this changes what the loop decides; it lets
+        # the runner publish what each MAPE stage did on the last tick.
+        self.on_event = None            # callable(LoopEvent), set by a runner
+        self.advisor = None             # optional, advice only, never executes
+        self.last_observation = {}
+        self.last_symptoms = []
+        self.last_healthy = None
+        self.diagnosis = None           # Diagnosis of the current problem
+        self.stage_seconds = {}
+        self.diagnoses_by_source = Counter()
+        self.action_counts = Counter()  # (action, "ok" | "failed") -> count
+
     # ------------------------------------------------------------------
 
     def tick(self):
         """Exactly one iteration. One primary observation per tick."""
+        self.stage_seconds = {}
+        started = time.monotonic()
+
+        # ---- Monitor: one reading, turned into named symptoms
         self.world.step()
         observation = self.world.observe(sample=True)
         healthy = self.world.health(observation)
@@ -73,8 +91,12 @@ class Healer:
 
         now = observation["tick"]
         symptoms = self.monitor.symptoms(observation)
+        self.last_observation, self.last_symptoms = observation, symptoms
+        self.last_healthy = healthy
+        self.stage_seconds["monitor"] = time.monotonic() - started
         if not symptoms:
             self._attempts.clear()
+            self.diagnosis = None
             return
 
         if healthy:
@@ -86,23 +108,55 @@ class Healer:
                                 "failure seen, no healing enabled", symptoms))
             return
 
+        # ---- Analyse: symptoms to a cause, from knowledge first, then rules
+        mark = time.monotonic()
         diagnosis = self.analyser.analyse(
             symptoms, self.knowledge if self.config == "C" else None)
+        self.stage_seconds["analyse"] = time.monotonic() - mark
+        self.diagnosis = diagnosis
         if diagnosis is None or diagnosis.cause == "unknown":
             self._log(LoopEvent(now, "escalated", "no diagnosis matched", symptoms))
+            self._ask_advisor("no diagnosis matched", symptoms, observation)
             return
+        self.diagnoses_by_source[diagnosis.source] += 1
 
+        # ---- Plan: the actions for this escalation level, from the catalogue
+        mark = time.monotonic()
         level = self._attempts.get(diagnosis.cause, 0)
         actions = self.planner.plan(diagnosis, attempt=level)
+        self.stage_seconds["plan"] = time.monotonic() - mark
         if not actions:
             self._log(LoopEvent(now, "escalated",
                                 f"all {self.planner.levels(diagnosis.cause)} repair "
                                 f"levels exhausted, a person is needed",
                                 symptoms, diagnosis.cause, level=level))
+            self._ask_advisor("repair levels exhausted", symptoms, observation,
+                              diagnosis.cause)
             return
 
+        # ---- Execute: guardrails, approval gate, act, verify, record
+        mark = time.monotonic()
         self._act(now, symptoms, diagnosis.cause, actions, kind="healed",
                   source=diagnosis.source, level=level)
+        self.stage_seconds["execute"] = time.monotonic() - mark
+
+    def _ask_advisor(self, reason, symptoms, observation, cause=""):
+        """Advice only. The advisor records a suggestion for a human; it never
+        runs anything, and a slow or failing advisor never stalls the loop."""
+        if self.advisor is None:
+            return
+        try:
+            self.advisor.request(
+                target=getattr(self.world, "name", "simulated"), reason=reason,
+                symptoms=symptoms, observation=observation, cause=cause,
+                recent=[e.__dict__ for e in self.events[-8:]])
+        except Exception:                             # noqa: BLE001
+            pass
+
+    def escalation_level(self):
+        if self.diagnosis is None:
+            return 0
+        return self._attempts.get(self.diagnosis.cause, 0)
 
     # ------------------------------------------------------------------
 
@@ -153,6 +207,8 @@ class Healer:
             return
 
         results = self.executor.execute(actions)
+        for r in results:
+            self.action_counts[(r.action, "ok" if r.ok else "failed")] += 1
         self.guardrails.record(actions, now)
         ok = all(r.ok for r in results) and self.executor.verify()
         detail = "; ".join(f"{r.action}: {r.detail}" for r in results)
@@ -163,6 +219,8 @@ class Healer:
             self._log(LoopEvent(now, "escalated",
                                 "repair did not verify: " + detail,
                                 symptoms, cause, actions, level))
+            self._ask_advisor("repair did not verify: " + detail, symptoms,
+                              self.last_observation, cause)
             if self.knowledge:
                 self.knowledge.record(symptoms, [], cause, source, actions,
                                       "failed", 0)
@@ -181,6 +239,8 @@ class Healer:
 
     def _log(self, event):
         self.events.append(event)
+        if self.on_event is not None:
+            self.on_event(event)
         if self.verbose:
             marker = {"healed": "FIXED", "prevented": "PREVENTED",
                       "blocked": "BLOCKED", "escalated": "ESCALATED",

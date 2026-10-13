@@ -129,8 +129,12 @@ class SSHTarget:
 
 class EduCloudWorld:
     def __init__(self, cloudstack, instance_name, lab, key_path=None,
-                 known_hosts=None, registry=None, http_timeout=5):
+                 known_hosts=None, registry=None, http_timeout=5, metrics=None):
         self.cs = cloudstack
+        # Optional PrometheusSource. When set, the primary Monitor reading
+        # comes from Prometheus, and verification after a repair still uses
+        # direct probes, so a repair is never judged on a stale scrape.
+        self.metrics = metrics
         self.name = instance_name
         self.lab = lab
         self.key_path = key_path
@@ -152,6 +156,7 @@ class EduCloudWorld:
 
         self.tick_count = 0
         self.downtime_ticks = 0
+        self.last_action_at = 0.0       # when an effector last changed the instance
         self._last_disk = None
         self._last_seen = None
         self._vm = None
@@ -254,7 +259,39 @@ class EduCloudWorld:
         obs["reachable"] = True
 
         errors = []
+        from_metrics = {}
+        if self.metrics is not None and sample:
+            from_metrics, stale = self.metrics.observe(
+                self.name, newer_than=self.last_action_at)
+            obs.update(from_metrics)
+            obs["monitor_source"] = ("prometheus" if len(from_metrics) == 5
+                                     else "prometheus+direct")
+            if stale:
+                obs["stale_metrics"] = stale
+        else:
+            obs["monitor_source"] = "direct"
 
+        if "service_running" not in from_metrics:
+            self._probe_service(obs, errors)
+
+        if "disk_percent" in from_metrics:
+            if sample:
+                self._last_disk, self._last_seen = obs["disk_percent"], time.time()
+        else:
+            self._probe_disk(obs, errors, sample)
+
+        if "config_correct" not in from_metrics:
+            self._probe_config(obs, errors)
+
+        if "http_ok" not in from_metrics:
+            obs["http_ok"] = self._http_ok()
+            if obs["http_ok"] is None:
+                errors.append("availability probe could not be run")
+
+        obs["probe_error"] = "; ".join(errors)
+        return obs
+
+    def _probe_service(self, obs, errors):
         ok, out, err = self._probe(f"systemctl is-active {shlex.quote(self.service)}")
         state = out.strip()
         if state in ("active", "activating"):
@@ -264,6 +301,7 @@ class EduCloudWorld:
         else:
             errors.append(f"service probe unreadable: {err or state or 'no output'}")
 
+    def _probe_disk(self, obs, errors, sample):
         ok, out, err = self._probe(
             f"df --output=pcent {shlex.quote(self.log_mount)} | tail -1 | tr -dc '0-9'")
         if ok and out.isdigit():
@@ -278,6 +316,7 @@ class EduCloudWorld:
         else:
             errors.append(f"disk probe failed: {err or 'no output'}")
 
+    def _probe_config(self, obs, errors):
         ok, _, err = self._probe(
             f"sudo nginx -t && sudo diff -q {shlex.quote(self.config_path)} "
             f"{shlex.quote(self.reference_dir)}/healer.conf")
@@ -285,13 +324,6 @@ class EduCloudWorld:
             errors.append(f"config probe failed: {err}")
         else:
             obs["config_correct"] = ok
-
-        obs["http_ok"] = self._http_ok()
-        if obs["http_ok"] is None:
-            errors.append("availability probe could not be run")
-
-        obs["probe_error"] = "; ".join(errors)
-        return obs
 
     def _http_ok(self):
         """Service-level availability, independent of what systemd says.
@@ -340,6 +372,7 @@ class EduCloudWorld:
     def _guest(self, command, success):
         if not self._ssh:
             return False, "no ssh target"
+        self.last_action_at = time.time()
         ok, _, err = self._probe(command)
         return ok, (success if ok else (err or "command failed"))
 
@@ -382,12 +415,14 @@ class EduCloudWorld:
 
     def reboot_instance(self):
         vm = self._assert_destructive_allowed()
+        self.last_action_at = time.time()
         self.cs.reboot(vm["id"])
         return self.wait_until_ready(), "instance rebooted"
 
     def rebuild_instance(self):
         """Destroy and redeploy from the clean template. High risk and slow."""
         vm = self._assert_destructive_allowed()
+        self.last_action_at = time.time()
         self.cs.destroy(vm["id"], expunge=True)
         self.cs.deploy(self.name, self.lab["template_id"], self.lab["zone_id"],
                        self.lab["offering_id"], self.lab["network_id"],

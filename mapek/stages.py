@@ -62,6 +62,7 @@ class Diagnosis:
     confidence: float
     evidence: list = field(default_factory=list)
     source: str = "rules"       # "rules", "knowledge" or "llm"
+    actions: list = field(default_factory=list)   # set only for approved advice
 
 
 class RuleAnalyser:
@@ -100,6 +101,14 @@ class RuleAnalyser:
         for required, cause, confidence in self.RULES:
             if required <= symptom_set:
                 return Diagnosis(cause, confidence, sorted(symptom_set), "rules")
+
+        # Rules had nothing. Advice from the LLM advisor that a person has
+        # approved is the last source, and it only ever names catalogue actions.
+        if knowledge and hasattr(knowledge, "approved_advice"):
+            advised = knowledge.approved_advice(symptom_set)
+            if advised:
+                return Diagnosis(advised["cause"], 0.7, sorted(symptom_set), "llm",
+                                 actions=advised["actions"])
         return Diagnosis("unknown", 0.0, sorted(symptom_set), "rules")
 
 
@@ -162,6 +171,14 @@ class Planner:
 
     def plan(self, diagnosis, attempt=0):
         """Return the actions for this escalation level, or [] if exhausted."""
+        if diagnosis.actions and diagnosis.cause not in self.PLANS:
+            # approved advice: one level, catalogue names only
+            if attempt > 0:
+                return []
+            unknown = [a for a in diagnosis.actions if a not in self.catalogue]
+            if unknown:
+                raise ValueError(f"advice uses actions not in the catalogue: {unknown}")
+            return list(diagnosis.actions)
         levels = self.PLANS.get(diagnosis.cause, [])
         if attempt >= len(levels):
             return []

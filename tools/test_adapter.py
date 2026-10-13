@@ -370,6 +370,68 @@ ok, detail = world.inject("disk_leak")
 check("a started timer alone is not a successful injection",
       not ok and "did not grow" in detail, detail)
 
+print("\nPrometheus as the Monitor's sensor")
+
+from mapek.prometheus import PrometheusSource                             # noqa: E402
+import io                                                                 # noqa: E402
+import json as _json                                                      # noqa: E402
+
+
+def fake_prom(samples, now):
+    """samples: {expr_prefix: (value, sample_time)} for node app-1."""
+    def opener(url, timeout):
+        import urllib.parse as up
+        expr = up.parse_qs(up.urlparse(url).query)["query"][0]
+        result = [{"metric": {"node": "app-1"}, "value": [t, str(v)]}
+                  for key, (v, t) in samples.items() if expr == key]
+        body = _json.dumps({"status": "success", "data": {"result": result}})
+        return io.BytesIO(body.encode())
+    return PrometheusSource("http://prom", clock=lambda: now, opener=opener)
+
+
+class _Ctx(io.BytesIO):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def _wrap(opener):
+    return lambda url, timeout: _Ctx(opener(url, timeout).getvalue())
+
+
+NOW = 1000.0
+FRESH = {'probe_success{job="healthz"}': (0, 995), "healer:nginx_active": (0, 995),
+         "healer:log_volume_used_percent": (99.0, 995),
+         "healer:log_volume_growth_percent_per_minute": (5.0, 995),
+         "healer_config_correct": (1, 995), "healer_metrics_timestamp_seconds": (990, 995)}
+src = fake_prom(FRESH, NOW)
+src._open = _wrap(src._open)
+readings, stale = src.observe("app-1")
+check("fresh Prometheus samples become observation fields",
+      readings == {"http_ok": False, "service_running": False, "disk_percent": 99.0,
+                   "disk_growth": 5.0, "config_correct": True}, str(readings))
+readings, stale = src.observe("app-1", newer_than=997)
+check("samples older than the last action are not used",
+      readings == {} and "http_ok" in stale, f"{readings} {stale}")
+old = dict(FRESH, **{'probe_success{job="healthz"}': (1, 900)})
+src = fake_prom(old, NOW)
+src._open = _wrap(src._open)
+readings, stale = src.observe("app-1")
+check("a sample older than max_age is stale, never health",
+      "http_ok" not in readings and "http_ok" in stale, str(readings))
+facts_old = dict(FRESH, healer_metrics_timestamp_seconds=(900, 995))
+src = fake_prom(facts_old, NOW)
+src._open = _wrap(src._open)
+readings, _ = src.observe("app-1")
+check("config facts measured too long ago are not trusted",
+      "config_correct" not in readings, str(readings))
+dead = PrometheusSource("http://127.0.0.1:9", timeout=1)
+readings, _ = dead.observe("app-1")
+check("an unreachable Prometheus yields no readings, so direct probes take over",
+      readings == {} and "unreachable" in dead.last_error, dead.last_error)
+
 print("\nCLI deploy")
 
 import importlib.util                                                     # noqa: E402
