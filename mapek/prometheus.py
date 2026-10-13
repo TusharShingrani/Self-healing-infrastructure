@@ -23,6 +23,11 @@ SERIES = {
     "config_correct":  ("healer_config_correct", lambda v: v == 1.0),
 }
 
+# Series computed over a time window. A sample scraped after an action can
+# still describe the time before it, so for these the whole window must start
+# after the action before the value is trusted.
+WINDOW_SECONDS = {"disk_growth": 60}
+
 # The healer-* facts are written by a 15 s timer on the host and scraped every
 # 10 s, so they can legitimately be up to ~25 s old. Older than this is stale.
 FACT_AGE_LIMIT = 45
@@ -74,7 +79,8 @@ class PrometheusSource:
             if result is None:
                 continue
             value, stamp = result
-            if now - stamp > self.max_age or stamp < newer_than:
+            window = WINDOW_SECONDS.get(field, 0)
+            if now - stamp > self.max_age or stamp - window < newer_than:
                 stale.append(field)
                 continue
             if field == "config_correct" and not facts_fresh:

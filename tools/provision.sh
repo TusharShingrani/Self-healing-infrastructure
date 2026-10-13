@@ -4,7 +4,7 @@
 #   bash tools/provision.sh app <ip> [logfile]       install_lab_host.sh + install_exporters.sh
 #   bash tools/provision.sh monitor <ip> [logfile]   install_monitor.sh
 #
-# Host keys are checked against the lab known_hosts file, never disabled. The
+# Host keys are checked against the per-host lab known_hosts file, never disabled. The
 # first contact is recorded by lab.py deploy (accept-new); after that a changed
 # key stops this script.
 set -uo pipefail
@@ -12,7 +12,7 @@ ROLE=${1:?role: app or monitor}; IP=${2:?ip address}; LOG=${3:-/dev/null}
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 KEY=${LAB_SSH_KEY:?LAB_SSH_KEY must point at the lab private key}
 SSHO=(-o BatchMode=yes -o StrictHostKeyChecking=yes
-      -o UserKnownHostsFile="$HOME/.ssh/known_hosts_healer_lab"
+      -o UserKnownHostsFile="$HOME/.ssh/healer-lab-known-hosts/$IP"
       -i "$KEY" -o IdentitiesOnly=yes -o ConnectTimeout=20)
 
 case "$ROLE" in

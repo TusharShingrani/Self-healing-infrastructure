@@ -1,0 +1,3 @@
+2026-10-13T15:46:09Z +   0.0s  run service_stop on app-2 (10.1.1.61), loop config C, no restart
+2026-10-13T15:46:12Z +   3.3s  inject service_stop: confirmed: service stopped
+2026-10-13T15:46:48Z +  39.3s  measurement ended, 40 samples

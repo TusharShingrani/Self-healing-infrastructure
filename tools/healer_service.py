@@ -93,7 +93,8 @@ class Service:
             "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "node": node.name, "config": self.config, "tick": event.tick,
             "kind": event.kind, "cause": event.cause, "level": event.level,
-            "source": diagnosis.source if diagnosis else "",
+            "source": ("knowledge" if event.kind == "prevented"
+                       else diagnosis.source if diagnosis else ""),
             "symptoms": event.symptoms, "actions": event.actions,
             "detail": event.detail,
             "monitor_source": node.healer.last_observation.get("monitor_source", ""),

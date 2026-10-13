@@ -38,7 +38,8 @@ RestartSec=10
 WantedBy=default.target
 UNITFILE
     export HEALER_CONFIG=$CONFIG
-    systemctl --user import-environment CS_URL CS_KEY CS_SECRET LAB_SSH_KEY HEALER_CONFIG
+    export HEALER_NODES=${HEALER_NODES:-app-1,app-2}
+    systemctl --user import-environment CS_URL CS_KEY CS_SECRET LAB_SSH_KEY HEALER_CONFIG HEALER_NODES
     systemctl --user daemon-reload
     systemctl --user restart $UNIT
     sleep 3

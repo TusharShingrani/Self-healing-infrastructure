@@ -13,6 +13,13 @@ import os
 import sys
 import tempfile
 
+# The tests must never read or write the healer's real host identity state.
+# They once did: a fake instance id recorded for a real lab address made the
+# adapter forget the monitor's genuine host key. Isolate before importing.
+_ISOLATED = tempfile.mkdtemp(prefix="healer-test-")
+os.environ["HEALER_LAB_STATE"] = os.path.join(_ISOLATED, "state")
+os.environ["HEALER_KNOWN_HOSTS_DIR"] = os.path.join(_ISOLATED, "known_hosts")
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from mapek.educloud import (EduCloudWorld, HostRegistry, ProtectedTarget,  # noqa: E402
@@ -66,12 +73,12 @@ class FakeClient:
 def build(name, vms=None, registry_path=None):
     vms = vms if vms is not None else {
         "healer-ubuntu": {"id": "vm-healer", "state": "Running",
-                          "ip": "10.1.1.205", "projectid": "project-A"},
+                          "ip": "192.0.2.205", "projectid": "project-A"},
         "app-1": {"id": "vm-app1", "state": "Running",
-                  "ip": "10.1.1.50", "projectid": "project-A"},
-        "no-owner": {"id": "vm-noowner", "state": "Running", "ip": "10.1.1.60"},
+                  "ip": "192.0.2.50", "projectid": "project-A"},
+        "no-owner": {"id": "vm-noowner", "state": "Running", "ip": "192.0.2.60"},
         "other-project": {"id": "vm-other", "state": "Running",
-                          "ip": "10.1.1.70", "projectid": "project-B"},
+                          "ip": "192.0.2.70", "projectid": "project-B"},
     }
     client = FakeClient(vms)
     registry = HostRegistry(registry_path or os.path.join(
@@ -185,10 +192,10 @@ check("after approval the pending level executes", world.reboots >= 1,
 
 tmp = os.path.join(tempfile.mkdtemp(), "hosts.json")
 registry = HostRegistry(tmp)
-registry.remember("10.1.1.50", "vm-app1")
+registry.remember("192.0.2.50", "vm-app1")
 reloaded = HostRegistry(tmp)
 check("the instance seen at an address survives a fresh process",
-      reloaded.known_instance("10.1.1.50") == "vm-app1")
+      reloaded.known_instance("192.0.2.50") == "vm-app1")
 
 client, world = build("app-1", registry_path=tmp)
 forgotten = []
@@ -201,12 +208,12 @@ check("a known instance at a known address does not forget its host key",
 client.vms["app-1"]["id"] = "vm-app1-NEW"
 world._refresh()
 check("a different instance at the same address forgets the stale record",
-      forgotten == ["10.1.1.50"], f"forgotten={forgotten}")
+      forgotten == ["192.0.2.50"], f"forgotten={forgotten}")
 
 # an unexplained key change must surface, not be waited out
 class KeyChangedWorld(EduCloudWorld):
     def _probe(self, command):
-        self._identity_problem = "host key for 10.1.1.50 changed"
+        self._identity_problem = "host key for 192.0.2.50 changed"
         return False, "", self._identity_problem
 
 
@@ -272,22 +279,22 @@ def http_case(name, responses, expected, failure=None):
     return requested
 
 
-root_only = {"http://10.1.1.50/": ("welcome to nginx", 200)}
+root_only = {"http://192.0.2.50/": ("welcome to nginx", 200)}
 requested = http_case("a 200 at the root is not availability", root_only, False)
 check("the probe asks for the configured health endpoint",
-      requested == ["http://10.1.1.50/healthz"], str(requested))
+      requested == ["http://192.0.2.50/healthz"], str(requested))
 
 http_case("the health endpoint with the exact expected body is availability",
-          {"http://10.1.1.50/healthz": ("ok\n", 200)}, True)
+          {"http://192.0.2.50/healthz": ("ok\n", 200)}, True)
 
 http_case("a body merely containing the expected token is not availability",
-          {"http://10.1.1.50/healthz": ("broken", 200)}, False)
+          {"http://192.0.2.50/healthz": ("broken", 200)}, False)
 
 http_case("a longer body containing the token is not availability",
-          {"http://10.1.1.50/healthz": ("not ok, degraded", 200)}, False)
+          {"http://192.0.2.50/healthz": ("not ok, degraded", 200)}, False)
 
 http_case("a non-200 status is not availability",
-          {"http://10.1.1.50/healthz": ("ok", 503)}, False)
+          {"http://192.0.2.50/healthz": ("ok", 503)}, False)
 
 http_case("a transport failure is not availability", {}, False,
           failure=urllib.error.URLError("connection refused"))
@@ -415,6 +422,9 @@ check("fresh Prometheus samples become observation fields",
 readings, stale = src.observe("app-1", newer_than=997)
 check("samples older than the last action are not used",
       readings == {} and "http_ok" in stale, f"{readings} {stale}")
+readings, stale = src.observe("app-1", newer_than=990)
+check("a windowed rate is not trusted until its window starts after the action",
+      "disk_growth" not in readings and "http_ok" in readings, f"{readings} {stale}")
 old = dict(FRESH, **{'probe_success{job="healthz"}': (1, 900)})
 src = fake_prom(old, NOW)
 src._open = _wrap(src._open)
@@ -476,7 +486,7 @@ except ProtectedTarget as error:
 
 LAB_MON = dict(LAB, monitor_instance="monitor", offering_id="small",
                monitor_offering_id="bigger", template_name="T",
-               addresses={"app-1": "10.1.1.60", "monitor": "10.1.1.50"})
+               addresses={"app-1": "192.0.2.60", "monitor": "192.0.2.50"})
 
 
 class DeployWorld:
@@ -495,7 +505,7 @@ try:
     name, args, kwargs = client.calls[0]
     check("the monitor deploys with its own offering", args[2] == "bigger", str(args))
     check("a deploy uses the fixed address from the config",
-          kwargs.get("ipaddress") == "10.1.1.50", str(kwargs))
+          kwargs.get("ipaddress") == "192.0.2.50", str(kwargs))
     client = DeployClient()
     lab_cli.cmd_deploy(client, LAB_MON, types.SimpleNamespace(name="app-1", key=None))
     check("a lab instance deploys with the normal offering",
@@ -562,6 +572,20 @@ except CloudStackError as error:
           "could not reach" in str(error), str(error))
     check("the network error does not leak the signed request",
           "apikey" not in str(error) and "signature" not in str(error), str(error))
+
+print("\nTest isolation")
+from mapek.educloud import HostRegistry as _HR, SSHTarget as _ST           # noqa: E402
+check("the default host registry is inside the test sandbox",
+      _HR().path.startswith(_ISOLATED), _HR().path)
+check("the default known_hosts file is inside the test sandbox",
+      _ST("192.0.2.9").known_hosts.startswith(_ISOLATED))
+target = _ST("192.0.2.9")
+open(target.known_hosts, "w").write("192.0.2.9 ssh-ed25519 AAAA\n")
+other = _ST("192.0.2.10")
+open(other.known_hosts, "w").write("192.0.2.10 ssh-ed25519 BBBB\n")
+target.forget_host()
+check("forgetting one host leaves every other host's key in place",
+      not os.path.exists(target.known_hosts) and os.path.exists(other.known_hosts))
 
 print(f"\n{passed} passed, {failed} failed")
 sys.exit(1 if failed else 0)

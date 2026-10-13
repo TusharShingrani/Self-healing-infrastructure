@@ -47,8 +47,10 @@ scrape_configs:
       - target_label: __address__
         replacement: 127.0.0.1:9115
 
-  # The MAPE-K loop on the healer publishes its own state.
+  # The MAPE-K loop on the healer publishes its own state, one series per
+  # managed node. honor_labels keeps the loop's own node label (app-1, app-2)
+  # instead of renaming it to exported_node.
   - job_name: mapek
+    honor_labels: true
     static_configs:
       - targets: ["10.1.1.205:9105"]
-        labels: {node: healer-ubuntu}

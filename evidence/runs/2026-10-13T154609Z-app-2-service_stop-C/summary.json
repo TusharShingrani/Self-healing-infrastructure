@@ -1,0 +1,27 @@
+{
+  "node": "app-2",
+  "fault": "service_stop",
+  "loop_config": "C",
+  "inject": {
+    "time": "2026-10-13T15:46:12Z",
+    "confirmed": true,
+    "detail": "service stopped"
+  },
+  "restart": null,
+  "samples": 37,
+  "sample_interval_s": 1.0,
+  "downtime_s": 5,
+  "first_down": "2026-10-13T15:46:13Z",
+  "recovered": "2026-10-13T15:46:18Z",
+  "recovery_s_from_first_down": 5.0,
+  "ended_down": false,
+  "loop_events": [
+    "healed"
+  ],
+  "first_loop_action_s": 5.9,
+  "prevented": false,
+  "healed": true,
+  "max_disk_percent": 7.4,
+  "manual_cleanup": [],
+  "healthy_after_cleanup": true
+}

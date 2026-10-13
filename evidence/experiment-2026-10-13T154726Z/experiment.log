@@ -1,0 +1,11 @@
+
+$ bash tools/start_loop.sh stop
+stopped, credentials removed from the user manager
+[exit 0 after 0s]
+
+$ python3 tools/lab.py reset app-1
+resetting app-1 ...
+rebuilt from template after 61s
+[exit 0 after 61s]
+
+$ bash tools/provision.sh app 10.1.1.60 evidence/experiment-2026-10-13T154726Z/provision-1-A.log

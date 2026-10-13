@@ -40,6 +40,20 @@ class HostIdentityChanged(RuntimeError):
 REQUIRED_PROBES = ("service_running", "config_correct", "http_ok")
 
 
+def lab_state_dir():
+    """Where the adapter keeps host identity state. Tests point this elsewhere."""
+    return os.environ.get("HEALER_LAB_STATE") or os.path.expanduser(
+        "~/.local/state/healer-lab")
+
+
+def known_hosts_dir():
+    """One known_hosts file per lab address. Forgetting one host then deletes
+    one small file, instead of rewriting a shared file that other processes are
+    using at the same time, which is how unrelated keys used to get lost."""
+    return os.environ.get("HEALER_KNOWN_HOSTS_DIR") or os.path.expanduser(
+        "~/.ssh/healer-lab-known-hosts")
+
+
 class HostRegistry:
     """Remembers which instance id was last seen at which address.
 
@@ -50,8 +64,7 @@ class HostRegistry:
     """
 
     def __init__(self, path=None):
-        self.path = path or os.path.expanduser(
-            "~/.local/state/healer-lab/hosts.json")
+        self.path = path or os.path.join(lab_state_dir(), "hosts.json")
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
         try:
             with open(self.path) as fh:
@@ -81,8 +94,11 @@ class SSHTarget:
         self.host = host
         self.user = user
         self.key_path = key_path
-        self.known_hosts = known_hosts or os.path.expanduser(
-            "~/.ssh/known_hosts_healer_lab")
+        self.per_host_file = known_hosts is None
+        if self.per_host_file:
+            os.makedirs(known_hosts_dir(), mode=0o700, exist_ok=True)
+            known_hosts = os.path.join(known_hosts_dir(), host)
+        self.known_hosts = known_hosts
         self.timeout = timeout
         self.last_error = ""
 
@@ -123,6 +139,12 @@ class SSHTarget:
         only valid when the API has shown a different instance id at this
         address, which explains why the key differs.
         """
+        if self.per_host_file:
+            try:
+                os.remove(self.known_hosts)
+            except FileNotFoundError:
+                pass
+            return
         subprocess.run(["ssh-keygen", "-f", self.known_hosts, "-R", self.host],
                        capture_output=True, text=True)
 
