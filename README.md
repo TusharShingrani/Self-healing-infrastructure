@@ -11,9 +11,9 @@ the results below comes from a measured live run on EduCloud, not from the
 simulation.
 
 **Documents:** [context report: the problem and the failure scenarios](docs/context-report.md)
-· [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
-· [results](docs/results.md) · [design notes](docs/design-notes.md)
-· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
+Â· [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
+Â· [results](docs/results.md) Â· [design notes](docs/design-notes.md)
+Â· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
 
 ## What runs where
 
@@ -34,7 +34,7 @@ flowchart LR
 
 | Instance | Role | Size |
 |---|---|---|
-| healer-ubuntu | Runs the loop, this repository, the evidence | 1 CPU, 1 GiB |
+| healer-ubuntu | Runs the loop, this repository, the evidence | 2 CPUs, 6 GiB |
 | monitor | Prometheus, blackbox exporter, Grafana | 1 CPU, 4 GiB |
 | app-1, app-2 | The managed infrastructure: nginx serving `/healthz` | 1 CPU, 1 GiB |
 
@@ -231,7 +231,7 @@ docs/           design notes and results
   preflight), not on stock nginx behaviour.
 - Monitor detection depends on scrape intervals (10 s) and a one-minute rate
   window. Detection delay is part of every measured number.
-- The healer has 1 GiB of memory and no swap. During the experiment it ran
+- The healer had 1 GiB of memory and no swap. During the experiment it ran
   out of memory and stopped, so B and C have two repetitions, not three
   (`evidence/2026-10-13-incident-healer-memory.md`). Do not run heavy
   interactive tools on the healer during an experiment.
