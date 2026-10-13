@@ -1,0 +1,57 @@
+target app-1 10.1.1.60 (ed47dc3a-929c-4f6a-b252-a3061b4ec4c7)
+start 2026-10-13T15:14:16Z
+$ sudo bash ~/lab/install_lab_host.sh
+==> packages
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+ /etc/needrestart/restart.d/systemd-manager
+ systemctl restart packagekit.service polkit.service rsyslog.service systemd-journald.service systemd-networkd.service systemd-resolved.service systemd-udevd.service udisks2.service
+
+Service restarts being deferred:
+ systemctl restart ModemManager.service
+ systemctl restart getty@tty1.service
+ systemctl restart serial-getty@ttyS0.service
+ systemctl restart systemd-logind.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ ubuntu @ user manager service: systemd[2225]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+==> bounded log filesystem (512 MiB at /var/log/nginx)
+==> nginx configuration and reference
+==> log rotation policy and reference
+==> host scripts (one shared fail-closed mount guard)
+Created symlink /etc/systemd/system/timers.target.wants/healer-logrotate.timer → /etc/systemd/system/healer-logrotate.timer.
+==> start nginx
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+Synchronizing state of nginx.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable nginx
+==> verify the contract
+   ok    nginx is active
+   ok    health endpoint answers with the expected body
+   ok    log mount is dedicated
+   ok    log mount is a separate device from root
+   ok    log mount is ext4
+   ok    log mount is bounded below 1 GiB
+   ok    live config matches reference
+   ok    rotation reference present
+   ok    frequent rotation timer active
+   ok    preflight is installed in the unit
+   ok    fault generator present and off
+   ok    fault generator stands down while the policy exists
+==> prove the failure mechanism, then undo it
+   ok    the volume is actually below the requirement (0 MiB free)
+   ok    the preflight refuses on a full volume
+   ok    nginx is not running after the failed restart
+   ok    the journal names the preflight as the cause
+   ok    the health endpoint stops answering
+curl: (7) Failed to connect to 127.0.0.1 port 80 after 1 ms: Couldn't connect to server
+   ok    service recovers once space is reclaimed
+==> lab host ready
+exit=0
+end 2026-10-13T15:14:40Z wall=24s
