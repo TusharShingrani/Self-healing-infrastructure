@@ -92,10 +92,10 @@ on every fresh instance.
 
 When the loop is stuck (no rule matches, a repair does not verify, or every
 escalation level is used up) it asks `mapek/advisor.py` for advice. The
-advisor asks Google Gemini (free tier, default model `gemini-2.5-flash`) for a
-cause and a plan. Gemini's structured output (`responseSchema`) restricts the
-actions to the catalogue, and the loop checks them again. The advice is stored
-as **pending**. Nothing runs.
+advisor asks Google Gemini (free tier, default model `gemini-3.5-flash-lite`,
+override with `HEALER_GEMINI_MODEL`) for a cause and a plan. Gemini's
+structured output (`responseSchema`) restricts the actions to the catalogue,
+and the loop checks them again. The advice is stored as **pending**. Nothing runs.
 
 A person reviews it:
 
@@ -230,6 +230,10 @@ docs/           design notes and results
   preflight), not on stock nginx behaviour.
 - Monitor detection depends on scrape intervals (10 s) and a one-minute rate
   window. Detection delay is part of every measured number.
+- The healer has 1 GiB of memory and no swap. During the experiment it ran
+  out of memory and stopped, so B and C have two repetitions, not three
+  (`evidence/2026-10-13-incident-healer-memory.md`). Do not run heavy
+  interactive tools on the healer during an experiment.
 - A host key accepted at first contact is trust on first use. Console
   verification of fingerprints is a manual step.
 - EduCloud guarantees neither availability nor backups, and removes projects

@@ -94,7 +94,14 @@ def main():
                 if summary_node != NODE:
                     raise RuntimeError(f"{run_dir} is a run on {summary_node}, not {NODE}")
                 summary = json.load(open(os.path.join(run_dir, "summary.json")))
+                if summary["loop_config"] != config:
+                    # Fail closed: a run without the right loop measures nothing
+                    # about this configuration. It happened once when the healer
+                    # stalled; the run showed 0 s downtime with no restart at all.
+                    raise RuntimeError(f"{run_dir} ran with loop {summary['loop_config']!r}, "
+                                       f"not config {config}; experiment stopped")
                 row = {"rep": rep, "config": config, "occurrence": occurrence,
+                       "loop_config": summary["loop_config"],
                        "downtime_s": summary["downtime_s"],
                        "recovery_s": summary["recovery_s_from_first_down"],
                        "ended_down": summary["ended_down"],

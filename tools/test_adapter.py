@@ -582,6 +582,19 @@ world.restore_config()
 check("restore_config starts nginx if the bad config already stopped it",
       "reload-or-restart" in sent[-1], sent[-1])
 
+print("\nResults generator")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from summarise_experiment import invalid_reason                            # noqa: E402
+
+row = {"config": "A", "run": "evidence/runs/x"}
+check("a run with the block's loop config is counted",
+      invalid_reason(row, {"loop_config": "A"}) is None)
+check("a run where the loop was not running is not counted",
+      "loop-not-running" in (invalid_reason(row, {"loop_config": "loop-not-running"}) or ""))
+check("a run under another config's loop is not counted",
+      invalid_reason(row, {"loop_config": "C"}) is not None)
+check("a run without a summary is not counted", invalid_reason(row, None) is not None)
+
 print("\nTest isolation")
 from mapek.educloud import HostRegistry as _HR, SSHTarget as _ST           # noqa: E402
 check("the default host registry is inside the test sandbox",

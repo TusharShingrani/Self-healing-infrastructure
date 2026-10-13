@@ -1,0 +1,55 @@
+{
+  "node": "app-1",
+  "fault": "disk_leak",
+  "loop_config": "C",
+  "inject": {
+    "time": "2026-10-13T17:13:40Z",
+    "confirmed": true,
+    "detail": "log filesystem at 9% and rising on /var/log/nginx /dev/loop0 ext4 487MiB"
+  },
+  "restart": {
+    "time": "2026-10-13T17:16:11Z",
+    "offset": 150.3,
+    "ok": false,
+    "detail": "Job for nginx.service failed because the control process exited with error code.\nSee \"systemctl status nginx.service\" and \"journalctl -xeu nginx.service\" for details.",
+    "disk_percent_before": 100.0
+  },
+  "samples": 197,
+  "sample_interval_s": 1.0,
+  "downtime_s": 15,
+  "first_down": "2026-10-13T17:16:12Z",
+  "recovered": "2026-10-13T17:16:27Z",
+  "recovery_s_from_first_down": 15.1,
+  "ended_down": false,
+  "loop_events": [
+    "healed",
+    "blocked"
+  ],
+  "first_loop_action_s": 168.0,
+  "prevented": false,
+  "healed": true,
+  "max_disk_percent": 100.0,
+  "manual_cleanup": [
+    {
+      "action": "clear_logs",
+      "ok": true,
+      "detail": "log filesystem reclaimed"
+    },
+    {
+      "action": "fix_log_rotation",
+      "ok": true,
+      "detail": "log rotation restored, producer stopped, rotation run once"
+    },
+    {
+      "action": "restore_config",
+      "ok": true,
+      "detail": "configuration restored from reference"
+    },
+    {
+      "action": "restart_service",
+      "ok": true,
+      "detail": "nginx restarted"
+    }
+  ],
+  "healthy_after_cleanup": true
+}

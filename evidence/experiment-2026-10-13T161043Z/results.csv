@@ -1,0 +1,15 @@
+rep,config,occurrence,downtime_s,recovery_s,ended_down,prevented,healed,first_loop_action_s,max_disk_percent,restart_ok,reset_s,provision_s,run
+1,A,first,180,,True,False,False,,100.0,False,55.6,44.8,evidence/runs/2026-10-13T161308Z-app-1-disk_leak-A
+1,A,repeat,180,,True,False,False,,100.0,False,55.6,44.8,evidence/runs/2026-10-13T161925Z-app-1-disk_leak-A
+1,B,first,14,14.0,False,False,True,164.4,100.0,False,56.3,37.3,evidence/runs/2026-10-13T162759Z-app-1-disk_leak-B
+1,B,repeat,20,20.0,False,False,True,171.3,100.0,False,56.3,37.3,evidence/runs/2026-10-13T163202Z-app-1-disk_leak-B
+1,C,first,3,3.0,False,False,True,155.1,100.0,False,56.1,39.0,evidence/runs/2026-10-13T163829Z-app-1-disk_leak-C
+1,C,repeat,0,,False,True,False,131.2,100.0,True,56.1,39.0,evidence/runs/2026-10-13T164222Z-app-1-disk_leak-C
+2,A,first,180,,True,False,False,,100.0,False,54.7,46.6,evidence/runs/2026-10-13T164837Z-app-1-disk_leak-A
+2,A,repeat,180,,True,False,False,,100.0,False,54.7,46.6,evidence/runs/2026-10-13T165454Z-app-1-disk_leak-A
+2,B,first,4,4.0,False,False,True,154.5,100.0,False,61.8,34.3,evidence/runs/2026-10-13T170330Z-app-1-disk_leak-B
+2,B,repeat,11,11.0,False,False,True,162.4,100.0,False,61.8,34.3,evidence/runs/2026-10-13T170723Z-app-1-disk_leak-B
+2,C,first,15,15.1,False,False,True,168.0,100.0,False,48.5,42.6,evidence/runs/2026-10-13T171337Z-app-1-disk_leak-C
+2,C,repeat,0,,False,True,False,132.7,100.0,True,48.5,42.6,evidence/runs/2026-10-13T171744Z-app-1-disk_leak-C
+3,A,first,180,,True,False,False,,100.0,False,50.3,44.3,evidence/runs/2026-10-13T172351Z-app-1-disk_leak-A
+3,A,repeat,0,,False,False,False,,100.0,False,50.3,44.3,evidence/runs/2026-10-13T173113Z-app-1-disk_leak-loop-not-running

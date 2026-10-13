@@ -1,0 +1,6 @@
+2026-10-13T17:17:44Z +   0.0s  run disk_leak on app-1 (10.1.1.60), loop config C, deliberate restart at +150s
+2026-10-13T17:17:59Z +  15.4s  inject disk_leak: confirmed: log filesystem at 9% and rising on /var/log/nginx /dev/loop0 ext4 487MiB
+2026-10-13T17:17:59Z +  15.4s  waiting 138s for the maintenance window
+2026-10-13T17:20:17Z + 153.3s  deliberate restart: succeeded (log volume 7.4% used): restarted
+2026-10-13T17:20:48Z + 184.3s  measurement ended, 184 samples
+2026-10-13T17:20:50Z + 186.7s  post-run reset by the experiment, idempotent, not counted as healing: clear_logs=ok, fix_log_rotation=ok, restore_config=ok, restart_service=ok

@@ -136,8 +136,10 @@ genuinely new failures and for destructive actions.
 | Config drift, config C | 0 s, repaired before the restart |
 | Service stopped, config C | 5 s |
 
-The repeated A/B/C experiment (three repetitions, a fresh instance from the
-template for every block) is in `docs/results.md`.
+The repeated A/B/C experiment (a fresh instance from the template for every
+block) is in `docs/results.md`. Three repetitions were planned. Three were
+completed for A and two for B and C: during rep 3 the healer ran out of memory
+and the experiment stopped (`evidence/2026-10-13-incident-healer-memory.md`).
 
 ## 4. Was everything that was asked for used?
 

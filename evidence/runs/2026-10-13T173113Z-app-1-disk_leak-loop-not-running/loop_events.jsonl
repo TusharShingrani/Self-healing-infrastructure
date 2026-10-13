@@ -1,0 +1,1 @@
+{"time": "2026-10-13T17:34:41Z", "node": "app-1", "config": "A", "tick": 19, "kind": "observed", "cause": "", "level": 0, "source": "", "symptoms": ["unreachable"], "actions": [], "detail": "failure seen, no healing enabled", "monitor_source": ""}

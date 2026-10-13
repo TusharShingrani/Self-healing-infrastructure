@@ -7,6 +7,7 @@ so the report never contains a number that was typed by hand.
 """
 
 import csv
+import json
 import os
 import statistics
 import sys
@@ -24,16 +25,48 @@ def fmt(values, unit="s"):
             f"(min {min(values):g}, max {max(values):g})")
 
 
+def invalid_reason(row, summary):
+    """Why a run cannot be counted for its block, or None if it can.
+
+    A run only measures a configuration if that configuration's loop was the
+    one running. Once the healer stalled and the loop was not running at all;
+    the deliberate restart never reached the host, so the run showed 0 s
+    downtime that had nothing to do with self-healing.
+    """
+    if summary is None:
+        return "run folder has no summary.json"
+    if summary.get("loop_config") != row["config"]:
+        return (f"loop was {summary.get('loop_config')!r} during the run, "
+                f"not config {row['config']}")
+    return None
+
+
+def load_summary(row):
+    try:
+        return json.load(open(os.path.join(HERE, row["run"], "summary.json")))
+    except (OSError, ValueError):
+        return None
+
+
 def main():
     folder = sys.argv[1]
-    rows = list(csv.DictReader(open(os.path.join(folder, "results.csv"))))
+    all_rows = list(csv.DictReader(open(os.path.join(folder, "results.csv"))))
     num = lambda r, k: float(r[k]) if r[k] not in ("", "None") else None
     yes = lambda r, k: r[k] == "True"
-    reps = sorted({r["rep"] for r in rows})
+    excluded = [(r, invalid_reason(r, load_summary(r))) for r in all_rows]
+    excluded = [(r, why) for r, why in excluded if why]
+    rows = [r for r in all_rows if r not in [x for x, _ in excluded]]
+    reps = {c: sorted({r["rep"] for r in rows if r["config"] == c}) for c in ("A", "B", "C")}
+    rep_text = ", ".join(f"{c}: {len(reps[c])}" for c in ("A", "B", "C"))
 
     out = ["# Results: live A/B/C experiment on EduCloud", "",
            f"Source: `{os.path.relpath(folder, HERE)}/results.csv`, "
-           f"{len(rows)} fault runs, {len(reps)} repetition(s) per configuration.", "",
+           f"{len(rows)} valid fault runs of {len(all_rows)} recorded. "
+           f"Repetitions with at least one valid run per configuration: {rep_text}.", "",
+           *(["Not every configuration has the same number of repetitions: the experiment "
+              "stopped before it finished. The experiment log in the source folder records "
+              "where, and the runs not counted are listed below.", ""]
+             if len({len(v) for v in reps.values()}) > 1 else []),
            "Protocol per block (one configuration, one repetition): app-1 is reset to a "
            "fresh instance from the clean template and provisioned, Knowledge starts "
            "empty, the loop starts in that configuration, then the disk fault is "
@@ -60,17 +93,24 @@ def main():
             "at the end of the measurement window, so its downtime is bounded by the "
             "window, not by any recovery.", "",
             "## Fresh-instance reset (template)", ""]
+    if excluded:
+        out[out.index("## Fresh-instance reset (template)"):out.index("## Fresh-instance reset (template)")] = (
+            ["## Runs not counted", ""]
+            + [f"- rep {r['rep']} config {r['config']} {r['occurrence']}: {why} "
+               f"([{os.path.basename(r['run'])}](../{r['run']}))" for r, why in excluded]
+            + [""])
     resets = [num(r, "reset_s") for r in rows if r["occurrence"] == "first"]
     provs = [num(r, "provision_s") for r in rows if r["occurrence"] == "first"]
     out += [f"- Template rebuild until SSH answers: {fmt(resets)}",
             f"- Provisioning (installer with fill proof, exporters): {fmt(provs)}",
             f"- Total per reset: {fmt([a + b for a, b in zip(resets, provs) if a and b])}",
             "", "## Every run", "",
-            "| Rep | Config | Occurrence | Downtime (s) | Restart ok | Prevented | Healed | Run folder |",
-            "|---|---|---|---|---|---|---|---|"]
-    for r in rows:
+            "| Rep | Config | Occurrence | Downtime (s) | Restart ok | Prevented | Healed | Counted | Run folder |",
+            "|---|---|---|---|---|---|---|---|---|"]
+    for r in all_rows:
         out.append(f"| {r['rep']} | {r['config']} | {r['occurrence']} | {r['downtime_s']} | "
                    f"{r['restart_ok']} | {r['prevented']} | {r['healed']} | "
+                   f"{'no' if r not in rows else 'yes'} | "
                    f"[{os.path.basename(r['run'])}](../{r['run']}) |")
     path = os.path.join(HERE, "docs", "results.md")
     with open(path, "w") as fh:

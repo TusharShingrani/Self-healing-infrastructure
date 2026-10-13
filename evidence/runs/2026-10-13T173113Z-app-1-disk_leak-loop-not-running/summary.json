@@ -1,0 +1,54 @@
+{
+  "node": "app-1",
+  "fault": "disk_leak",
+  "loop_config": "loop-not-running",
+  "inject": {
+    "time": "2026-10-13T17:31:18Z",
+    "confirmed": true,
+    "detail": "log filesystem at 27% and rising on /var/log/nginx /dev/loop0 ext4 487MiB"
+  },
+  "restart": {
+    "time": "2026-10-13T17:34:41Z",
+    "offset": 202.5,
+    "ok": false,
+    "detail": "ssh timed out",
+    "disk_percent_before": 89.5
+  },
+  "samples": 78,
+  "sample_interval_s": 1.0,
+  "downtime_s": 0,
+  "first_down": null,
+  "recovered": null,
+  "recovery_s_from_first_down": null,
+  "ended_down": false,
+  "loop_events": [
+    "observed"
+  ],
+  "first_loop_action_s": null,
+  "prevented": false,
+  "healed": false,
+  "max_disk_percent": 100.0,
+  "manual_cleanup": [
+    {
+      "action": "clear_logs",
+      "ok": false,
+      "detail": "ssh timed out"
+    },
+    {
+      "action": "fix_log_rotation",
+      "ok": false,
+      "detail": "ssh timed out"
+    },
+    {
+      "action": "restore_config",
+      "ok": false,
+      "detail": "ssh timed out"
+    },
+    {
+      "action": "restart_service",
+      "ok": false,
+      "detail": "Job for nginx.service failed because the control process exited with error code.\nSee \"systemctl status nginx.service\" and \"journalctl -xeu nginx.service\" for details."
+    }
+  ],
+  "healthy_after_cleanup": false
+}
