@@ -573,6 +573,15 @@ except CloudStackError as error:
     check("the network error does not leak the signed request",
           "apikey" not in str(error) and "signature" not in str(error), str(error))
 
+print("\nEffectors")
+client, world = build("app-1")
+world._refresh()
+sent = []
+world._probe = lambda command: (sent.append(command), (True, "", ""))[1]
+world.restore_config()
+check("restore_config starts nginx if the bad config already stopped it",
+      "reload-or-restart" in sent[-1], sent[-1])
+
 print("\nTest isolation")
 from mapek.educloud import HostRegistry as _HR, SSHTarget as _ST           # noqa: E402
 check("the default host registry is inside the test sandbox",

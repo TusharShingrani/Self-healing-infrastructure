@@ -202,7 +202,8 @@ def main():
     cleanup = []
     if summary["ended_down"] or world.observe(sample=False).get("config_correct") is False \
             or args.fault == "disk_leak":
-        for name in ("fix_log_rotation", "clear_logs", "restore_config", "restart_service"):
+        # clear first: a forced rotation needs free space to compress
+        for name in ("clear_logs", "fix_log_rotation", "restore_config", "restart_service"):
             if args.fault != "disk_leak" and name in ("fix_log_rotation", "clear_logs"):
                 continue
             c_ok, c_detail = getattr(world, name)()

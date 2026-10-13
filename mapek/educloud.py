@@ -430,7 +430,9 @@ class EduCloudWorld:
         return self._guest(
             f"sudo cp {shlex.quote(self.reference_dir)}/healer.conf "
             f"{shlex.quote(self.config_path)} && sudo nginx -t && "
-            f"sudo systemctl reload {shlex.quote(self.service)}",
+            # reload-or-restart: a plain reload fails when an invalid config
+            # has already stopped nginx, and the repair would then escalate
+            f"sudo systemctl reload-or-restart {shlex.quote(self.service)}",
             "configuration restored from reference")
 
     # -------------------------------------------------- platform level repairs

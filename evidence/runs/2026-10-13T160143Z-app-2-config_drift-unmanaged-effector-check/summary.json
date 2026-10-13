@@ -1,0 +1,42 @@
+{
+  "node": "app-2",
+  "fault": "config_drift",
+  "loop_config": "A",
+  "inject": {
+    "time": "2026-10-13T16:01:46Z",
+    "confirmed": true,
+    "detail": "configuration altered"
+  },
+  "restart": {
+    "time": "2026-10-13T16:01:57Z",
+    "offset": 10.3,
+    "ok": false,
+    "detail": "Job for nginx.service failed because the control process exited with error code.\nSee \"systemctl status nginx.service\" and \"journalctl -xeu nginx.service\" for details.",
+    "disk_percent_before": 7.4
+  },
+  "samples": 31,
+  "sample_interval_s": 1.0,
+  "downtime_s": 20,
+  "first_down": "2026-10-13T16:01:57Z",
+  "recovered": null,
+  "recovery_s_from_first_down": null,
+  "ended_down": true,
+  "loop_events": [],
+  "first_loop_action_s": null,
+  "prevented": false,
+  "healed": false,
+  "max_disk_percent": 7.4,
+  "manual_cleanup": [
+    {
+      "action": "restore_config",
+      "ok": true,
+      "detail": "configuration restored from reference"
+    },
+    {
+      "action": "restart_service",
+      "ok": true,
+      "detail": "nginx restarted"
+    }
+  ],
+  "healthy_after_cleanup": true
+}
