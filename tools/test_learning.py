@@ -234,6 +234,17 @@ except AdvisorError as error:
           "429" in str(error) and "quota" in str(error) and "SECRET-KEY" not in str(error),
           str(error))
 
+for code, label, expect in [
+        (404, "a retired model names the override", "HEALER_GEMINI_MODEL"),
+        (503, "an overloaded model is reported as such", "overloaded")]:
+    gem, _ = gemini_with(http_error=code)
+    try:
+        gem.ask("s", "p")
+        check(label, False)
+    except AdvisorError as error:
+        check(label, str(code) in str(error) and expect in str(error)
+              and "SECRET-KEY" not in str(error), str(error))
+
 gem, _ = gemini_with(http_error=429)
 world, healer = setup(gem)
 healer.tick()

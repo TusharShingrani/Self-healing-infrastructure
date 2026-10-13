@@ -93,7 +93,7 @@ SCHEMA = {
 }
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.5-flash-lite"   # 2.5 closed to new keys; larger Flash models 503 under free-tier load
 
 
 class AdvisorError(RuntimeError):
@@ -127,7 +127,9 @@ class GeminiProvider:
                 payload = json.loads(response.read().decode())
         except urllib.error.HTTPError as error:
             detail = error.read().decode(errors="replace")[:300]
-            hint = " (free-tier quota or rate limit)" if error.code == 429 else ""
+            hint = {404: f" (model {self.model} not available to this key, set HEALER_GEMINI_MODEL)",
+                    429: " (free-tier quota or rate limit)",
+                    503: " (model overloaded, try later or a lighter model)"}.get(error.code, "")
             raise AdvisorError(f"Gemini returned HTTP {error.code}{hint}: {detail}") from None
         except (urllib.error.URLError, OSError) as error:
             raise AdvisorError(f"Gemini unreachable: {error}") from None
