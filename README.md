@@ -1,266 +1,227 @@
-# Self-healing infrastructure: a MAPE-K loop
+# Self-healing infrastructure with a MAPE-K loop
 
-A working starting point for the project. Pure Python, standard library only,
-no dependencies, runs anywhere.
+A graduation project (HBO ICT, Fontys). Infrastructure on Fontys EduCloud that
+detects a failure, repairs the cause rather than the symptom, verifies the
+repair, and learns so the same failure is prevented next time.
 
-This is a skeleton to learn from and extend, not a finished project. Read it,
-change it, break it. You need to be able to explain every line of it.
+The loop follows the MAPE-K reference model (Kephart and Chess, 2003):
+Monitor, Analyse, Plan, Execute, over shared Knowledge. Every stage is a
+separate piece of code, every stage is visible in Grafana, and every claim in
+the results below comes from a measured live run on EduCloud, not from the
+simulation.
 
-## Run it
+## What runs where
 
-```bash
-python3 tools/demo.py            # the story in one screen
-python3 tools/experiment.py      # configurations A, B and C, results to CSV
-python3 tools/test_safety.py     # the guardrail evidence
+```mermaid
+flowchart LR
+    laptop([Laptop]) -- "VPN + SSH via gateway" --> healer
+    subgraph EduCloud project healer-lab, isolated network 10.1.1.0/24
+        healer["healer-ubuntu 10.1.1.205<br/>MAPE-K loop service<br/>Knowledge (SQLite)<br/>LLM advisor (optional)<br/>metrics :9105"]
+        monitor["monitor 10.1.1.50<br/>Prometheus :9090<br/>blackbox /healthz probe<br/>Grafana :3000"]
+        app1["app-1 10.1.1.60<br/>nginx + bounded log volume<br/>node / nginx exporters"]
+        app2["app-2 10.1.1.61<br/>nginx + bounded log volume<br/>node / nginx exporters"]
+        monitor -- scrape --> app1 & app2 & healer
+        healer -- "M: PromQL" --> monitor
+        healer -- "E: SSH effectors<br/>verify with direct probes" --> app1 & app2
+    end
+    healer -- "platform actions (reboot, rebuild)" --> api[(CloudStack API)]
 ```
 
-## What is here
-
-```
-mapek/
-  world.py        the managed element: a simulated host, and a real Linux one
-  stages.py       Monitor, Analyse, Plan, Execute
-  knowledge.py    the K: incident store, recall, learned prevention rules
-  guardrails.py   cool-down, rate limit, the rules that stop automation looping
-  actions.py      the action catalogue: everything the loop is allowed to do
-  loop.py         the MAPE-K loop itself, in configurations A, B and C
-tools/
-  demo.py         same fault twice: it breaks, then it does not
-  experiment.py   the experiment, with a CSV for the report
-  test_safety.py  six tests that prove the guardrails work
-```
-
-## How the code maps to the theory
-
-| MAPE-K | File | What it does |
+| Instance | Role | Size |
 |---|---|---|
-| Monitor | `stages.py` | Turns probe readings into named symptoms |
-| Analyse | `stages.py` | Turns symptoms into a cause, not another symptom |
-| Plan | `stages.py` | Turns a cause into actions from the catalogue |
-| Execute | `stages.py` | Runs them and verifies the result afterwards |
-| Knowledge | `knowledge.py` | Records incidents, recalls them, learns prevention rules |
+| healer-ubuntu | Runs the loop, this repository, the evidence | 1 CPU, 1 GiB |
+| monitor | Prometheus, blackbox exporter, Grafana | 1 CPU, 4 GiB |
+| app-1, app-2 | The managed infrastructure: nginx serving `/healthz` | 1 CPU, 1 GiB |
 
-The managed element sits behind `world.py`. The loop never touches the system
-directly, only through probes (read) and effectors (write). That is why the
-same loop runs against a simulation and against a real host without changes.
+Only the healer has a port forward. The app instances and the monitor are
+reached over the isolated network. All four are deployed from one private
+template, at fixed addresses, by `tools/lab.py`.
 
-## The three configurations
+## The MAPE-K loop, stage by stage
 
-| Config | What it has | Answers |
+| Stage | Code | What it does here |
 |---|---|---|
-| A | No healing. Watches and records only | The baseline |
-| B | Detect, diagnose, repair, verify | What is self-healing worth? |
-| C | B plus knowledge: recall and prevention | Does learning help? |
+| **Monitor** | `mapek/prometheus.py`, `stages.Monitor` | Reads fresh Prometheus series per node (availability from the blackbox probe, nginx unit state, log volume use and its growth rate, config correctness) and names symptoms. A missing, stale or pre-action sample is not used; that field falls back to a direct SSH probe. A failed probe is unknown, never healthy |
+| **Analyse** | `stages.RuleAnalyser` | Turns symptoms into a cause. Knowledge is asked first (a symptom set seen before), then rules from most to least specific, then human-approved LLM advice |
+| **Plan** | `stages.Planner` | Picks actions from a fixed catalogue (`mapek/actions.py`) by escalation level: guest repair, then reboot, then rebuild. The planner cannot invent a command |
+| **Execute** | `stages.Executor`, `mapek/loop.py` | Checks guardrails (cool-down, rate limit) and the approval gate for high-risk actions, runs the actions over SSH, then **verifies with direct probes**. A repair that does not verify escalates |
+| **Knowledge** | `mapek/knowledge.py` | SQLite shared by every node: incidents, learned prevention rules, LLM advice and human decisions |
 
-## What the experiment shows
+The whole loop is `Healer.tick()` in `mapek/loop.py`, about thirty lines, with
+the stages marked. `tools/healer_service.py` runs one loop per app instance
+every 10 seconds and publishes what each stage did as metrics.
 
-With ten runs per fault per configuration:
+### How it learns
 
-- A never recovers, so downtime runs to the end of the observation window
-- B recovers from all three faults within one tick
-- C does the same, and on a repeat of the disk fault the downtime is zero,
-  because the loop acted on the early signs before the failure happened
+When an incident is resolved, Knowledge stores the symptoms that were present
+**before** the failure (the early signs) and the actions that fixed the cause.
+That becomes a prevention rule. The next time those early signs appear, the
+loop runs the rule while the service is still healthy, so the failure never
+happens. Knowledge is shared, so a rule learned on app-1 protects app-2.
 
-That last line is the whole point of the project. Everything published on
-self-healing stops at B.
-
-## Fault, error, failure
-
-The disk case is deliberately a three-step chain, because it is the example
-that separates symptom from cause:
-
-```
-fault    log rotation is broken
-error    the disk fills up
-failure  the service stops
-```
-
-Restarting the service treats the failure. Clearing the disk treats the error.
-Only fixing log rotation treats the fault. Config C learns to act at the error
-stage, which is why the failure stops happening.
-
-## Moving to real servers
-
-`world.py` already has `LocalWorld`, which talks to systemd, the real disk and
-a real config file. To move across:
-
-1. Build your lab VMs from code so they can be rebuilt identically
-2. Point `LocalWorld` at a real service, log directory and config file
-3. Fill in `fix_log_rotation` and `restore_config` with the real repair
-4. Run the same experiment against the real host
-
-Nothing in `loop.py`, `stages.py` or `knowledge.py` changes. That is the test
-of whether the separation is right.
-
-## What to extend
-
-- More faults, chosen by the criteria from sub-question 1
-- A second analyser that asks a sandboxed language model instead of the rules,
-  returning a cause and a choice from the same catalogue. Keep the executor
-  and the guardrails identical, so the comparison is fair
-- Real metrics collection instead of direct probes
-- An approval step, so a learned rule only becomes active once a human signs
-  it off. `Knowledge(auto_approve=False)` already does this
-
-## Running against EduCloud
-
-Once the lab exists, the same loop runs against real instances. The loop talks
-to the managed element only through the interface in `world.py`, so swapping
-simulation for the platform is an adapter change. The interface itself has
-grown during development (sampling, escalation), and both adapters moved with
-it: interchangeability is a property of the interface, not a claim that those
-files were never touched.
+For the disk fault the chain is:
 
 ```
-mapek/cloudstack.py   signed CloudStack API client, project scoped, waits on
-                      asynchronous jobs
-mapek/educloud.py     the real managed element: probes and effectors over SSH,
-                      plus reboot and rebuild through the API
-config/lab.json       the lab's identifiers. Credentials are NOT in here
-tools/lab.py          deploy, check, reset and destroy lab instances
-tools/cloudstack_check.py  what the API account is permitted to do
-tools/install_lab_host.sh  prepares a lab instance and verifies the contract
-tools/test_adapter.py      adapter and CLI tests, with a fake client
-tools/lab-host/            the scripts installed on a lab instance
-tools/test_lab_host.sh     tests those scripts with mocked system commands
+fault    the log rotation policy is removed, a producer fills the log volume
+error    the bounded 512 MiB log volume fills up
+failure  the next deliberate restart fails its storage preflight, nginx stops
 ```
 
-Three suites, none of which touch EduCloud:
+Restarting nginx treats the failure. Clearing the volume treats the error. Only
+restoring rotation treats the fault. The learned rule acts at the error stage,
+on the early sign `disk_growing_fast`, with `clear_logs` and
+`fix_log_rotation`.
+
+The preflight is a declared lab protocol: stock nginx does not refuse to start
+on a full log volume. See `docs/design-notes.md` for why, and how it is proven
+on every fresh instance.
+
+### Three configurations
+
+| Config | Has | Question it answers |
+|---|---|---|
+| A | Monitor and record only | The baseline |
+| B | Detect, diagnose, repair, verify, escalate | What is reactive self-healing worth? |
+| C | B plus Knowledge: recall, prevention, approved advice | Does learning help? |
+
+### The LLM advisor, a human in the loop (optional)
+
+When the loop is stuck (no rule matches, a repair does not verify, or every
+escalation level is used up) it asks `mapek/advisor.py` for advice. The
+advisor asks Claude (`claude-opus-5-5`) for a cause and a plan, with the
+answer constrained by a JSON schema to actions from the catalogue. The advice
+is stored as **pending**. Nothing runs.
+
+A person reviews it:
 
 ```bash
-python3 tools/test_safety.py    # the loop and its guardrails
-python3 tools/test_adapter.py   # the adapter and CLI, with a fake API client
-bash    tools/test_lab_host.sh  # the host scripts, with mocked findmnt/dd
+python3 tools/knowledge.py advice pending
+python3 tools/knowledge.py approve-advice 3      # or reject-advice 3
 ```
 
-Credentials come from the environment, never from a file in the repository:
+Approved advice becomes a diagnosis the loop may use the next time the same
+symptoms appear, still through the guardrails and the high-risk approval gate.
+Without the Anthropic SDK or credentials, requests are still recorded, so a
+person sees that the loop needed help. To turn it on, on the healer:
 
 ```bash
-export CS_URL=https://<portal-host>/client/api
-export CS_KEY=...
-export CS_SECRET=...
-export LAB_SSH_KEY=~/.ssh/healer-lab-key
+python3 -m venv ~/.venv-healer && ~/.venv-healer/bin/pip install anthropic
+export ANTHROPIC_API_KEY=...        # never in a file in this repository
 ```
 
-### Where things run
+and start the loop with that interpreter (see `tools/start_loop.sh`).
 
-Only the healer instance has a port forward from the gateway. It sits on the
-isolated network, so it reaches the other lab instances directly. The loop
-therefore runs on the healer instance, and the laptop only ever talks to the
-healer. This is also why the SSH firewall rule is scoped to one VPN address.
+## Watching it work
 
-### Experiment resets
+Grafana runs on the monitor and is only reachable inside the project network.
+Tunnel through the healer from the laptop:
 
-Resets redeploy a fresh instance from the clean template rather than reverting
-a snapshot. Not because of the snapshot quota: two retained snapshots can be
-reverted any number of times. The reason is isolation and reproducibility. A
-fresh instance starts from a known identity and a known disk, so runs cannot
-contaminate each other. The retained snapshot stays as an independent recovery
-reference.
-
-### Safety rules enforced in the adapter
-
-Destructive actions are guarded where they are called, not only in the CLI:
-
-- the target must appear in `lab_instances`
-- the target may never be the healer instance
-- the instance must belong to the configured project
-
-Ownership fails closed: a project id must be configured and the instance's
-`projectid` must match it exactly. Missing metadata is refused, not assumed.
-Manual destruction from the CLI goes through the same checks.
-
-High-risk actions (`reboot_instance`, `rebuild_instance`) are in the catalogue
-and reachable from escalation, but the loop refuses to run them unless
-`approve_high_risk=True`. It records a proposal naming the target and the
-action, deduplicated, and waiting for approval does not consume the escalation
-level. The level advances only when an executed repair fails verification.
-
-Health requires every required probe to be readable and satisfied: the service
-active, the configuration matching its reference, and the instance actually
-answering an HTTP request. A unit reported as running is not evidence that the
-service is serving, and an unreadable probe is unknown, never health.
-
-An unexplained host key change is reported and stops the wait. The instance id
-seen at each address is persisted, so a fresh process can tell a new instance
-at a reused address (expected) from the same instance presenting a new key
-(needs console verification).
-
-### How the failure is made deterministic
-
-Stock nginx does not go down when its log filesystem fills. It keeps serving,
-and a reload whose configuration cannot be applied is rolled back so the
-running configuration stays live (nginx.org/en/docs/control.html). A full disk
-alone therefore establishes no outage, and claiming otherwise would be
-reporting the simulation as if it were observed behaviour.
-
-So the lab host declares an explicit **startup storage requirement**: an
-`ExecStartPre` preflight that refuses to start nginx with less than 25 MiB free
-on the bounded log volume. The experiment's maintenance operation is a
-deliberate **restart**, not a reload. That makes the chain deterministic:
-
-```
-fault    rotation policy removed, producer appending to the log volume
-error    the bounded log volume fills
-failure  the next deliberate restart fails its preflight, nginx stops,
-         and /healthz stops answering
+```bash
+ssh -L 3000:10.1.1.50:3000 <your usual healer login>
+# then open http://localhost:3000  (anonymous read-only; admin password:
+#   ssh to the monitor and run: sudo cat /etc/grafana/admin-password)
 ```
 
-The preflight is a lab protocol modelling a real startup storage requirement.
-The report must describe it that way, never as stock nginx behaviour. The
-installer proves the mechanism works before declaring the host ready: it fills
-the volume, confirms the restart fails, reclaims the space and confirms
-recovery.
+The dashboard "Self-healing infrastructure (MAPE-K)" is laid out along the
+loop: availability, what Monitor sees, the current diagnosis and escalation
+level, actions executed, time spent in each stage, and what Knowledge has
+learned. Every loop event is an annotation on the graphs.
 
-The producer models a broken-rotation condition, not normal traffic. It stands
-down while the rotation policy exists, so repairing the cause stops it. A
-frequent rotation timer checks the size-triggered policy every 15 seconds,
-because restoring a policy that is only evaluated daily would not actually
-rotate anything during an experiment. Audit logs are named `healer-*.audit`
-rather than `*.log`, so the distribution's own nginx rotation policy cannot
-rotate them behind the experiment's back.
+On the healer:
 
-### What counts as available
+```bash
+bash tools/start_loop.sh status | logs
+python3 tools/knowledge.py events 20      # the loop's own story
+python3 tools/knowledge.py incidents
+python3 tools/knowledge.py rules
+```
 
-The health probe requests the configured endpoint (`/healthz`) and checks its
-body, not the root. A default root page can answer 200 while the endpoint under
-test is broken.
+## Running a fault by hand
 
-### Injection is verified, not assumed
+```bash
+python3 tools/live_run.py app-1 disk_leak       # also: config_drift, service_stop
+```
 
-Starting the generator's timer proves scheduling, not that the fault took hold.
-`inject("disk_leak")` watches the bounded volume until it has measurably filled
-and returns `(ok, detail)`. The generator reports a full volume as the intended
-outcome and any other write failure distinctly, so a permission problem cannot
-be mistaken for a successful fault.
+`live_run.py` is the experimenter, not the healer. It injects the fault,
+performs the maintenance restart at a fixed time whatever the loop does, and
+measures `/healthz` itself every second. Results go to `evidence/runs/`.
 
-### Which volume may be flooded
+## Results
 
-One fail-closed validator, `tools/lab-host/healer-mount-guard`, is used by the
-installer before anything destructive, by the service preflight, and by the
-fault generator on every invocation. The adapter enforces the same rule over
-SSH. A second, weaker copy of the rule is how a root-backed bind mount ends up
-being written to.
+See [`docs/results.md`](docs/results.md) for the live A/B/C experiment, with
+every number traceable to a run folder under `evidence/`.
 
-Six conditions must all hold: the log directory is its own mount point and is
-not root, it is on a different device from root (so a bind mount is refused),
-its source is not root's source, its filesystem type matches, its size is
-within the configured bound, and it is loop backed by the expected image.
+## Rebuilding the lab from nothing
 
-### What counts as healthy, exactly
+Credentials come from the environment, never from a file:
 
-The health body must match exactly after normalising whitespace. A substring
-test would accept a body of "broken" as healthy when the expected body is
-"ok".
+```bash
+export CS_URL=https://educloud.fontysict.nl/client/api   # not secret
+export CS_KEY=...  CS_SECRET=...                          # secret
+export LAB_SSH_KEY=~/.ssh/healer-lab-key                  # keypair healer-lab-key2
 
-### Platform notes worth keeping in the report
+python3 tools/lab.py status
+python3 tools/lab.py deploy app-1 && bash tools/provision.sh app 10.1.1.60 evidence/provision-app-1.log
+python3 tools/lab.py deploy app-2 && bash tools/provision.sh app 10.1.1.61 evidence/provision-app-2.log
+python3 tools/lab.py deploy monitor && bash tools/provision.sh monitor 10.1.1.50 evidence/provision-monitor.log
+bash tools/start_loop.sh start C
+```
 
-- The lab image reports cloud-init as "degraded done" because of recoverable
-  DHCP lease warnings, so readiness is judged by API state plus a successful
-  SSH login, not by a strict cloud-init exit code.
-- A snapshot record left in Error state blocks a later restore, and it can only
-  be deleted while the instance is running. Start, delete the record, stop,
-  then revert.
-- The image is not dynamically scalable, so a capacity repair needs the
-  instance stopped before the offering changes.
-- API list calls return nothing unless they are scoped with the project id.
+A fresh app instance from the template is ready in about a minute, and
+provisioned (packages, bounded volume, fail-closed checks, a real fill proof,
+exporters) in under 40 seconds.
+
+## Safety rules the code enforces
+
+- Destructive platform actions only target names in `lab_instances`, never the
+  healer or the monitor, and only after the instance's `projectid` is
+  positively matched. Missing metadata fails closed.
+- `reboot_instance` and `rebuild_instance` need explicit approval
+  (`touch state/approve-high-risk`); otherwise the loop records a proposal.
+- The disk fault only writes to a bounded loop-backed volume, checked by one
+  fail-closed mount guard used by the installer, the preflight and the fault
+  generator.
+- Host key checking is never disabled. An unexplained key change stops the
+  loop for that host until a person verifies it through the console.
+- The tests never touch the healer's real host identity state, and use RFC
+  5737 documentation addresses.
+- The LLM advisor has no effectors.
+
+## Tests
+
+```bash
+python3 tools/test_safety.py      # loop and guardrails
+python3 tools/test_adapter.py     # EduCloud adapter, Prometheus sensor, CLI
+python3 tools/test_learning.py    # Knowledge, prevention, the advisor
+bash    tools/test_lab_host.sh    # host scripts and the installer gate
+```
+
+The simulation (`tools/demo.py`, `tools/experiment.py`) still runs anywhere and
+is useful for development. Its numbers are simulation, not observation.
+
+## Repository layout
+
+```
+mapek/          the loop: stages, knowledge, guardrails, actions, advisor,
+                Prometheus sensor, EduCloud adapter, simulation
+tools/          lab CLI, provisioning, installers, loop service, live runs,
+                experiment, tests
+tools/lab-host/ scripts installed on each app instance
+monitoring/     Prometheus, rules, blackbox, Grafana dashboard (generated)
+config/         lab.json: identifiers only, no credentials
+evidence/       raw, timestamped output of every live step and run
+docs/           design notes and results
+```
+
+## Honest limits
+
+- One managed service type (nginx) and three fault types. The infrastructure
+  layer only; application faults are out of scope.
+- The disk failure depends on a declared lab protocol (the startup storage
+  preflight), not on stock nginx behaviour.
+- Monitor detection depends on scrape intervals (10 s) and a one-minute rate
+  window. Detection delay is part of every measured number.
+- A host key accepted at first contact is trust on first use. Console
+  verification of fingerprints is a manual step.
+- EduCloud guarantees neither availability nor backups, and removes projects
+  after about six months. This repository and `evidence/` are the record.

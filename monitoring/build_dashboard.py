@@ -85,8 +85,8 @@ panel("stat", "Loop configuration",
       extra={"options": {"colorMode": "none", "graphMode": "none",
                          "textMode": "name", "reduceOptions": {"calcs": ["lastNotNull"]}}})
 panel("stat", "Pending human approvals",
-      [("sum(healer_loop_pending_approvals)", "approvals"),
-       ("sum(healer_advisor_pending)", "LLM advice")], 6, 4, 18,
+      [("sum(healer_loop_pending_approvals) or vector(0)", "approvals"),
+       ("sum(healer_advisor_pending) or vector(0)", "LLM advice")], 6, 4, 18,
       "High-risk actions and LLM advice wait here until a person decides.",
       thresholds=[{"color": "green", "value": None}, {"color": "orange", "value": 1}])
 y += 4
@@ -168,20 +168,20 @@ y += 7
 # ----------------------------------------------------------------- knowledge
 row("Knowledge: what the loop has learned")
 panel("stat", "Incidents recorded",
-      [("sum by (outcome) (healer_knowledge_incidents)", "{{outcome}}")], 8, 6, 0,
+      [("sum by (outcome) (healer_knowledge_incidents)", "{{outcome}}"), ("sum(healer_knowledge_incidents) or vector(0)", "total")], 8, 6, 0,
       extra={"options": {"colorMode": "value", "graphMode": "none",
                          "textMode": "value_and_name",
                          "reduceOptions": {"calcs": ["lastNotNull"]}}})
 panel("stat", "Prevention rules learned",
-      [('healer_knowledge_rules{approved="true"}', "active"),
-       ('healer_knowledge_rules{approved="false"}', "awaiting approval")], 8, 6, 8,
+      [('sum(healer_knowledge_rules{approved="true"}) or vector(0)', "active"),
+       ('sum(healer_knowledge_rules{approved="false"}) or vector(0)', "awaiting approval")], 8, 6, 8,
       extra={"options": {"colorMode": "value", "graphMode": "none",
                          "textMode": "value_and_name",
                          "reduceOptions": {"calcs": ["lastNotNull"]}}})
 panel("stat", "Knowledge used",
-      [('sum(healer_loop_events_total{kind="prevented"})', "failures prevented"),
-       ('sum(healer_loop_diagnoses_total{source="knowledge"})', "diagnoses recalled"),
-       ('sum(healer_loop_diagnoses_total{source="llm"})', "diagnoses from approved LLM advice")],
+      [('sum(healer_loop_events_total{kind="prevented"}) or vector(0)', "failures prevented"),
+       ('sum(healer_loop_diagnoses_total{source="knowledge"}) or vector(0)', "diagnoses recalled"),
+       ('sum(healer_loop_diagnoses_total{source="llm"}) or vector(0)', "diagnoses from approved LLM advice")],
       8, 6, 16,
       extra={"options": {"colorMode": "value", "graphMode": "none",
                          "textMode": "value_and_name",

@@ -41,6 +41,8 @@ because it is infrastructure, not an application anyone wrote here.
   the gateway at 10.53.14.225. The loop and this repository live here.
 - **app-1, app-2** are the lab instances, reached over the internal network
   10.1.1.0/24. They do not have port forwards.
+- **monitor** (10.1.1.50) runs Prometheus and Grafana. It is not in
+  `lab_instances`, so nothing destructive can target it.
 - The platform is EduCloud, which is Apache CloudStack. Project
   `healer-lab`. All identifiers are in `config/lab.json`.
 - Credentials come from `CS_URL`, `CS_KEY`, `CS_SECRET` and `LAB_SSH_KEY` in
@@ -49,40 +51,38 @@ because it is infrastructure, not an application anyone wrote here.
   is exported from `~/.bashrc` on the healer (outside the repository).
   `LAB_SSH_KEY` is a path; the key file itself never enters the repository.
 
-## State of play
+## State of play (2026-10-13)
 
-Working and tested, with no live evidence:
+Built and observed live on EduCloud:
 
-- the MAPE-K loop, in three configurations (A no healing, B rules, C rules plus
-  knowledge), passing against the simulation
-- the EduCloud adapter, tested against a fake API client
-- the lab host scripts, tested with mocked system commands
-- three suites: `tools/test_safety.py`, `tools/test_adapter.py`,
-  `tools/test_lab_host.sh`
+- four instances from the private template at fixed addresses: healer-ubuntu
+  (10.1.1.205), monitor (10.1.1.50), app-1 (10.1.1.60), app-2 (10.1.1.61)
+- `tools/install_lab_host.sh` passes every check on fresh instances, including
+  the fill proof (a real outage and recovery)
+- Prometheus, a blackbox `/healthz` probe and Grafana on the monitor, with a
+  dashboard laid out along the MAPE-K stages
+- the loop runs as a user service (`tools/start_loop.sh`), Monitor via
+  Prometheus, Execute verified by direct probes, Knowledge shared by both apps
+- first live heal (app-1, 17 s outage), rule learned, and the same fault then
+  prevented on app-2 with zero downtime. Config drift and service stop healed
+- the optional LLM advisor is built and tested with a fake client; no API key
+  is configured on the healer yet
+- four suites: `test_safety.py`, `test_adapter.py`, `test_learning.py`,
+  `test_lab_host.sh`. Tests never touch real host identity state
 
-Not yet done, and this is the whole point of working here:
+Results of the live A/B/C experiment are in `docs/results.md`. Every number
+there traces to a folder under `evidence/`.
 
-- `app-1` has never been deployed from the template
-- `tools/install_lab_host.sh` has never run
-- no live API call has been made by the adapter
-- no real outage has ever been observed
-- the loop has never healed anything real
+## How to work here
 
-## The immediate objective
-
-Produce **live evidence**, in this order. Do not move on until each step has
-real output.
-
-1. `python3 tools/lab.py status` works against the live API.
-2. `python3 tools/lab.py deploy app-1` succeeds and the instance is reachable.
-3. `tools/install_lab_host.sh` runs on app-1 and all its checks pass,
-   including the fill proof.
-4. By hand: inject the disk fault, wait, do a deliberate restart, and confirm
-   `/healthz` stops answering. Then reclaim space and confirm recovery.
-5. Only then let the loop act on it.
-
-Expect things to break. Fix them in this repository, with a test where the
-failure was testable.
+- Start the loop with `bash tools/start_loop.sh start C` from a shell with the
+  credentials exported. It is a systemd user service; credentials stay in
+  memory only.
+- Run faults with `tools/live_run.py`, never by hand without measurement.
+- Pause the loop's actions with `touch state/paused`; allow high-risk actions
+  with `touch state/approve-high-risk`. Remove the files to undo.
+- Expect things to break. Fix them in this repository, with a test where the
+  failure was testable, and write the incident into `evidence/`.
 
 ## How the failure is made deterministic
 
