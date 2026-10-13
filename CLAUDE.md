@@ -65,8 +65,8 @@ Built and observed live on EduCloud:
   Prometheus, Execute verified by direct probes, Knowledge shared by both apps
 - first live heal (app-1, 17 s outage), rule learned, and the same fault then
   prevented on app-2 with zero downtime. Config drift and service stop healed
-- the optional LLM advisor is built and tested with a fake client; no API key
-  is configured on the healer yet
+- the optional LLM advisor uses Google Gemini (free tier) over REST, built and
+  tested with a fake provider; no GEMINI_API_KEY is configured on the healer yet
 - four suites: `test_safety.py`, `test_adapter.py`, `test_learning.py`,
   `test_lab_host.sh`. Tests never touch real host identity state
 

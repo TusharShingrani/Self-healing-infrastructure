@@ -92,9 +92,10 @@ on every fresh instance.
 
 When the loop is stuck (no rule matches, a repair does not verify, or every
 escalation level is used up) it asks `mapek/advisor.py` for advice. The
-advisor asks Claude (`claude-opus-5-5`) for a cause and a plan, with the
-answer constrained by a JSON schema to actions from the catalogue. The advice
-is stored as **pending**. Nothing runs.
+advisor asks Google Gemini (free tier, default model `gemini-2.5-flash`) for a
+cause and a plan. Gemini's structured output (`responseSchema`) restricts the
+actions to the catalogue, and the loop checks them again. The advice is stored
+as **pending**. Nothing runs.
 
 A person reviews it:
 
@@ -105,15 +106,18 @@ python3 tools/knowledge.py approve-advice 3      # or reject-advice 3
 
 Approved advice becomes a diagnosis the loop may use the next time the same
 symptoms appear, still through the guardrails and the high-risk approval gate.
-Without the Anthropic SDK or credentials, requests are still recorded, so a
-person sees that the loop needed help. To turn it on, on the healer:
+Without a key, requests are still recorded, so a person sees that the loop
+needed help. To turn it on, get a free key from Google AI Studio and, on the
+healer:
 
 ```bash
-python3 -m venv ~/.venv-healer && ~/.venv-healer/bin/pip install anthropic
-export ANTHROPIC_API_KEY=...        # never in a file in this repository
+export GEMINI_API_KEY=...                  # never in a file in this repository
+bash tools/start_loop.sh start C           # passes the key to the service in memory
 ```
 
-and start the loop with that interpreter (see `tools/start_loop.sh`).
+The Gemini call uses the REST API with the Python standard library, so there
+is nothing to install. On the free tier Google may use prompts to improve its
+products; the prompt holds symptoms and lab metrics only, never credentials.
 
 ## Watching it work
 
@@ -189,7 +193,8 @@ exporters) in under 40 seconds.
   loop for that host until a person verifies it through the console.
 - The tests never touch the healer's real host identity state, and use RFC
   5737 documentation addresses.
-- The LLM advisor has no effectors.
+- The LLM advisor has no effectors, and its API key travels in a request
+  header, never in a URL or a file.
 
 ## Tests
 

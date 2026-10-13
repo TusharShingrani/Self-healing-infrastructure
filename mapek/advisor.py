@@ -1,7 +1,7 @@
 """An LLM advisor with a human in the loop.
 
 When the loop is stuck (no rule matches, a repair did not verify, or every
-escalation level is used up) it asks for advice. The advisor asks Claude for a
+escalation level is used up) it asks for advice. The advisor asks an LLM for a
 diagnosis and a plan, and stores the answer in Knowledge as *pending*. Nothing
 runs. A person reviews the advice with tools/knowledge.py and approves or
 rejects it. Approved advice becomes a diagnosis the loop may use next time the
@@ -16,23 +16,23 @@ What keeps this safe:
     approval gate like any other plan
   - calls run on a worker thread, so a slow or failing API never stalls the loop
 
-The Anthropic SDK is optional. Without it, or without credentials, a request
-is still recorded so a person sees that the loop needed help.
+The provider is pluggable: anything with ask(system, prompt) -> (dict, model).
+The default is Google Gemini over its REST API, standard library only, enabled
+by GEMINI_API_KEY in the environment. Without a provider, a request is still
+recorded so a person sees that the loop needed help.
+
+Note for the report: on Gemini's free tier, Google may use prompts to improve
+its products. The prompt contains symptoms and lab metrics only, never
+credentials.
 """
 
 import json
+import os
 import threading
+import urllib.error
+import urllib.request
 
 from .actions import CATALOGUE, HIGH_RISK
-
-try:
-    import anthropic
-    API_ERRORS = (anthropic.APIError,)
-except ImportError:                                   # the SDK is optional
-    anthropic = None
-    API_ERRORS = ()
-
-MODEL = "claude-opus-5-5"
 
 ACTION_HELP = {
     "restart_service": "systemctl restart nginx on the instance",
@@ -75,49 +75,101 @@ Rules for your answer:
 - Be specific and brief. The operator is a student running an experiment.
 """
 
+
+# The answer the model must give. Gemini's responseSchema uses the OpenAPI
+# subset with upper-case type names; "enum" pins actions to the catalogue.
 SCHEMA = {
-    "type": "object",
+    "type": "OBJECT",
     "properties": {
-        "cause": {"type": "string"},
-        "explanation": {"type": "string"},
-        "actions": {"type": "array",
-                    "items": {"type": "string", "enum": sorted(CATALOGUE)}},
-        "risk": {"type": "string", "enum": ["low", "medium", "high"]},
-        "human_checks": {"type": "array", "items": {"type": "string"}},
+        "cause": {"type": "STRING"},
+        "explanation": {"type": "STRING"},
+        "actions": {"type": "ARRAY",
+                    "items": {"type": "STRING", "enum": sorted(CATALOGUE)}},
+        "risk": {"type": "STRING", "enum": ["low", "medium", "high"]},
+        "human_checks": {"type": "ARRAY", "items": {"type": "STRING"}},
     },
     "required": ["cause", "explanation", "actions", "risk", "human_checks"],
-    "additionalProperties": False,
+    "propertyOrdering": ["cause", "explanation", "actions", "risk", "human_checks"],
 }
+
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+GEMINI_MODEL = "gemini-2.5-flash"
+
+
+class AdvisorError(RuntimeError):
+    pass
+
+
+class GeminiProvider:
+    """Google Gemini through its REST API. The key travels in a header, never
+    in the URL, so it cannot end up in a log line or an error message."""
+
+    def __init__(self, api_key, model=None, timeout=60, opener=None):
+        self.api_key = api_key
+        self.model = model or os.environ.get("HEALER_GEMINI_MODEL") or GEMINI_MODEL
+        self.timeout = timeout
+        self._open = opener or urllib.request.urlopen
+
+    def ask(self, system, prompt):
+        body = {
+            "systemInstruction": {"parts": [{"text": system}]},
+            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generationConfig": {"responseMimeType": "application/json",
+                                 "responseSchema": SCHEMA,
+                                 "temperature": 0.2},
+        }
+        request = urllib.request.Request(
+            GEMINI_URL.format(model=self.model), data=json.dumps(body).encode(),
+            headers={"Content-Type": "application/json",
+                     "x-goog-api-key": self.api_key}, method="POST")
+        try:
+            with self._open(request, timeout=self.timeout) as response:
+                payload = json.loads(response.read().decode())
+        except urllib.error.HTTPError as error:
+            detail = error.read().decode(errors="replace")[:300]
+            hint = " (free-tier quota or rate limit)" if error.code == 429 else ""
+            raise AdvisorError(f"Gemini returned HTTP {error.code}{hint}: {detail}") from None
+        except (urllib.error.URLError, OSError) as error:
+            raise AdvisorError(f"Gemini unreachable: {error}") from None
+
+        blocked = payload.get("promptFeedback", {}).get("blockReason")
+        if blocked:
+            raise AdvisorError(f"Gemini blocked the prompt: {blocked}")
+        candidates = payload.get("candidates") or []
+        if not candidates:
+            raise AdvisorError("Gemini returned no answer")
+        candidate = candidates[0]
+        finish = candidate.get("finishReason", "STOP")
+        if finish != "STOP":
+            raise AdvisorError(f"Gemini stopped early: {finish}")
+        # thinking models may return thought parts first; only answer text counts
+        text = "".join(part.get("text", "")
+                       for part in candidate.get("content", {}).get("parts", [])
+                       if not part.get("thought"))
+        return json.loads(text), payload.get("modelVersion", self.model)
+
+
+def default_provider():
+    key = os.environ.get("GEMINI_API_KEY")
+    return GeminiProvider(key) if key else None
 
 
 class Advisor:
-    def __init__(self, knowledge, client=None, model=MODEL, effort="medium",
-                 run_async=True):
+    def __init__(self, knowledge, provider="default", run_async=True):
         self.knowledge = knowledge
-        self.model = model
-        self.effort = effort
         self.run_async = run_async
-        self.client = client if client is not None else self._default_client()
+        self.provider = default_provider() if provider == "default" else provider
         self.requests = {"ok": 0, "failed": 0, "unavailable": 0}
-
-    @staticmethod
-    def _default_client():
-        if anthropic is None:
-            return None
-        try:
-            return anthropic.Anthropic(timeout=120.0)
-        except Exception:                             # noqa: BLE001
-            return None          # no credentials resolvable: record requests only
 
     @property
     def available(self):
-        return self.client is not None
+        return self.provider is not None
 
     def request(self, target, reason, symptoms, observation, cause="", recent=()):
         advice_id = self.knowledge.open_advice(target, reason, symptoms)
         if advice_id is None:
             return None                               # already asked, still open
-        if self.client is None:
+        if self.provider is None:
             self.requests["unavailable"] += 1
             self.knowledge.complete_advice(
                 advice_id, cause or "unknown", [],
@@ -149,37 +201,24 @@ class Advisor:
             "person approve?")
 
     def _ask(self, advice_id, target, reason, symptoms, observation, cause, recent):
+        model = getattr(self.provider, "model", "unknown")
         try:
-            response = self.client.beta.messages.create(
-                model=self.model,
-                max_tokens=16000,
-                system=SYSTEM,
-                messages=[{"role": "user", "content": self._prompt(
-                    target, reason, symptoms, observation, cause, recent)}],
-                output_config={"effort": self.effort,
-                               "format": {"type": "json_schema", "schema": SCHEMA}},
-                betas=["server-side-fallback-2026-07-01"],
-                fallbacks="default",
-            )
-            if response.stop_reason == "refusal":
-                raise RuntimeError("the model declined to answer")
-            if response.stop_reason == "max_tokens":
-                raise RuntimeError("the answer was cut off")
-            text = next(b.text for b in response.content if b.type == "text")
-            data = json.loads(text)
+            data, model = self.provider.ask(SYSTEM, self._prompt(
+                target, reason, symptoms, observation, cause, recent))
+            # validate again: the schema is a request, not a guarantee
             actions = [a for a in data["actions"] if a in CATALOGUE]
-            risk = data["risk"]
+            risk = data["risk"] if data["risk"] in ("low", "medium", "high") else "high"
             if any(a in HIGH_RISK for a in actions):
                 risk = "high"
             self.knowledge.complete_advice(
-                advice_id, data["cause"], actions, data["explanation"],
-                data["human_checks"], risk, response.model)
+                advice_id, str(data["cause"]), actions, str(data["explanation"]),
+                [str(c) for c in data["human_checks"]], risk, model)
             self.requests["ok"] += 1
-        except API_ERRORS + (RuntimeError, ValueError, KeyError, TypeError,
-                             AttributeError, StopIteration) as error:
+        except (AdvisorError, ValueError, KeyError, TypeError,
+                AttributeError) as error:
             self.requests["failed"] += 1
             self.knowledge.complete_advice(
                 advice_id, cause or "unknown", [],
                 f"The advisor call failed: {type(error).__name__}: {str(error)[:300]}",
                 ["Inspect the instance and decide on a repair by hand."],
-                "unknown", self.model, status="failed")
+                "unknown", model, status="failed")

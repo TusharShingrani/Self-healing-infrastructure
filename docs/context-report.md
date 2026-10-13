@@ -103,7 +103,7 @@ requirement, and it is reported as such.
 |---|---|
 | Real-world version | A new failure mode, or a combination of symptoms nobody wrote a rule for |
 | Behaviour | The loop escalates and asks the LLM advisor. The advice (a cause and catalogue actions) is stored as pending. A person approves or rejects it. Approved advice is used automatically the next time the same symptoms appear |
-| Status | Implemented and tested with a stand-in client. Not yet run against the real Anthropic API (no key on the healer) |
+| Status | Implemented with Google Gemini (free tier) and tested with a stand-in provider. Not yet run against the real API (no key on the healer) |
 
 ## 3. What the self-healing solves, and how autonomous it becomes
 
@@ -148,15 +148,22 @@ template for every block) is in `docs/results.md`.
 | Prometheus and Grafana | Prometheus feeds the Monitor stage; Grafana shows every MAPE-K stage, symptoms, diagnosis, actions, learning | `monitoring/` |
 | See how the self-healing works | Dashboard, `tools/knowledge.py events`, `state/events.jsonl`, the evidence folders | |
 | It must learn from errors | Incident memory, prevention rules from early signs, approved advice; proven live (learned on app-1, prevented on app-2) | `mapek/knowledge.py` |
-| An LLM agent as human in the loop, e.g. LangChain | An LLM advisor using Claude through the official Anthropic SDK. Not LangChain: see below | `mapek/advisor.py` |
+| An LLM agent as human in the loop, e.g. LangChain | An LLM advisor using Google Gemini (free tier) over its REST API. Not LangChain: see below | `mapek/advisor.py` |
 
-**Why not LangChain.** LangChain is a framework for chaining LLM calls and
-giving agents tools. Here the LLM deliberately gets no tools: it may only
-advise, in a fixed schema, and a person decides. That is one API call, so a
-framework would add dependencies and abstraction without adding capability.
-The official SDK gives structured output, which is what guarantees that advice
-can only name catalogue actions. If the report needs a framework comparison,
-the advisor is one small class and could be ported.
+**Why Gemini, and why not LangChain.** Gemini's free tier costs nothing and
+its quota is far more than a loop needs that only asks when it is stuck. Its
+structured output (`responseSchema`) is what guarantees that advice can only
+name catalogue actions. The call is plain HTTPS from the Python standard
+library, so the healer needs no extra packages. LangChain is a framework for
+chaining LLM calls and giving agents tools; here the LLM deliberately gets no
+tools and makes one call, so a framework would add dependencies without adding
+capability. The advisor sits behind a small provider interface, so another
+model (or a LangChain chain, for a comparison in the report) can be swapped in
+without touching the loop.
+
+One point for the report: on the free tier, Google may use prompts to improve
+its products. The prompt holds symptoms and lab metrics only, never
+credentials or keys.
 
 **Why an advisor and not an autonomous agent.** An agent that can run
 commands on infrastructure cannot be tested exhaustively, behaves differently

@@ -9,6 +9,7 @@ state/events.jsonl and published as metrics on :9105 for Grafana.
 
 Environment (all optional except the credentials):
     CS_URL CS_KEY CS_SECRET LAB_SSH_KEY   platform and SSH access
+    GEMINI_API_KEY    optional, enables the LLM advisor (Google Gemini)
     HEALER_CONFIG     A | B | C           default C
     HEALER_NODES      app-1,app-2         default: lab_instances from config/lab.json
     HEALER_INTERVAL   seconds per tick    default 10

@@ -34,7 +34,7 @@ flowchart LR
 
     api[("CloudStack API<br/>educloud.fontysict.nl<br/>HTTPS, signed requests")]
     pkgs[("Package mirrors<br/>Ubuntu, apt.grafana.com")]
-    llm[("Anthropic API<br/>optional, advisor only")]
+    llm[("Google Gemini API<br/>free tier, optional,<br/>advisor only")]
 
     laptop -- "VPN, then SSH :22<br/>(and an SSH tunnel to Grafana)" --> vr
     vr -- "tcp/22" --> healer
@@ -57,6 +57,7 @@ flowchart LR
 | monitor | app-1, app-2 | 9100, 9113, 80 | Host and nginx metrics, blackbox availability probe |
 | monitor | healer | 9105 | The loop's own metrics |
 | healer | CloudStack API | 443 | Instance state, ownership checks, reboot, rebuild, deploy |
+| healer | Gemini API (optional) | 443 | Advice when the loop is stuck; key in a header |
 
 Nothing in the lab is reachable from outside except SSH to the healer, and that
 only from one VPN address. Fault injection and every probe stay inside
@@ -124,7 +125,7 @@ flowchart TB
     end
     S -- "via Prometheus" --> M
     E -- "SSH / CloudStack API" --> EF
-    ADV["LLM advisor (optional)<br/>mapek/advisor.py<br/>advice only, no effectors"] -. "stuck: ask" .- A
+    ADV["LLM advisor (optional)<br/>Google Gemini, free tier<br/>mapek/advisor.py<br/>advice only, no effectors"] -. "stuck: ask" .- A
     ADV -. "pending advice" .-> K
     HUM(["Operator<br/>tools/knowledge.py<br/>Grafana"]) -. "approve or reject" .-> K
 ```
@@ -241,7 +242,7 @@ flowchart TB
     r2 -- verified --> done
     r2 -- not verified --> stuck(["Levels exhausted"])
     L2 -- "no approval" --> prop2["Proposal recorded"]
-    stuck --> adv["LLM advisor: cause + catalogue actions<br/>stored as PENDING"]
+    stuck --> adv["LLM advisor (Gemini): cause + catalogue actions<br/>stored as PENDING"]
     nomatch(["No rule matches"]) --> adv
     adv --> human{"Operator reviews<br/>tools/knowledge.py"}
     human -- approve --> kb[("Knowledge: approved advice")]
@@ -326,6 +327,7 @@ Each decision, why it was made, and what was rejected.
 | 9 | **Guardrails and escalation**: cool-down, rate limit, levels, approval for reboot and rebuild | Prevents restart loops and flapping; a destructive action is always a human decision | Unlimited retries; automatic rebuilds |
 | 10 | **Fail closed on safety**: allowlist, positive project ownership, healer and monitor protected | A typo or bad metadata must never destroy the wrong machine | Checking names only in the CLI |
 | 11 | **LLM as advisor, not actor**: schema-constrained to the catalogue, stored as pending, human approval | Gives help on unknown failures without giving an LLM control of infrastructure | An autonomous LLM agent with shell tools (unsafe, untestable, not reproducible) |
+| 11b | **Google Gemini free tier over REST, behind a provider interface** | No cost, enough quota for a loop that only asks when stuck, no dependency to install on a 1 GiB instance; the provider can be swapped without touching the loop | A paid API; LangChain (adds a framework for what is one call with no tools) |
 | 12 | **Deterministic failure through a declared preflight**, triggered by a deliberate restart | Stock nginx keeps serving on a full disk; the lab must show a real outage, honestly labelled | Pretending a full disk stops nginx; killing the process directly (no cause to find) |
 | 13 | **Experiment resets from the template**, not snapshot reverts | Each run starts from a known identity and disk; runs cannot contaminate each other | Snapshot revert (faster, but carries state between runs) |
 | 14 | **Independent measurement**: the experimenter probes `/healthz` itself every second | The system under test does not grade itself | Using the loop's own downtime counter |
