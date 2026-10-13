@@ -10,6 +10,13 @@ on the real lab.
 import os
 import sys
 
+import tempfile as _tempfile
+
+# Never touch the healer's real host identity state (see test_adapter.py).
+_ISOLATED = _tempfile.mkdtemp(prefix="healer-test-")
+os.environ["HEALER_LAB_STATE"] = os.path.join(_ISOLATED, "state")
+os.environ["HEALER_KNOWN_HOSTS_DIR"] = os.path.join(_ISOLATED, "known_hosts")
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from mapek.actions import CATALOGUE, HIGH_RISK                 # noqa: E402
@@ -68,11 +75,11 @@ class FakeClient:
 def fake_world(name, vms=None):
     vms = vms or {
         "healer-ubuntu": {"id": "vm-healer", "state": "Running",
-                          "ip": "10.1.1.205", "projectid": "project-A"},
+                          "ip": "192.0.2.205", "projectid": "project-A"},
         "app-1": {"id": "vm-app1", "state": "Running",
-                  "ip": "10.1.1.50", "projectid": "project-A"},
+                  "ip": "192.0.2.50", "projectid": "project-A"},
         "stray": {"id": "vm-stray", "state": "Running",
-                  "ip": "10.1.1.90", "projectid": "project-B"},
+                  "ip": "192.0.2.90", "projectid": "project-B"},
     }
     client = FakeClient(vms)
     world = EduCloudWorld(client, name, LAB)
