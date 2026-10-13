@@ -1,0 +1,7 @@
+provision app at 10.1.1.60
+start 2026-10-13T16:07:32Z
+==> packages
+E: Could not get lock /var/lib/apt/lists/lock. It is held by process 1010 (apt-get)
+E: Unable to lock directory /var/lib/apt/lists/
+exit=100
+end 2026-10-13T16:07:35Z wall=3s

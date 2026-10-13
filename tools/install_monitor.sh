@@ -12,10 +12,28 @@ set -euo pipefail
 SRC=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/monitor
 [ -f "$SRC/prometheus.yml" ] || { echo "missing $SRC/prometheus.yml" >&2; exit 1; }
 
+# A fresh instance is often still running cloud-init or unattended-upgrades,
+# which hold the apt locks for a while after boot. Wait for them instead of
+# failing on "Could not get lock" (seen on a template reset).
+wait_for_apt () {
+    cloud-init status --wait >/dev/null 2>&1 || true   # "degraded done" exits 2
+    if command -v fuser >/dev/null; then
+        for _ in $(seq 1 120); do
+            fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock \
+                  /var/lib/apt/lists/lock >/dev/null 2>&1 || return 0
+            sleep 5
+        done
+        echo "apt is still locked after 10 minutes" >&2
+        return 1
+    fi
+}
+APT_WAIT="-o DPkg::Lock::Timeout=600"
+
 echo "==> Prometheus and blackbox exporter (Ubuntu packages)"
+wait_for_apt
 export DEBIAN_FRONTEND=noninteractive
-apt-get update -qq
-apt-get install -y -qq --no-install-recommends prometheus prometheus-blackbox-exporter \
+apt-get $APT_WAIT update -qq
+apt-get $APT_WAIT install -y -qq --no-install-recommends prometheus prometheus-blackbox-exporter \
     curl gnupg >/dev/null
 
 install -m 644 "$SRC/prometheus.yml" /etc/prometheus/prometheus.yml
@@ -36,8 +54,8 @@ if [ ! -f /etc/apt/keyrings/grafana.gpg ]; then
 fi
 echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" \
     > /etc/apt/sources.list.d/grafana.list
-apt-get update -qq
-apt-get install -y -qq grafana >/dev/null
+apt-get $APT_WAIT update -qq
+apt-get $APT_WAIT install -y -qq grafana >/dev/null
 
 # The admin password is generated here and never leaves this instance.
 # Read it with: sudo cat /etc/grafana/admin-password

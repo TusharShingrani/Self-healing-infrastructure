@@ -9,9 +9,27 @@
 #   :9113  nginx exporter  connections and requests, from stub_status on loopback
 set -euo pipefail
 
+# A fresh instance is often still running cloud-init or unattended-upgrades,
+# which hold the apt locks for a while after boot. Wait for them instead of
+# failing on "Could not get lock" (seen on a template reset).
+wait_for_apt () {
+    cloud-init status --wait >/dev/null 2>&1 || true   # "degraded done" exits 2
+    if command -v fuser >/dev/null; then
+        for _ in $(seq 1 120); do
+            fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock \
+                  /var/lib/apt/lists/lock >/dev/null 2>&1 || return 0
+            sleep 5
+        done
+        echo "apt is still locked after 10 minutes" >&2
+        return 1
+    fi
+}
+APT_WAIT="-o DPkg::Lock::Timeout=600"
+
 echo "==> packages"
+wait_for_apt
 export DEBIAN_FRONTEND=noninteractive
-apt-get install -y -qq --no-install-recommends \
+apt-get $APT_WAIT install -y -qq --no-install-recommends \
     prometheus-node-exporter prometheus-nginx-exporter >/dev/null
 
 echo "==> node_exporter: systemd and textfile collectors"

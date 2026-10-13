@@ -129,3 +129,42 @@ evidence: evidence/runs/2026-10-13T155357Z-app-1-disk_leak-A
 [exit 0 after 337s]
 
 $ python3 -u tools/live_run.py app-1 disk_leak
+2026-10-13T16:00:14Z +   0.0s  run disk_leak on app-1 (10.1.1.60), loop config A, deliberate restart at +150s
+2026-10-13T16:00:28Z +  14.1s  inject disk_leak: confirmed: log filesystem at 9% and rising on /var/log/nginx /dev/loop0 ext4 487MiB
+2026-10-13T16:00:28Z +  14.1s  waiting 139s for the maintenance window
+2026-10-13T16:02:47Z + 153.3s  deliberate restart: FAILED (log volume 100.0% used): Job for nginx.service failed because the control process exited with error code.
+See "systemctl status nginx.service" and "journalctl -xeu nginx.servi
+2026-10-13T16:05:47Z + 333.3s  measurement ended, 334 samples
+2026-10-13T16:05:49Z + 334.7s  post-run reset by the experiment, idempotent, not counted as healing: clear_logs=ok, fix_log_rotation=ok, restore_config=ok, restart_service=ok
+{
+  "loop_config": "A",
+  "downtime_s": 180,
+  "recovery_s_from_first_down": null,
+  "prevented": false,
+  "healed": false,
+  "first_loop_action_s": null,
+  "max_disk_percent": 100.0,
+  "ended_down": true,
+  "healthy_after_cleanup": true
+}
+evidence: evidence/runs/2026-10-13T160014Z-app-1-disk_leak-A
+[exit 0 after 337s]
+
+$ bash tools/start_loop.sh stop
+stopped, credentials removed from the user manager
+[exit 0 after 0s]
+
+$ python3 tools/lab.py reset app-1
+resetting app-1 ...
+rebuilt from template after 62s
+[exit 0 after 62s]
+
+$ bash tools/provision.sh app 10.1.1.60 evidence/experiment-2026-10-13T155129Z/provision-1-B.log
+provision app at 10.1.1.60
+start 2026-10-13T16:07:32Z
+==> packages
+E: Could not get lock /var/lib/apt/lists/lock. It is held by process 1010 (apt-get)
+E: Unable to lock directory /var/lib/apt/lists/
+exit=100
+end 2026-10-13T16:07:35Z wall=3s
+[exit 100 after 3s]

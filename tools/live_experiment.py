@@ -47,12 +47,6 @@ def sh(cmd, log, env=None, check=True):
     return proc, time.time() - started
 
 
-def latest_run_dir(after):
-    runs = os.path.join(HERE, "evidence", "runs")
-    dirs = [d for d in sorted(os.listdir(runs)) if d > after]
-    return os.path.join(runs, dirs[-1]) if dirs else None
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--reps", type=int, default=3)
@@ -89,9 +83,16 @@ def main():
             time.sleep(40)                  # Prometheus windows fill with healthy data
 
             for occurrence in ("first", "repeat"):
-                before = sorted(os.listdir(os.path.join(HERE, "evidence", "runs")))[-1]
-                sh(f"python3 -u tools/live_run.py {NODE} disk_leak", log, env)
-                run_dir = latest_run_dir(before)
+                proc, _ = sh(f"python3 -u tools/live_run.py {NODE} disk_leak", log, env)
+                # Use the folder this run reports. "The newest folder" was wrong
+                # once: an unrelated run on app-2 was attributed to this block.
+                line = [l for l in proc.stdout.splitlines() if l.startswith("evidence: ")]
+                if not line:
+                    raise RuntimeError("live_run did not report its evidence folder")
+                run_dir = os.path.join(HERE, line[-1].split(": ", 1)[1].strip())
+                summary_node = json.load(open(os.path.join(run_dir, "summary.json")))["node"]
+                if summary_node != NODE:
+                    raise RuntimeError(f"{run_dir} is a run on {summary_node}, not {NODE}")
                 summary = json.load(open(os.path.join(run_dir, "summary.json")))
                 row = {"rep": rep, "config": config, "occurrence": occurrence,
                        "downtime_s": summary["downtime_s"],
