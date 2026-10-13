@@ -55,8 +55,9 @@ class FakeClient:
     def destroy(self, vm_id, expunge=True):
         self.destroyed.append(vm_id)
 
-    def deploy(self, *args):
+    def deploy(self, *args, **kwargs):
         self.deployed.append(args[0])
+        self.deploy_kwargs = kwargs
 
     def reboot(self, vm_id):
         self.rebooted.append(vm_id)
@@ -387,8 +388,9 @@ class DeployClient:
     def instance(self, name):
         return None
 
-    def deploy(self, name, *args):
+    def deploy(self, name, *args, **kwargs):
         self.deployed.append(name)
+        self.calls = getattr(self, "calls", []) + [(name, args, kwargs)]
 
 
 for label, name, lab in [
@@ -409,6 +411,42 @@ try:
     check("deploy allows a listed lab instance", True)
 except ProtectedTarget as error:
     check("deploy allows a listed lab instance", False, str(error))
+
+LAB_MON = dict(LAB, monitor_instance="monitor", offering_id="small",
+               monitor_offering_id="bigger", template_name="T",
+               addresses={"app-1": "10.1.1.60", "monitor": "10.1.1.50"})
+
+
+class DeployWorld:
+    def __init__(self, *a, **k):
+        pass
+
+    def wait_until_ready(self):
+        return True
+
+
+real_world_for = lab_cli.world_for
+lab_cli.world_for = lambda *a, **k: DeployWorld()
+try:
+    client = DeployClient()
+    lab_cli.cmd_deploy(client, LAB_MON, types.SimpleNamespace(name="monitor", key=None))
+    name, args, kwargs = client.calls[0]
+    check("the monitor deploys with its own offering", args[2] == "bigger", str(args))
+    check("a deploy uses the fixed address from the config",
+          kwargs.get("ipaddress") == "10.1.1.50", str(kwargs))
+    client = DeployClient()
+    lab_cli.cmd_deploy(client, LAB_MON, types.SimpleNamespace(name="app-1", key=None))
+    check("a lab instance deploys with the normal offering",
+          client.calls[0][1][2] == "small", str(client.calls[0]))
+finally:
+    lab_cli.world_for = real_world_for
+
+world = EduCloudWorld(FakeClient({}), "monitor", LAB_MON)
+try:
+    world._assert_destructive_allowed()
+    check("the monitor can never be a destructive target", False)
+except ProtectedTarget:
+    check("the monitor can never be a destructive target", True)
 
 print("\nAPI client configuration")
 

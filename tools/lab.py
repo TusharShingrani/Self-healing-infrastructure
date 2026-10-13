@@ -64,7 +64,10 @@ def assert_deploy_allowed(lab, name):
     healer = lab.get("healer_instance")
     if healer and name == healer:
         raise ProtectedTarget(f"refusing to deploy over the healer name {healer!r}")
-    allowlist = lab.get("lab_instances", [])
+    # The monitor may be deployed, but it is deliberately not in lab_instances,
+    # so nothing destructive can ever be aimed at it.
+    allowlist = lab.get("lab_instances", []) + [lab.get("monitor_instance")]
+    allowlist = [n for n in allowlist if n]
     if name not in allowlist:
         raise ProtectedTarget(f"{name!r} is not in lab_instances {sorted(allowlist)}")
     if not lab.get("project_id"):
@@ -77,8 +80,12 @@ def cmd_deploy(cs, lab, args):
         sys.exit(f"{args.name} already exists. Use reset to replace it.")
     print(f"deploying {args.name} from {lab['template_name']} ...")
     started = time.time()
-    cs.deploy(args.name, lab["template_id"], lab["zone_id"],
-              lab["offering_id"], lab["network_id"], lab.get("keypair"))
+    offering = lab["offering_id"]
+    if args.name == lab.get("monitor_instance"):
+        offering = lab.get("monitor_offering_id", offering)
+    cs.deploy(args.name, lab["template_id"], lab["zone_id"], offering,
+              lab["network_id"], lab.get("keypair"),
+              ipaddress=lab.get("addresses", {}).get(args.name))
     world = world_for(cs, lab, args.name, args.key)
     ready = world.wait_until_ready()
     took = time.time() - started

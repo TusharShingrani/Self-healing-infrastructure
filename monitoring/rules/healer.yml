@@ -1,0 +1,47 @@
+groups:
+  - name: healer-recording
+    rules:
+      # Used percentage of the bounded audit log volume (the disk fault target).
+      - record: healer:log_volume_used_percent
+        expr: >
+          100 * (1 - node_filesystem_avail_bytes{mountpoint="/var/log/nginx"}
+                   / node_filesystem_size_bytes{mountpoint="/var/log/nginx"})
+      # Rate of change in percentage points per minute. The early sign that
+      # Knowledge learns to act on, before the service is affected.
+      - record: healer:log_volume_growth_percent_per_minute
+        expr: deriv(healer:log_volume_used_percent[1m]) * 60
+      - record: healer:nginx_active
+        expr: node_systemd_unit_state{name="nginx.service",state="active"}
+
+  # These alerts document the symptoms in Prometheus terms and show up in
+  # Grafana. The loop does not depend on them: its Monitor stage queries the
+  # series directly, so detection does not wait for an alert's "for" period.
+  - name: healer-symptoms
+    rules:
+      - alert: HealthEndpointDown
+        expr: probe_success{job="healthz"} == 0
+        for: 10s
+        labels: {severity: critical}
+        annotations:
+          summary: "{{ $labels.node }}: /healthz does not answer ok"
+      - alert: LogVolumeFillingFast
+        expr: healer:log_volume_growth_percent_per_minute > 2
+        for: 10s
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.node }}: log volume growing {{ $value | printf \"%.1f\" }} points/min"
+      - alert: LogVolumeAlmostFull
+        expr: healer:log_volume_used_percent > 95
+        labels: {severity: critical}
+        annotations:
+          summary: "{{ $labels.node }}: log volume {{ $value | printf \"%.0f\" }}% used"
+      - alert: ConfigDrift
+        expr: healer_config_correct == 0
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.node }}: nginx config differs from the reference"
+      - alert: RotationPolicyMissing
+        expr: healer_rotation_policy_present == 0
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.node }}: log rotation policy is missing"

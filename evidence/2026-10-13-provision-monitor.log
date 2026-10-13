@@ -1,0 +1,50 @@
+provision monitor at 10.1.1.50
+start 2026-10-13T15:21:51Z
+==> Prometheus and blackbox exporter (Ubuntu packages)
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+ systemctl restart packagekit.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Checking /etc/prometheus/prometheus.yml
+  SUCCESS: 1 rule files found
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+Checking /etc/prometheus/rules/healer.yml
+  SUCCESS: 8 rules found
+
+Synchronizing state of prometheus.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable prometheus
+Synchronizing state of prometheus-blackbox-exporter.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable prometheus-blackbox-exporter
+==> Grafana (official signed apt repository)
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Created symlink /etc/systemd/system/multi-user.target.wants/grafana-server.service → /usr/lib/systemd/system/grafana-server.service.
+==> verify
+   ok    Prometheus is ready
+   ok    rules loaded
+   ok    every node target is up
+   ok    every nginx target is up
+   ok    every healthz target is up
+   ok    /healthz probes succeed for both apps
+   ok    Grafana is healthy
+   ok    the MAPE-K dashboard is provisioned
+   info  grafana 13.2.3, prometheus 2.45.3+ds-2ubuntu0.3
+==> monitor ready
+exit=0
+end 2026-10-13T15:23:36Z wall=105s

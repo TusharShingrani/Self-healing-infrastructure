@@ -391,7 +391,8 @@ class EduCloudWorld:
         self.cs.destroy(vm["id"], expunge=True)
         self.cs.deploy(self.name, self.lab["template_id"], self.lab["zone_id"],
                        self.lab["offering_id"], self.lab["network_id"],
-                       self.lab.get("keypair"))
+                       self.lab.get("keypair"),
+                       ipaddress=self.lab.get("addresses", {}).get(self.name))
         self._vm = None
         ready = self.wait_until_ready()
         return ready, ("rebuilt from template" if ready

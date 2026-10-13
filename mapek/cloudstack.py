@@ -117,7 +117,7 @@ class CloudStack:
     # ------------------------------------------------------------- writing
 
     def deploy(self, name, template_id, zone_id, offering_id, network_id,
-               keypair=None):
+               keypair=None, ipaddress=None):
         params = {
             "name": name, "displayname": name,
             "templateid": template_id, "zoneid": zone_id,
@@ -125,6 +125,10 @@ class CloudStack:
         }
         if keypair:
             params["keypair"] = keypair
+        if ipaddress:
+            # a fixed address on the isolated network, so a rebuilt instance
+            # comes back where Prometheus and the healer expect it
+            params["ipaddress"] = ipaddress
         return self.wait(self.call("deployVirtualMachine", **params),
                          f"deploy {name}")
 

@@ -1,0 +1,5 @@
+start 2026-10-13T15:19:02Z
+$ python3 tools/lab.py deploy monitor
+deploying monitor from healer-baseline-2026-10-13 ...
+ready after 48s
+exit=0 end 2026-10-13T15:19:51Z wall=49s
