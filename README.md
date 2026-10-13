@@ -13,6 +13,7 @@ simulation.
 **Documents:** [context report: the problem and the failure scenarios](docs/context-report.md)
 · [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
 · [results](docs/results.md) · [design notes](docs/design-notes.md)
+· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
 
 ## What runs where
 

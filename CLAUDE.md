@@ -37,6 +37,11 @@ because it is infrastructure, not an application anyone wrote here.
 
 ## Where things run
 
+If this is a new or resized healer, or a session without earlier context,
+read `docs/healer-handover.md` first: it lists what depends on the healer's
+name and address, what lives only on this machine, and a checklist that
+proves every connection works again.
+
 - **healer-ubuntu** (10.1.1.205) is the only instance with a port forward from
   the gateway at 10.53.14.225. The loop and this repository live here.
 - **app-1, app-2** are the lab instances, reached over the internal network
