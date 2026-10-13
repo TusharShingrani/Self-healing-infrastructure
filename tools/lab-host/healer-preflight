@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Startup storage requirement for the lab service.
+#
+# A deliberate lab protocol that models a real requirement: the service refuses
+# to start without room for its audit log. Stock nginx has no such check, and
+# the report must say so.
+set -uo pipefail
+export LC_ALL=C
+
+MOUNT=${HEALER_LOG_MOUNT:-/var/log/nginx}
+# Default only when unset. Set but empty is a misconfiguration, refused below.
+MIN_MB=${HEALER_PREFLIGHT_MIN_MB-25}
+GUARD=${HEALER_GUARD:-/usr/local/sbin/healer-mount-guard}
+IMAGE=${HEALER_LOG_IMAGE:-/var/lib/healer/nginx-logs.img}
+MAX_MB=${HEALER_LOG_MAX_MB:-1024}
+
+"$GUARD" "$MOUNT" "$IMAGE" "$MAX_MB" ext4 >/dev/null || {
+    echo "preflight failed: the log volume did not pass the mount guard" >&2
+    exit 1
+}
+
+# Fail closed. A threshold or a reading that is not a plain number is not
+# evidence of free space, and a test on it must never be allowed to pass by
+# erroring. The requirement must be a positive whole number of MiB.
+case "$MIN_MB" in
+    ''|*[!0-9]*) echo "preflight failed: invalid threshold '${MIN_MB}' MiB" >&2; exit 1 ;;
+esac
+if [ "$((10#$MIN_MB))" -le 0 ]; then
+    echo "preflight failed: the threshold must be above 0 MiB" >&2
+    exit 1
+fi
+
+# Measured in bytes: df -m rounds up, so 24.1 MiB free would read as 25 and
+# pass a requirement it does not meet.
+if ! OUT=$(df -B1 --output=avail "$MOUNT"); then
+    echo "preflight failed: could not measure free space on $MOUNT" >&2
+    exit 1
+fi
+FREE=$(printf '%s\n' "$OUT" | tail -1 | tr -d ' ')
+case "$FREE" in
+    ''|*[!0-9]*) echo "preflight failed: unreadable free space '${FREE}' on $MOUNT" >&2; exit 1 ;;
+esac
+
+NEED=$(( 10#$MIN_MB * 1024 * 1024 ))
+if [ "$FREE" -lt "$NEED" ]; then
+    echo "preflight failed: $((FREE / 1024 / 1024)) MiB free on $MOUNT, need ${MIN_MB}" >&2
+    exit 1
+fi
+exit 0

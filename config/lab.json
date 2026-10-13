@@ -1,0 +1,38 @@
+{
+  "project_id": "cfa1df4c-6202-4295-8a54-dfa0aa1209dc",
+  "zone_id": "a2b7478e-f708-44c6-b06a-f24c90d72afe",
+  "offering_id": "d95a4867-f4cf-4c46-9070-ff3af5049c69",
+  "network_id": "f78724ad-3766-478b-9e08-787689e41a99",
+  "template_id": "dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97",
+  "template_name": "healer-baseline-2026-10-13",
+  "keypair": "healer-lab-key2",
+  "network_cidr": "10.1.1.0/24",
+  "healer_instance": "healer-ubuntu",
+  "healer_guest_ip": "10.1.1.205",
+  "lab_instances": [
+    "app-1",
+    "app-2"
+  ],
+  "ssh_user": "ubuntu",
+  "notes": [
+    "Credentials come from CS_URL, CS_KEY and CS_SECRET. Never put them here.",
+    "Only healer-ubuntu has a port forward. The healer reaches app instances",
+    "over the internal network, so the loop runs on healer-ubuntu, not on the laptop.",
+    "Baseline snapshot 645a5c25-2842-4b68-9152-8395c61466d1 is kept as an",
+    "independent recovery reference and is not used for experiment resets.",
+    "The lab host enforces a startup storage requirement: nginx has an",
+    "ExecStartPre preflight that fails when the bounded log filesystem has too",
+    "little free space. That is a deliberate lab protocol, not stock nginx",
+    "behaviour: nginx rolls back a failed reload and keeps serving."
+  ],
+  "service": "nginx",
+  "log_mount": "/var/log/nginx",
+  "log_image": "/var/lib/healer/nginx-logs.img",
+  "log_mount_max_mb": 1024,
+  "log_mount_fstype": "ext4",
+  "config_path": "/etc/nginx/conf.d/healer.conf",
+  "reference_dir": "/opt/healer/reference",
+  "health_path": "/healthz",
+  "health_body": "ok",
+  "rotation_policy": "/etc/logrotate.d/nginx-healer"
+}

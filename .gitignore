@@ -1,0 +1,14 @@
+# Secrets never enter the repository. Credentials come from the environment.
+*.pem
+*-key
+*-key2
+id_*
+.env
+*.env.local
+secrets/
+
+# Runtime state written by the loop and tools
+__pycache__/
+*.pyc
+state/
+results/*.csv

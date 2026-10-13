@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Experiment only. Models a broken-rotation condition, not normal traffic.
+#
+# Exit codes are the classifier, so a silent failure cannot be read as a
+# successful fault:
+#   0  wrote, or the volume is full, which is the intended condition
+#   2  the mount guard refused the target
+#   3  the rotation policy exists, so the producer stands down
+#   4  the target is not writable
+#   5  an unexpected write failure
+set -uo pipefail
+export LC_ALL=C
+
+MOUNT=${HEALER_LOG_MOUNT:-/var/log/nginx}
+TARGET=${HEALER_AUDIT_LOG:-$MOUNT/healer-access.audit}
+POLICY=${HEALER_ROTATION_POLICY:-/etc/logrotate.d/nginx-healer}
+GUARD=${HEALER_GUARD:-/usr/local/sbin/healer-mount-guard}
+IMAGE=${HEALER_LOG_IMAGE:-/var/lib/healer/nginx-logs.img}
+MAX_MB=${HEALER_LOG_MAX_MB:-1024}
+CHUNK_MB=${HEALER_CHUNK_MB:-40}
+
+"$GUARD" "$MOUNT" "$IMAGE" "$MAX_MB" ext4 >/dev/null || {
+    echo "refusing: the mount guard rejected $MOUNT" >&2
+    exit 2
+}
+
+if [ -f "$POLICY" ]; then
+    echo "rotation policy present, producer stands down" >&2
+    exit 3
+fi
+
+if [ ! -e "$TARGET" ]; then
+    touch "$TARGET" 2>/dev/null || { echo "target cannot be created" >&2; exit 4; }
+fi
+[ -w "$TARGET" ] || { echo "target is not writable" >&2; exit 4; }
+
+# stderr must reach the command substitution, so redirect it to the current
+# stdout BEFORE stdout is pointed at the audit file. The other order sends both
+# into the file and leaves the classifier with nothing to read.
+ERR=$(dd if=/dev/zero bs=1M count="$CHUNK_MB" 2>&1 >> "$TARGET")
+STATUS=$?
+
+if [ "$STATUS" -eq 0 ]; then
+    exit 0
+fi
+if printf '%s' "$ERR" | grep -qi "no space left on device"; then
+    echo "log volume full, the intended fault condition" >&2
+    exit 0
+fi
+echo "unexpected write failure: ${ERR:-no diagnostic}" >&2
+exit 5

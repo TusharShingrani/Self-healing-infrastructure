@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# The one fail-closed validator for the bounded log volume.
+#
+# Used by the installer before anything destructive, by the service preflight,
+# and by the fault generator on every invocation. One implementation, so a
+# caller cannot accidentally enforce a weaker rule than the adapter does.
+#
+#   healer-mount-guard <mount> <expected-image> <max-mb> <fstype>
+#
+# Exits 0 only when every condition holds. Prints a one-line reason otherwise.
+set -uo pipefail
+export LC_ALL=C
+
+MOUNT=${1:?mount required}
+EXPECT_IMAGE=${2:-}
+MAX_MB=${3:-1024}
+EXPECT_FSTYPE=${4:-ext4}
+
+fail () { echo "mount guard: $1" >&2; exit 1; }
+
+command -v findmnt >/dev/null || fail "findmnt is not available"
+
+TARGET=$(findmnt -no TARGET --target "$MOUNT" 2>/dev/null) || fail "cannot read $MOUNT"
+[ -n "$TARGET" ] || fail "cannot read $MOUNT"
+[ "$TARGET" = "$MOUNT" ] || fail "$MOUNT is not its own mount point, it resolves to $TARGET"
+[ "$TARGET" != "/" ] || fail "refusing to operate on the root filesystem"
+
+# a bind mount of the root filesystem has the right pathname but root's device
+DEV_MOUNT=$(stat -c %d "$MOUNT") || fail "cannot stat $MOUNT"
+DEV_ROOT=$(stat -c %d /) || fail "cannot stat /"
+[ "$DEV_MOUNT" != "$DEV_ROOT" ] || fail "$MOUNT shares a device with /, so it is a bind mount"
+
+SOURCE=$(findmnt -no SOURCE --target "$MOUNT")
+ROOT_SOURCE=$(findmnt -no SOURCE --target /)
+[ "$SOURCE" != "$ROOT_SOURCE" ] || fail "$MOUNT is backed by the root source $SOURCE"
+
+FSTYPE=$(findmnt -no FSTYPE --target "$MOUNT")
+[ "$FSTYPE" = "$EXPECT_FSTYPE" ] || fail "$MOUNT is $FSTYPE, expected $EXPECT_FSTYPE"
+
+SIZE_B=$(findmnt -bno SIZE --target "$MOUNT")
+SIZE_MB=$(( SIZE_B / 1024 / 1024 ))
+[ "$SIZE_MB" -gt 0 ] || fail "$MOUNT reports no capacity"
+[ "$SIZE_MB" -le "$MAX_MB" ] || fail "$MOUNT is ${SIZE_MB} MiB, above the permitted ${MAX_MB} MiB"
+
+if [ -n "$EXPECT_IMAGE" ]; then
+    BACKING=$(losetup -nO BACK-FILE "$SOURCE" 2>/dev/null || true)
+    [ -n "$BACKING" ] || fail "$MOUNT source $SOURCE is not loop backed"
+    [ "$BACKING" = "$EXPECT_IMAGE" ] || fail "$MOUNT is backed by $BACKING, expected $EXPECT_IMAGE"
+fi
+
+echo "$TARGET $SOURCE $FSTYPE ${SIZE_MB}MiB"
