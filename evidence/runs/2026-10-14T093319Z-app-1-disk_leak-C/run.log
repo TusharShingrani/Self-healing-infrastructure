@@ -1,0 +1,7 @@
+2026-10-14T09:33:19Z +   0.0s  run disk_leak on app-1 (10.1.1.60), loop config C, deliberate restart at +150s
+2026-10-14T09:33:33Z +  14.2s  inject disk_leak: confirmed: log filesystem at 9% and rising on /var/log/nginx /dev/loop0 ext4 487MiB
+2026-10-14T09:33:33Z +  14.2s  waiting 139s for the maintenance window
+2026-10-14T09:35:52Z + 153.3s  deliberate restart: FAILED (log volume 100.0% used): Job for nginx.service failed because the control process exited with error code.
+See "systemctl status nginx.service" and "journalctl -xeu nginx.servi
+2026-10-14T09:36:37Z + 198.3s  measurement ended, 199 samples
+2026-10-14T09:36:40Z + 201.1s  post-run reset by the experiment, idempotent, not counted as healing: clear_logs=ok, fix_log_rotation=ok, restore_config=ok, restart_service=ok

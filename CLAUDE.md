@@ -71,7 +71,8 @@ Built and observed live on EduCloud:
 - first live heal (app-1, 17 s outage), rule learned, and the same fault then
   prevented on app-2 with zero downtime. Config drift and service stop healed
 - the optional LLM advisor uses Google Gemini (free tier) over REST, built and
-  tested with a fake provider; no GEMINI_API_KEY is configured on the healer yet
+  tested with a fake provider; Gemini was also tested live on 2026-10-14; its key is now held only in
+  the user service manager memory
 - four suites: `test_safety.py`, `test_adapter.py`, `test_learning.py`,
   `test_lab_host.sh`. Tests never touch real host identity state
 
@@ -84,6 +85,19 @@ Its instance id, disk, guest address and port forward were retained.
 A 1 GiB swap file is active and persistent. The reconnect checks and remaining
 credential-dependent steps are in `evidence/2026-10-13-healer-resize.md`.
 After a healer reboot the loop is not running until `start_loop.sh` is run again.
+
+## Guided demo, 2026-10-14
+
+Read `docs/live-demo.md` for the personal walkthrough and
+`evidence/live-demo-2026-10-14.md` for the measured outcomes. The demo
+confirmed shared prevention on app-2 with zero downtime. A rapid app-1
+repeat and service stop were delayed by the existing 20-tick rate limit;
+do not describe those as successful prevention or fast healing. Config C
+is running, Gemini is available, and the learned rule survived a loop restart.
+The old Knowledge and runtime state remain under
+`~/healer-demo-backups/20261014T092750Z`. The original A/B/C results
+remain unchanged. Use `python3 tools/lab_shell.py` to open a lab shell
+with credentials already held in memory, without printing or saving them.
 
 ## How to work here
 
