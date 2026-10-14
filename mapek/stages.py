@@ -49,6 +49,12 @@ class Monitor:
         if observation.get("config_correct") is False:
             found.append("config_drift")
 
+        if observation.get("http_ok") is False:
+            found.append("http_unavailable")
+        for name, passed in observation.get('infrastructure_checks', {}).items():
+            if passed is False:
+                found.append('infra:' + name)
+
         if observation.get("probe_error"):
             found.append("probe_failed")
         return found

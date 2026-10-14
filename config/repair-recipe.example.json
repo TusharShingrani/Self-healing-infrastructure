@@ -1,0 +1,8 @@
+{
+  "id": "dns_and_checkpoint",
+  "operations": [
+    {"op": "restore_reference", "resource": "dns"},
+    {"op": "restore_permissions", "resource": "checkpoint"}
+  ],
+  "verify": ["dns_record", "spool_write", "endpoint"]
+}

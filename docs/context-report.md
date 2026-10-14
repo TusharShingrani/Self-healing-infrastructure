@@ -2,8 +2,7 @@
 
 ## 1. The real-world problem
 
-Most production outages are not new. They are the same few failures coming
-back: a disk that fills with logs, a configuration someone changed by hand, a
+Recurring operational failures include a disk that fills with logs, a configuration someone changed by hand, a
 service that stopped and did not come back. Teams already know how to fix them,
 so the cost is not knowledge but time and attention:
 
@@ -15,24 +14,33 @@ so the cost is not knowledge but time and attention:
 - automation that only restarts things can make an outage worse, by restarting
   in a loop or acting on a stale reading
 
-Published self-healing approaches (Red Hat's tooling, Netflix's Winston,
-practitioner write-ups) detect and repair. They do not remember a failure and
-act earlier the next time. That is the gap this project addresses.
+Published systems already include learning and proactive mitigation. For example,
+[Narya](https://www.usenix.org/conference/osdi20/presentation/levy) learns action
+selection from measured outcomes. This project implements and evaluates a bounded
+EduCloud prototype with reviewed procedural learning. It does not claim that
+learning from failures is new. See [the research synthesis](research-synthesis.md).
 
-**Objective.** Build infrastructure that, without a person:
+**Objective.** Build infrastructure whose verified, explicitly promoted repairs
+can act autonomously, while unfamiliar conditions need investigation:
 
-1. detects a failure and names its cause, not just its symptom
+1. detects a failure, localises the failing component and records evidence for a cause
 2. repairs the cause, and proves the repair worked
 3. remembers the incident, including the early signs that came before it
-4. acts on those early signs next time, so the failure does not happen at all,
-   on any instance
+4. evaluates whether acting on an earlier signal can prevent recurrence within
+   a validated scope, rather than assuming that faster recovery is prevention
 5. asks for help, with a concrete suggestion, when it meets something it does
-   not know, and learns from the human answer
+   not know, and learns supported repair procedures from independently verified
+   human repairs and explicit promotion
 
 The measure of success is **downtime**, measured from outside the system,
 for the same fault: none (A), reactive healing (B), healing with learning (C).
 
 ## 2. The failure scenarios
+
+The nginx scenarios below record the original experiment. The current extension
+adds DNS, authenticated Redis, memory-budget and checkpoint-permissions failures;
+see [broader infrastructure](infrastructure-lab.md). Original measurements are
+preserved. Current approval policy differs from the historical A/B/C experiment.
 
 Scope is the infrastructure layer: services, storage, configuration,
 instances. Application bugs are out of scope.

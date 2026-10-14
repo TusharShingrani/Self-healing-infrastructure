@@ -159,6 +159,8 @@ class Operator:
         verified, after = self.verify(world, json.loads(case['actions']))
         if 'rebuild_instance' not in json.loads(case['actions']):
             verified = verified and (getattr(world, '_vm', None) or {}).get('id') == json.loads(case['identity'])[0]
+            _, current_scope = self.context(world, json.loads(case['symptoms']), case['cause'], json.loads(case['actions']), after['observation'])
+            verified = verified and current_scope == case['scope']
         ok = bool(execution_ok and verified)
         self._close(case, ok, after)
         return ok
@@ -204,7 +206,9 @@ class Operator:
         proc = self.db.execute('SELECT * FROM procedures WHERE id=?', (procedure_id,)).fetchone()
         if not proc or not who.strip():
             raise ValueError('Procedure and reviewer required')
-        count = self.db.execute('SELECT COUNT(*) FROM cases WHERE scope=? AND cause=? AND symptoms=? AND actions=? AND verified=1', (proc['scope'], proc['cause'], proc['symptoms'], proc['actions'])).fetchone()[0]
+        selector = (proc['scope'], proc['cause'], proc['symptoms'], proc['actions'])
+        last_failure = self.db.execute("SELECT COALESCE(MAX(id),0) FROM cases WHERE scope=? AND cause=? AND symptoms=? AND actions=? AND status='failed'", selector).fetchone()[0]
+        count = self.db.execute('SELECT COUNT(*) FROM cases WHERE scope=? AND cause=? AND symptoms=? AND actions=? AND verified=1 AND id>?', selector+(last_failure,)).fetchone()[0]
         if count < 2 or not json.loads(proc['scope']).get('template_id') or not json.loads(proc['scope']).get('references') or proc['cause'] == 'unknown' or any(a in HIGH_RISK for a in json.loads(proc['actions'])):
             raise ValueError('Two distinct verified occurrences are required; high-risk procedures cannot be automatic')
         self.db.execute("UPDATE procedures SET status='validated',operator=? WHERE id=?", (who, procedure_id))
