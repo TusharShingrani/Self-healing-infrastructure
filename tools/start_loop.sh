@@ -39,7 +39,8 @@ WantedBy=default.target
 UNITFILE
     export HEALER_CONFIG=$CONFIG
     export HEALER_NODES=${HEALER_NODES:-app-1,app-2}
-    systemctl --user import-environment CS_URL CS_KEY CS_SECRET LAB_SSH_KEY HEALER_CONFIG HEALER_NODES
+    export HEALER_REVIEW=${HEALER_REVIEW:-1}
+    systemctl --user import-environment CS_URL CS_KEY CS_SECRET LAB_SSH_KEY HEALER_CONFIG HEALER_NODES HEALER_REVIEW
     # optional LLM advisor (Google Gemini), in memory like the other secrets
     for v in GEMINI_API_KEY HEALER_GEMINI_MODEL; do
         if [ -n "${!v:-}" ]; then

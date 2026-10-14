@@ -391,6 +391,53 @@ class EduCloudWorld:
 
     # ------------------------------------------------------------ effectors
 
+    def diagnostic_evidence(self):
+        """Read-only evidence from the exact managed component, not environment dumps."""
+        evidence = {'target': self.name, 'instance_id': (self._vm or {}).get('id'),
+                    'address': self._ssh.host if self._ssh else None,
+                    'component': self.service, 'config_path': self.config_path,
+                    'log_mount': self.log_mount, 'rotation_policy': self.rotation_policy}
+        commands = {
+            'service': f'systemctl show {shlex.quote(self.service)} -p ActiveState -p SubState -p Result -p ExecMainStatus',
+            'config_check': 'sudo nginx -t 2>&1',
+            'mount': f'findmnt -no TARGET,SOURCE,FSTYPE {shlex.quote(self.log_mount)}',
+            'space': f'df -h {shlex.quote(self.log_mount)}',
+            'rotation': f'test -f {shlex.quote(self.rotation_policy)} && echo present',
+            'config_identity': f'sudo sha256sum {shlex.quote(self.config_path)} {shlex.quote(self.reference_dir)}/healer.conf',
+        }
+        if self._ssh:
+            for name, command in commands.items():
+                ok, out, err = self._probe(command)
+                evidence[name] = {'command_success': ok, 'stdout': out[:3000], 'stderr': err[:1000]}
+        return evidence
+
+    def rotation_verified(self):
+        if not self._ssh:
+            return False
+        command = (f'sudo cmp -s {shlex.quote(self.rotation_policy)} '
+                   f'{shlex.quote(self.reference_dir)}/nginx-healer.logrotate && '
+                   'test "$(systemctl is-active healer-logflood.timer)" = inactive && '
+                   'test "$(systemctl is-active healer-logrotate.timer)" = active')
+        ok, _, _ = self._probe(command)
+        return ok
+
+    def configuration_verified(self):
+        if not self._ssh:
+            return False
+        ok, _, _ = self._probe('sudo nginx -t')
+        return ok
+
+    def repair_identity(self):
+        if not self._ssh:
+            return {'references': None, 'live_config': None}
+        ok, out, _ = self._probe(f'sudo sha256sum {shlex.quote(self.config_path)} '
+                                f'{shlex.quote(self.reference_dir)}/healer.conf '
+                                f'{shlex.quote(self.reference_dir)}/nginx-healer.logrotate')
+        hashes = [line.split()[0] for line in out.splitlines() if line.split()]
+        if not ok or len(hashes) != 3 or any(len(h) != 64 for h in hashes):
+            return {'references': None, 'live_config': None}
+        return {'references': hashes[1:], 'live_config': hashes[0]}
+
     def _guest(self, command, success):
         if not self._ssh:
             return False, "no ssh target"

@@ -39,6 +39,7 @@ from mapek.educloud import EduCloudWorld, load_lab               # noqa: E402
 from mapek.knowledge import Knowledge                            # noqa: E402
 from mapek.loop import Healer                                    # noqa: E402
 from mapek.prometheus import PrometheusSource                    # noqa: E402
+from mapek.operator import Operator
 
 SYMPTOMS = ["unreachable", "service_down", "disk_high", "disk_critical",
             "disk_growing_fast", "config_drift", "probe_failed"]
@@ -80,6 +81,10 @@ class Service:
             world = EduCloudWorld(cs, name, self.lab,
                                   key_path=os.environ.get("LAB_SSH_KEY"), metrics=prom)
             healer = Healer(world, config=self.config, knowledge_path=self.db_path)
+            if os.environ.get('HEALER_REVIEW', '1') == '1':
+                healer.operator = Operator(os.path.join(self.state, 'operator.db'))
+                if healer.knowledge:
+                    healer.knowledge.auto_approve = False
             if self.config != "A":
                 healer.advisor = self.advisor
             node = Node(name, healer)
@@ -133,7 +138,7 @@ class Service:
             healer.tick()
             node.ticks += 1
             node.last_error = ""
-        except (CloudStackError, OSError, RuntimeError) as error:
+        except (CloudStackError, OSError, RuntimeError, ValueError) as error:
             # The platform API or the network failed. That is an observation
             # about the healer's own reach, not a reason to stop watching.
             node.tick_errors += 1
@@ -171,6 +176,10 @@ class Service:
                 m("healer_loop_escalation_level", n, h.escalation_level())
                 m("healer_loop_pending_approvals", n, len(h.pending_approval))
                 m("healer_loop_high_risk_approved", n, int(h.approve_high_risk))
+                if h.operator is not None:
+                    m('healer_operator_pending', n, sum(c['target'] == node.name and c['status'] == 'pending' for c in h.operator.cases()))
+                    m('healer_operator_validated_procedures', n, sum(p['status'] == 'validated' and json.loads(p['scope'])['target'] == node.name for p in h.operator.procedures()))
+                m('healer_operator_review_enabled', n, int(h.operator is not None))
                 m("healer_loop_downtime_ticks_total", n, h.world.downtime_ticks)
                 for (kind, cause), count in node.events_by_kind.items():
                     m("healer_loop_events_total", dict(n, kind=kind, cause=cause), count)

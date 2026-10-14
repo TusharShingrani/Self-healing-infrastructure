@@ -10,14 +10,19 @@ separate piece of code, every stage is visible in Grafana, and every claim in
 the results below comes from a measured live run on EduCloud, not from the
 simulation.
 
+**Current operator workflow:** [incident diagnosis, human repairs and validated procedures](docs/operator-workflow.md).
+New live repairs now require incident approval until a narrowly scoped procedure
+has two verified successes and explicit promotion. Earlier demo and A/B/C
+results describe the previous execution policy.
+
 **Try it yourself:** [guided live demo and approval walkthrough](docs/live-demo.md).
 The 14 October demo includes a live cross-instance prevention result and a
 rate-limit pacing finding; [raw demo account](evidence/live-demo-2026-10-14.md).
 
 **Documents:** [context report: the problem and the failure scenarios](docs/context-report.md)
-Ã‚Â· [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
-Ã‚Â· [results](docs/results.md) Ã‚Â· [design notes](docs/design-notes.md)
-Ã‚Â· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
+Ãƒâ€šÃ‚Â· [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
+Ãƒâ€šÃ‚Â· [results](docs/results.md) Ãƒâ€šÃ‚Â· [design notes](docs/design-notes.md)
+Ãƒâ€šÃ‚Â· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
 
 ## What runs where
 
