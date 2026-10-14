@@ -96,6 +96,7 @@ class Operator:
                 (['rotation matches reference and flood timer inactive'] if 'fix_log_rotation' in actions else []),
             'scope': json.loads(scope),
         }
+        self.db.execute("UPDATE cases SET status='superseded' WHERE target=? AND cause=? AND actions=? AND identity<>? AND status IN ('pending','approved')", (getattr(world, 'name', 'simulated'), cause, encode(actions), identity))
         cur = self.db.execute('INSERT INTO cases(identity,scope,target,cause,symptoms,actions,evidence,status,opened) VALUES(?,?,?,?,?,?,?,?,?)',
             (identity, scope, getattr(world, 'name', 'simulated'), cause,
              encode(sorted(symptoms)), encode(actions), encode(redact(evidence)), 'pending', self.clock()))

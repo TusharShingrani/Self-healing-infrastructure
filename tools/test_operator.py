@@ -55,6 +55,7 @@ class Tests(unittest.TestCase):
     def test_changed_evidence_invalidates_approval(self):
         self.gate(); self.approve(); self.world.service_running = False
         self.assertFalse(self.gate()[0])
+        self.assertEqual(self.op.case(1)['status'], 'superseded')
 
     def test_expired_approval(self):
         self.op.clock = lambda: 1; self.gate(); self.approve(); self.op.clock = lambda: 902
