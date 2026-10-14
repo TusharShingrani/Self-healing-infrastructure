@@ -110,8 +110,8 @@ requirement, and it is reported as such.
 | | |
 |---|---|
 | Real-world version | A new failure mode, or a combination of symptoms nobody wrote a rule for |
-| Behaviour | The loop escalates and asks the LLM advisor. The advice (a cause and catalogue actions) is stored as pending. A person approves or rejects it. Approved advice is used automatically the next time the same symptoms appear |
-| Status | Implemented with Google Gemini (free tier) and tested with a stand-in provider. Not yet run against the real API (no key on the healer) |
+| Behaviour | The loop escalates and asks the LLM advisor. The advice (a cause and catalogue actions) is stored as pending. A person approves or rejects it. Approved advice becomes a diagnosis the next time the same symptoms appear; the repair it proposes still passes the incident review gate |
+| Status | Implemented with Google Gemini (free tier) and tested with a stand-in provider. Real Gemini calls succeeded on 14 October 2026: one through `tools/demo_advice.py --real` against a simulated target, and four advisory responses on the dependency incidents. None of that advice was approved or executed, so there is no evidence yet of Gemini diagnosing a live failure correctly |
 
 ## 3. What the self-healing solves, and how autonomous it becomes
 
@@ -120,19 +120,24 @@ the path.
 
 ```mermaid
 flowchart LR
-    u["Unknown failure<br/>the loop escalates,<br/>the LLM advises,<br/>a person decides once"] --> k["Known failure<br/>diagnosed and repaired<br/>automatically,<br/>outage is short"]
-    k --> p["Learned failure<br/>prevented at the early signs,<br/>no outage at all,<br/>on every instance"]
+    u["Unknown failure<br/>the loop escalates,<br/>the LLM may advise,<br/>a person investigates"] --> k["Known failure<br/>diagnosed by a rule or<br/>an investigation,<br/>each repair approved"]
+    k --> v["Validated procedure<br/>two verified occurrences,<br/>promoted by a person,<br/>repaired automatically<br/>within its scope"]
+    v -.-> p["Prevented failure<br/>acted on at the early signs,<br/>no outage"]
 ```
 
-| Stage of learning | Who acts | Outage | Configuration |
+| Stage of learning | Who acts | Outage | Where |
 |---|---|---|---|
-| Unknown | The loop asks; a person approves once | Until a person acts | B or C with the advisor |
-| Known (rules or approved advice) | The loop, autonomously | Seconds (detect, repair, verify) | B and C |
-| Learned (prevention rule) | The loop, autonomously, before the failure | None | C |
+| Unknown | The loop asks; a person investigates and names a cause | Until a person acts | Both loops |
+| Known (rule, approved advice or investigation) | The loop proposes; a person approves each repair | Until approval, then seconds | Both loops, with review on |
+| Validated procedure | The loop, automatically, within the recorded scope | Seconds (detect, repair, verify) | Both loops, after promotion |
+| Prevented (prevention rule) | The loop, before the failure | None | nginx loop, config C |
 
-So after the learning process, the loop solves the repeated failure on its own,
-on any instance, without waiting for it to happen. A person is only needed for
-genuinely new failures and for destructive actions.
+Between 13 and 14 October the policy changed. In the A/B/C experiment and the
+first guided demo, known failures were repaired and prevention rules applied
+without asking anyone. The live service now runs with incident review, so a
+repair or a prevention action only runs on its own once a procedure covering
+it has been promoted. A person is always needed for genuinely new failures and
+for destructive actions, and reboot and rebuild never become automatic.
 
 **Measured so far** (single live runs, each traceable under `evidence/runs/`):
 
@@ -157,7 +162,7 @@ and the experiment stopped (`evidence/2026-10-13-incident-healer-memory.md`).
 | MAPE-K, followed strictly | One class per stage, the loop marked stage by stage, Knowledge shared, every stage visible in Grafana | `mapek/`, `docs/architecture.md` §3 |
 | Prometheus and Grafana | Prometheus feeds the Monitor stage; Grafana shows every MAPE-K stage, symptoms, diagnosis, actions, learning | `monitoring/` |
 | See how the self-healing works | Dashboard, `tools/knowledge.py events`, `state/events.jsonl`, the evidence folders | |
-| It must learn from errors | Incident memory, prevention rules from early signs, approved advice; proven live (learned on app-1, prevented on app-2) | `mapek/knowledge.py` |
+| It must learn from errors | Incident memory, prevention rules from early signs, approved advice; proven live (learned on app-1, prevented on app-2). Reviewed repair procedures promoted after two verified occurrences, demonstrated live for nginx config drift and four dependency faults | `mapek/knowledge.py`, `mapek/operator.py`, `mapek/infrastructure.py` |
 | An LLM agent as human in the loop, e.g. LangChain | An LLM advisor using Google Gemini (free tier) over its REST API. Not LangChain: see below | `mapek/advisor.py` |
 
 **Why Gemini, and why not LangChain.** Gemini's free tier costs nothing and
@@ -186,10 +191,10 @@ verified actions.
 
 | Research question | What answers it |
 |---|---|
-| 1. Which failures can be self-healed? | Scenarios 1 to 3 healed live; scenario 4 implemented behind approval; scenario 5 needs a person once |
+| 1. Which failures can be self-healed? | Scenarios 1 to 3 healed live; scenario 4 implemented behind approval; scenario 5 needs a person; DNS drift, a wrong cache budget, checkpoint permissions and a stopped cache healed live in the dependency lab |
 | 2. Which methods detect and repair most effectively? | Prometheus-based detection with freshness rules vs direct probes; cause-level repair vs restart; verification; the A/B comparison |
-| 3. How can it learn to prevent failures? | Early-sign prevention rules, shared Knowledge, advice approved by people; the B/C comparison and the app-1 to app-2 transfer |
-| 4. Effect on reliability, security and performance? | Reliability: measured downtime. Security: fail-closed ownership, pinned host keys, credentials in memory, no LLM effectors, and the host-key incident found during the project. Performance: stage timings on the dashboard (Monitor about 0.35 s per tick) |
+| 3. How can it learn to prevent failures? | Early-sign prevention rules, shared Knowledge, advice approved by people, reviewed procedures; the B/C comparison, the app-1 to app-2 transfer and the promoted dependency procedures. Faster repair of a recurrence is learned recovery, not prevention |
+| 4. Effect on reliability, security, performance and scalability? | Reliability: measured downtime. Security: fail-closed ownership, pinned host keys, credentials in memory, no LLM effectors, incident review, and the host-key incident found during the project. Performance: stage timings on the dashboard (Monitor about 0.35 s per tick) and the dependency load sweep. Scalability: request capacity at concurrency 1, 4 and 8 on two VMs only, not more nodes |
 
 ## References
 

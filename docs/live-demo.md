@@ -5,6 +5,12 @@ step says laptop. Faults target only app-1 or app-2. Never inject a fault on
 the healer or monitor. A dashboard picture alone is not proof: check the
 independent run measurements, loop events and stored rule together.
 
+This walkthrough was first written for the 14 October demo, before incident
+review existed. The live service now runs with review on (`HEALER_REVIEW=1`).
+A repair or a prevention action waits as an incident until you approve it,
+unless a promoted procedure covers it. The steps below say where to approve.
+Read [the operator workflow](operator-workflow.md) alongside this page.
+
 ## Open the dashboard and a terminal
 
 Connect OpenVPN first. If SSH times out, compare the assigned VPN address
@@ -27,6 +33,8 @@ python3 tools/lab_shell.py
 bash tools/start_loop.sh status
 python3 tools/knowledge.py events 10
 python3 tools/knowledge.py rules
+python3 tools/incidents.py list
+python3 tools/incidents.py procedures
 curl -fsS http://10.1.1.60/healthz
 curl -fsS http://10.1.1.61/healthz
 ```
@@ -84,8 +92,21 @@ python3 -u tools/live_run.py app-1 config_drift
 python3 tools/knowledge.py events 12
 ```
 
-The runner injects and measures; the loop repairs separately. Expect the
-availability panel to change, a diagnosis and action, then recovery.
+The runner injects and measures; the loop repairs separately. With review on,
+the loop first opens an incident and logs a `BLOCKED` event that names it.
+In a second terminal, inspect and approve it while the run is still going:
+
+```bash
+python3 tools/incidents.py list
+python3 tools/incidents.py show ID
+python3 tools/incidents.py approve ID --who tushar --notes 'Checked the evidence; approve the restart'
+```
+
+Expect the availability panel to change, a diagnosis, the approved action, then
+recovery. The time you take to approve is part of the measured downtime. A
+promoted procedure skips the wait only when its exact scope and symptoms match:
+the validated config procedure is for app-1 with `config_drift` and
+`service_down` together.
 `summary.json` must identify config C, confirmed injection, a healed event,
 and a healthy final service. If manual cleanup fixed it instead, do not
 count that as healing. Commands print their evidence folders.
@@ -117,8 +138,10 @@ preflight refuses a start with under 25 MiB free. This is an explicit lab
 requirement, not stock nginx behaviour. A full log disk alone does not stop
 a running nginx process.
 
-After repair, expect a rule triggered by `disk_growing_fast`, with actions
-`clear_logs` and `fix_log_rotation`. Let the previous action rate-limit
+With review on, approve the repair incident as above. After repair, expect a
+rule triggered by `disk_growing_fast`, with actions `clear_logs` and
+`fix_log_rotation`. A rule learned with review on is stored unapproved; check
+it, then activate it with `python3 tools/knowledge.py approve-rule ID`. Let the previous action rate-limit
 window expire before a presentation's next independent demonstration
 (20 ticks, normally about 200 seconds; allow a little extra):
 
@@ -127,9 +150,11 @@ sleep 210
 python3 -u tools/live_run.py app-1 disk_leak
 ```
 
-Proof of prevention requires all of these: confirmed fault, a `PREVENTED`
-event from Knowledge before the maintenance restart, successful restart,
-independent zero-downtime samples, and healthy final probes. If the guardrails
+The prevention action is also an incident. Approve it while the volume is
+still filling (about two minutes), or it will not run. Proof of prevention
+requires all of these: confirmed fault, a `PREVENTED` event from Knowledge
+before the maintenance restart, successful restart, independent zero-downtime
+samples, and healthy final probes. Record that a person approved it. If the guardrails
 block a prevention action and an outage occurs, record that outcome honestly.
 Shared Knowledge can also protect app-2; its rule is not limited to app-1.
 
@@ -137,7 +162,11 @@ Shared Knowledge can also protect app-2; its rule is not limited to app-1.
 
 There are distinct controls:
 
-- Learned prevention rules are auto-approved in the current service config.
+- Every repair and prevention action is an incident that needs approval,
+  unless a promoted procedure covers it (`tools/incidents.py`).
+- New learned prevention rules are stored unapproved while review is on
+  (`tools/knowledge.py approve-rule`). The disk rule from 13 October was
+  approved before review existed.
 - LLM suggestions are pending until a person approves them.
 - Reboot/rebuild require a separate high-risk gate even after advice approval.
 - `state/paused` temporarily makes the loop observe without acting.
@@ -174,7 +203,8 @@ stuck metrics agent may have no matching catalogue action; that is expected.
 
 Gemini receives the advisor's symptom/observation prompt, not API credentials
 or private SSH keys. Its proposed actions must belong to the fixed catalogue.
-Human-approved advice still goes through rate limits, cooldown and verification.
+Human-approved advice still goes through rate limits, cooldown, incident
+review and verification.
 
 Do not create `state/approve-high-risk` for this demo. Demonstrate that gate
 with the simulated target instead of deliberately forcing a real rebuild.

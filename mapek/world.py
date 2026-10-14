@@ -1,10 +1,11 @@
 """The managed element: the infrastructure the loop looks after.
 
-Two adapters with the same interface:
-  SimulatedWorld  runs anywhere, used for development and for testing the loop
-  EduCloudWorld   a real lab instance (see educloud.py)
+Adapters with the same interface:
+  SimulatedWorld       runs anywhere, used for development and for testing the loop
+  EduCloudWorld        a real lab instance (see educloud.py)
+  InfrastructureWorld  the two-VM dependency stack (see infrastructure.py)
 
-Interface contract, which both must honour:
+Interface contract, which each must honour:
 
     step()                  advance time only, no probing
     observe(sample=True)    one reading. sample=False means do not update the

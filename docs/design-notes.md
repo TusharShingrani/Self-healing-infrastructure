@@ -1,7 +1,11 @@
 # Design notes: the MAPE-K skeleton and the EduCloud adapter
 
 The original project README, kept for its design reasoning. The current
-overview is the top-level README.md.
+overview is the top-level README.md. File lists and test counts below have
+been brought up to date; the reasoning is unchanged. Later additions (incident
+review, validated procedures and the dependency loop) are described in
+`docs/operator-workflow.md`, `docs/infrastructure-lab.md` and
+`docs/architecture.md`.
 
 A working starting point for the project. Pure Python, standard library only,
 no dependencies, runs anywhere.
@@ -30,7 +34,7 @@ mapek/
 tools/
   demo.py         same fault twice: it breaks, then it does not
   experiment.py   the experiment, with a CSV for the report
-  test_safety.py  six tests that prove the guardrails work
+  test_safety.py  the tests that prove the guardrails work
 ```
 
 ## How the code maps to the theory
@@ -55,17 +59,20 @@ same loop runs against a simulation and against a real host without changes.
 | B | Detect, diagnose, repair, verify | What is self-healing worth? |
 | C | B plus knowledge: recall and prevention | Does learning help? |
 
-## What the experiment shows
+## What the simulated experiment shows
 
-With ten runs per fault per configuration:
+These are simulation results from `tools/experiment.py`, not observations.
+The live results are in `docs/results.md`. With ten simulated runs per fault
+per configuration:
 
 - A never recovers, so downtime runs to the end of the observation window
 - B recovers from all three faults within one tick
 - C does the same, and on a repeat of the disk fault the downtime is zero,
   because the loop acted on the early signs before the failure happened
 
-That last line is the whole point of the project. Everything published on
-self-healing stops at B.
+That last line is what the project set out to show. It is not a new idea:
+published systems such as Narya (OSDI 2020) already learn from failures and
+mitigate them proactively. See `docs/research-synthesis.md`.
 
 ## Fault, error, failure
 
@@ -97,13 +104,20 @@ of whether the separation is right.
 
 ## What to extend
 
-- More faults, chosen by the criteria from sub-question 1
+This was the original list. All four have since been done, at least in part:
+
+- More faults, chosen by the criteria from sub-question 1. Done: four
+  dependency faults in `docs/infrastructure-lab.md`
 - A second analyser that asks a sandboxed language model instead of the rules,
   returning a cause and a choice from the same catalogue. Keep the executor
-  and the guardrails identical, so the comparison is fair
-- Real metrics collection instead of direct probes
+  and the guardrails identical, so the comparison is fair. Partly done: the
+  Gemini advisor proposes, but it is advisory only and no fair comparison
+  with the rules has been run
+- Real metrics collection instead of direct probes. Done: Prometheus feeds the
+  nginx loop's Monitor stage
 - An approval step, so a learned rule only becomes active once a human signs
-  it off. `Knowledge(auto_approve=False)` already does this
+  it off. Done: the live service turns `auto_approve` off and adds incident
+  review (`docs/operator-workflow.md`)
 
 ## Running against EduCloud
 
@@ -128,7 +142,7 @@ tools/lab-host/            the scripts installed on a lab instance
 tools/test_lab_host.sh     tests those scripts with mocked system commands
 ```
 
-Three suites, none of which touch EduCloud:
+Some of the suites, none of which touch EduCloud (the full list is in README.md):
 
 ```bash
 python3 tools/test_safety.py    # the loop and its guardrails
