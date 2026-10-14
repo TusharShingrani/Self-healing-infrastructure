@@ -1,0 +1,135 @@
+{
+  "time": 1791981913.6148481,
+  "healthy": true,
+  "observation": {
+    "tick": 0,
+    "reachable": true,
+    "service_running": true,
+    "config_correct": true,
+    "http_ok": true,
+    "probe_error": "",
+    "monitor_source": "direct-dependency-transaction",
+    "infrastructure_checks": {
+      "cache_service": true,
+      "cache_budget": true,
+      "cache_write": true,
+      "dns_record": true,
+      "spool_write": true
+    },
+    "disk_percent": null,
+    "disk_growth": null,
+    "transaction": {
+      "healthy": true,
+      "checks": {
+        "dns_record": true,
+        "cache_write": true,
+        "spool_write": true
+      },
+      "evidence": {
+        "dns_record": "10.1.1.61",
+        "cache_write": "SET and GET on expiring canary key",
+        "spool_write": "/var/lib/healer-stack/checkpoint"
+      },
+      "latency_ms": 3.422
+    }
+  },
+  "validated_procedures": 4,
+  "pending_cases": 0,
+  "procedure_references_match_deployed_contract": true,
+  "nginx_10.1.1.60": true,
+  "nginx_10.1.1.61": true,
+  "prometheus_targets": [
+    {
+      "job": "healthz",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "healthz",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "infrastructure",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "infrastructure_transaction",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "mapek",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "nginx",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "nginx",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "node",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "node",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "prometheus",
+      "health": "up",
+      "error": ""
+    }
+  ],
+  "grafana": {
+    "uid": "selfheal-infrastructure",
+    "title": "Infrastructure dependencies and reviewed learning",
+    "panels": 8
+  },
+  "advisor": [
+    {
+      "id": 1,
+      "status": "pending",
+      "model": "gemini-3.5-flash-lite",
+      "cause": "recipe_dns_reference",
+      "actions": "[\"recipe_dns_reference\", \"recipe_checkpoint_permissions\"]"
+    },
+    {
+      "id": 2,
+      "status": "pending",
+      "model": "gemini-3.5-flash-lite",
+      "cause": "cache_budget_exceeded_with_permission_error",
+      "actions": "[\"recipe_cache_budget\", \"recipe_checkpoint_permissions\"]"
+    },
+    {
+      "id": 3,
+      "status": "pending",
+      "model": "gemini-3.5-flash-lite",
+      "cause": "checkpoint_permissions_incorrect",
+      "actions": "[\"recipe_checkpoint_permissions\"]"
+    },
+    {
+      "id": 4,
+      "status": "pending",
+      "model": "gemini-3.5-flash-lite",
+      "cause": "cache_service_down_or_unreachable",
+      "actions": "[\"recipe_cache_dependency\"]"
+    },
+    {
+      "id": 5,
+      "status": "requested",
+      "model": null,
+      "cause": null,
+      "actions": null
+    }
+  ]
+}

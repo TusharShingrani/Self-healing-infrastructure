@@ -54,3 +54,19 @@ scrape_configs:
     honor_labels: true
     static_configs:
       - targets: ["10.1.1.205:9105"]
+
+  - job_name: infrastructure
+    static_configs:
+      - targets: ["10.1.1.205:9106"]
+
+  - job_name: infrastructure_transaction
+    metrics_path: /probe
+    params:
+      module: [http_infrastructure]
+    static_configs:
+      - targets: ["http://10.1.1.60:8088/healthz"]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: 127.0.0.1:9115

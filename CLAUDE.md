@@ -13,10 +13,10 @@ The theory spine is the **MAPE-K loop** (Monitor, Analyse, Plan, Execute,
 Knowledge). The code mirrors it on purpose, so the report and the modules line
 up.
 
-The gap this project addresses: published self-healing systems (Red Hat's
-stack, Netflix's Winston, the practitioner write-ups) all stop at detect and
-repair. None of them learn. Stages 5 and 6, remember and prevent, are the
-contribution.
+Published systems already include learning and proactive mitigation (for example,
+Narya, OSDI 2020). This project's contribution is a bounded EduCloud prototype
+and reproducible evaluation of reviewed procedural learning, not a claim that
+learning is new. Read docs/research-synthesis.md and docs/infrastructure-lab.md.
 
 ## Research questions
 
@@ -28,7 +28,7 @@ prevent them?
    failures? (Library + Lab)
 3. How can a self-healing system learn from past failures to prevent them?
    (Library + Lab)
-4. How does self-healing affect reliability, security and performance?
+4. How does self-healing affect reliability, security, performance and scalability?
    (Library + Lab)
 
 Scope is the **infrastructure layer**: services, storage, configuration,
@@ -167,3 +167,13 @@ nginx behaviour, in code comments or in the report.
 Plain English, British spelling, no em dashes or en dashes, student voice, no
 marketing language. Short sentences. Say what is true, including what did not
 work.
+
+## Broader infrastructure, 14 October 2026
+
+The new dependency experiment is separate from the original nginx results.
+app-1 runs a synthetic transaction and checkpoint; app-2 runs dedicated DNS
+and authenticated Redis. See docs/infrastructure-lab.md. The reviewed loop
+uses state/infrastructure and metrics port 9106. Preserve both incident databases.
+Repair recipes are typed capabilities, never shell transcripts. Automatic reuse
+requires two verified occurrences and promotion. Both VM identities and recipe
+versions enter scope. Existing baseline resets require this installer afterward.
