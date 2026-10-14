@@ -57,7 +57,10 @@ class Operator:
         scope = {k: lab.get(k) for k in ('project_id', 'template_id', 'service',
                  'config_path', 'reference_dir', 'log_mount', 'log_image')}
         scope['target'] = getattr(world, 'name', 'simulated')
-        repair_identity = world.repair_identity() if hasattr(world, 'repair_identity') else {'references': 'simulation', 'live_config': None}
+        scope['template_id'] = vm.get('templateid')
+        for name in ('service', 'config_path', 'reference_dir', 'log_mount', 'log_image'):
+            scope[name] = getattr(world, name, scope.get(name))
+        repair_identity = world.repair_identity() if hasattr(world, 'repair_identity') else {'references': None, 'live_config': None}
         scope['references'] = repair_identity['references']
         stable = {k: observation.get(k) for k in
                   ('reachable', 'service_running', 'config_correct', 'http_ok')}
@@ -202,7 +205,7 @@ class Operator:
         if not proc or not who.strip():
             raise ValueError('Procedure and reviewer required')
         count = self.db.execute('SELECT COUNT(*) FROM cases WHERE scope=? AND cause=? AND symptoms=? AND actions=? AND verified=1', (proc['scope'], proc['cause'], proc['symptoms'], proc['actions'])).fetchone()[0]
-        if count < 2 or not json.loads(proc['scope']).get('references') or proc['cause'] == 'unknown' or any(a in HIGH_RISK for a in json.loads(proc['actions'])):
+        if count < 2 or not json.loads(proc['scope']).get('template_id') or not json.loads(proc['scope']).get('references') or proc['cause'] == 'unknown' or any(a in HIGH_RISK for a in json.loads(proc['actions'])):
             raise ValueError('Two distinct verified occurrences are required; high-risk procedures cannot be automatic')
         self.db.execute("UPDATE procedures SET status='validated',operator=? WHERE id=?", (who, procedure_id))
         self.db.commit()

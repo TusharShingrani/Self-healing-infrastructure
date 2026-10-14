@@ -13,7 +13,7 @@ class World(SimulatedWorld):
     def __init__(self):
         super().__init__()
         self.name = 'app-1'
-        self._vm = {'id': 'vm-1', 'projectid': 'project-1'}
+        self._vm = {'id': 'vm-1', 'projectid': 'project-1', 'templateid': 'template-1'}
         self.lab = {'project_id': 'project-1', 'lab_instances': ['app-1','app-2'],
                     'service': 'nginx', 'config_path': '/test/config'}
 
@@ -21,6 +21,9 @@ class World(SimulatedWorld):
         result = super().restore_config()
         self.service_running = True  # production effector reload-or-restarts nginx
         return result
+
+    def repair_identity(self):
+        return {'references': ['reference-digest'], 'live_config': 'valid' if self.config_correct else 'invalid'}
 
 
 class Tests(unittest.TestCase):
