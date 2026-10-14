@@ -1,0 +1,2539 @@
+{
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 214,
+      "sha256": "d62363fe83be7add69494fdbb18f95002073820d6eaafce23ec87df4b6cf655d",
+      "lines": 14,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "CLAUDE.md",
+      "bytes": 9979,
+      "sha256": "563a59947a92eb08bc891d90f2a4da2fc6d0f75655c7c535d16d140879d4bb20",
+      "lines": 185,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "config/lab.json",
+      "bytes": 2258,
+      "sha256": "2dccc1c2c92bd851656c06ec4865712bb7b67f07cfcf2d1b7ad3451ec6d524c6",
+      "lines": 52,
+      "kind": "source/config/docs",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "config/repair-recipe.example.json",
+      "bytes": 223,
+      "sha256": "ac64f8a608ddbe3dc28498121e2f89f7fe396246ab6a58b78e5ef8ba7524aff0",
+      "lines": 8,
+      "kind": "source/config/docs",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "config/repair-recipes.json",
+      "bytes": 540,
+      "sha256": "04f362803b4fd0ae2163463986fdc32a4a063406fb0421fb8d6b8a66374ce850",
+      "lines": 6,
+      "kind": "source/config/docs",
+      "json_type": "list",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 27367,
+      "sha256": "a84ebd2be95256f0627e8207437134c3ecd28b7f55d3947ce2914f87eccc86c3",
+      "lines": 451,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/context-report.md",
+      "bytes": 13462,
+      "sha256": "73c46d683c8150b2620490e0a6d4e6c2337dd60550d1eafde6cc60fc26da5984",
+      "lines": 205,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/design-notes.md",
+      "bytes": 12803,
+      "sha256": "250124a21b8f95ff62705889f18cecfd28c0b79f1024fc0e63c9af4951fafc53",
+      "lines": 283,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/healer-handover.md",
+      "bytes": 11843,
+      "sha256": "7c48588a0aecaf0b4e8be6ff1a779b71d4a66e1c19a53d6d77b87d9289487b91",
+      "lines": 200,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/infrastructure-lab.md",
+      "bytes": 8639,
+      "sha256": "01b9471f639a98483fac314a90900f40e3a79f84aefeb40688d9214e8babb9b8",
+      "lines": 159,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/live-demo.md",
+      "bytes": 9990,
+      "sha256": "1a81c0bcb47bcfa046e02a96c7c0e3a0e01f63d55e25efee3e8150e5ac12219e",
+      "lines": 222,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/operator-workflow.md",
+      "bytes": 5275,
+      "sha256": "a20864b14be2e7e9d996e8a9ebb449203bf7091a82b9d00e968ebde4762ee7b4",
+      "lines": 103,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/research-search-log.md",
+      "bytes": 2940,
+      "sha256": "7f70a5bc6707c55a92f2a80add3db2fb4822fdee6a0fadcd4b31e7464d446af8",
+      "lines": 48,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/research-synthesis.md",
+      "bytes": 21932,
+      "sha256": "f3f505687a9d5aa8faa8a582e503927e871096961b8f4118129a0bc92a8b0685",
+      "lines": 218,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "docs/results.md",
+      "bytes": 4662,
+      "sha256": "9eb2e0f5f1e61b451ec1b161d72e5ca713917a43b1574c91e8d6a3cc855e0267",
+      "lines": 49,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "evidence/2026-10-13-deploy-app-1.log",
+      "bytes": 172,
+      "sha256": "398c1bebdfc6e59eb921c31adaa08769375af0525b9a748f76419ba5048715bb",
+      "lines": 6,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/2026-10-13-deploy-app-2.log",
+      "bytes": 172,
+      "sha256": "b652179e3dd267b2e9efb7fe96e41067f367c8b0fdf339b6da33e705fc3d5c80",
+      "lines": 5,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/2026-10-13-deploy-monitor.log",
+      "bytes": 176,
+      "sha256": "528c2154516e4af8969344ffcb5fd2b4525890ae914144c5b3ee92f17040ebc4",
+      "lines": 5,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/2026-10-13-exporters-app-1.log",
+      "bytes": 1612,
+      "sha256": "a3659e1a73f31317ae29a0e00f62cff4fe902b0efa50ee07592346f761b493b3",
+      "lines": 45,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/2026-10-13-healer-resize.md",
+      "bytes": 2850,
+      "sha256": "b27b0a30481af4ea9953b4248d9b7f664516679c3ca6d891f6031b9f58a4358b",
+      "lines": 50,
+      "kind": "historical evidence",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "evidence/2026-10-13-incident-healer-memory.md",
+      "bytes": 3314,
+      "sha256": "9319caae4a5a2fe0967c7a1041b559b748b1b9267a2b102e88ccfe1104652791",
+      "lines": 59,
+      "kind": "historical evidence",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "evidence/2026-10-13-install-app-1.log",
+      "bytes": 2489,
+      "sha256": "758983462a33cfc818195dd980196ce9c75eafab7c31e5996d85f0a04ce43b9b",
+      "lines": 57,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/2026-10-13-provision-app-2.log",
+      "bytes": 3512,
+      "sha256": "12962dc7a3ff7341db94339af546c3b5df9de60f63a487afa498e8993db7b30a",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/2026-10-13-provision-monitor.log",
+      "bytes": 1807,
+      "sha256": "ff50d41c5dcbe7852495379772b56b66507f1f3e85ec79f83b74ae115160fd92",
+      "lines": 50,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/2026-10-13-session-01.md",
+      "bytes": 9684,
+      "sha256": "4a269b5ff096f4e121c8e2176e9bb46d01137f67dec556f9c221124fdd14e036",
+      "lines": 159,
+      "kind": "historical evidence",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T154726Z/experiment.log",
+      "bytes": 307,
+      "sha256": "5f222370c86d01ae035320bb18a45c54830e0c4700fce1ede75530dd1ddb0b0b",
+      "lines": 11,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T154726Z/provision-1-A.log",
+      "bytes": 67,
+      "sha256": "36445eff049afa2cd2301dab26e79bfde2811435816dcf945d18dc1a6686bad0",
+      "lines": 3,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T155129Z/ABORTED.md",
+      "bytes": 759,
+      "sha256": "4afc2fad9d77dfd5cc6da7927c292486be2f042746e476fcfd09c30da94b9d63",
+      "lines": 14,
+      "kind": "historical evidence",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T155129Z/experiment.log",
+      "bytes": 7139,
+      "sha256": "a314a8673b761024e76dd1046d063b835d7903a24749632deaeb29f05dc37557",
+      "lines": 170,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T155129Z/knowledge-after-1-A.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T155129Z/knowledge-before-1-A.db",
+      "bytes": 24576,
+      "sha256": "eca824d44c688941040b354e8024605d4be5d9ba394edb3dd7b6e5df112e18cf",
+      "tables": {
+        "incidents": 4,
+        "sqlite_sequence": 2,
+        "advice": 0,
+        "prevention": 1
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T155129Z/provision-1-A.log",
+      "bytes": 3578,
+      "sha256": "30c7f446dddd7651fec8914f2fcea54619ae18946f665a9c1a127c89c57c7fb9",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T155129Z/provision-1-B.log",
+      "bytes": 241,
+      "sha256": "658b7b0b535a93e07deb7519f257a28e61dd3a4f45bb016ed60be027100c4bf9",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T155129Z/results.csv",
+      "bytes": 383,
+      "sha256": "ca8b7b4e703bf3dc1478f72962da5825ae5b19a095eda2dc578c412929b232e7",
+      "lines": 3,
+      "kind": "historical evidence",
+      "records": 2,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/experiment.log",
+      "bytes": 49154,
+      "sha256": "37af9978589db71d39303854c3ae1dbc8a8496bfc4fe182b4222a38632b24099",
+      "lines": 1157,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-after-1-A.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-after-1-B.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-after-1-C.db",
+      "bytes": 24576,
+      "sha256": "0b3466f72dc751d9ad71678ed1035008f5ffc83d0e25335abb0337316930af87",
+      "tables": {
+        "incidents": 2,
+        "sqlite_sequence": 2,
+        "advice": 0,
+        "prevention": 1
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-after-2-A.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-after-2-B.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-after-2-C.db",
+      "bytes": 24576,
+      "sha256": "8d7d81e891842143bcba7e04228b388261355b3d6f013549d0c15eeb0e4e79a2",
+      "tables": {
+        "incidents": 2,
+        "sqlite_sequence": 2,
+        "advice": 0,
+        "prevention": 1
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-after-3-A.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-before-1-A.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-before-1-B.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-before-1-C.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-before-2-A.db",
+      "bytes": 24576,
+      "sha256": "0b3466f72dc751d9ad71678ed1035008f5ffc83d0e25335abb0337316930af87",
+      "tables": {
+        "incidents": 2,
+        "sqlite_sequence": 2,
+        "advice": 0,
+        "prevention": 1
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-before-2-B.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-before-2-C.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-before-3-A.db",
+      "bytes": 24576,
+      "sha256": "8d7d81e891842143bcba7e04228b388261355b3d6f013549d0c15eeb0e4e79a2",
+      "tables": {
+        "incidents": 2,
+        "sqlite_sequence": 2,
+        "advice": 0,
+        "prevention": 1
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/knowledge-before-3-B.db",
+      "bytes": 24576,
+      "sha256": "b318c41d54beeca3941224c61288abe0bf70a931bd10bd4e2a28499c859a54a3",
+      "tables": {
+        "incidents": 0,
+        "sqlite_sequence": 0,
+        "advice": 0,
+        "prevention": 0
+      },
+      "kind": "historical SQLite evidence",
+      "checks": [
+        "sqlite:ok"
+      ]
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/provision-1-A.log",
+      "bytes": 3510,
+      "sha256": "559c1eb7edfd8959d7d57ed564c7e43207dc9aabeef81cbda6e60e30a7dac185",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/provision-1-B.log",
+      "bytes": 3564,
+      "sha256": "5eddbd6b6546af2b9b228161dc2ebf46d03a6a968527b20a184e7e0b6044a74d",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/provision-1-C.log",
+      "bytes": 3564,
+      "sha256": "088df78c52adba99f4bd4f2b5cb99ff93f5651a617b68556eeaca405a3f6bf0f",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/provision-2-A.log",
+      "bytes": 3512,
+      "sha256": "1940d918395960ad441ea3ea1f036a5a0a3b6b6d748384493d56b3a251468cf1",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/provision-2-B.log",
+      "bytes": 3512,
+      "sha256": "730a8a244b63eeb27a953a3c42290a792aed7bceb010674220ee47fad20d769c",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/provision-2-C.log",
+      "bytes": 3512,
+      "sha256": "cfb0ccdc51c488172a30f44272cfd198df9f6c798cb2e5d55c50083d885f0a57",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/provision-3-A.log",
+      "bytes": 3510,
+      "sha256": "b03c5a04157f98d24c290aa27a0fc77410fdf3ed1de79cb205dfba1175826cb1",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/provision-3-B.log",
+      "bytes": 3512,
+      "sha256": "183b74b33a7ddc7410c0be2242ca9e1b3e90a0d90bf2de096dc1fd984f6cd6bd",
+      "lines": 87,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/experiment-2026-10-13T161043Z/results.csv",
+      "bytes": 1712,
+      "sha256": "1f89888102fb32234a0e6247ef806bebda277de26e5bded9878a2e6d0bbad8f4",
+      "lines": 15,
+      "kind": "historical evidence",
+      "records": 14,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-advisor-regression.txt",
+      "bytes": 1992,
+      "sha256": "31afa2011391846fa9fd2e2b32fca1c5de39b19513d2c9158acf96377ea2382c",
+      "lines": 46,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/infrastructure-benchmark-before-concurrency.json",
+      "bytes": 59211,
+      "sha256": "a3f606e24176d9b19cee9b26984841d1dc9946db523e44bab1d8149efc836dc6",
+      "lines": 3002,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-benchmark-smoke-after-concurrency.json",
+      "bytes": 59158,
+      "sha256": "690a9f2ed3e90fdab16120c65865c45c45937382aea5b17870f172e7c988c28f",
+      "lines": 3002,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-benchmark.json",
+      "bytes": 2907552,
+      "sha256": "902f82af4769220fb8d10a991a8ac8c210cf2c13266e2a7358d3ce01812375aa",
+      "lines": 150206,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-capability-tests.txt",
+      "bytes": 3079,
+      "sha256": "21ffc0f5da1b4046225a5fb49e529b420e46f423c2d09a6af169199d9b770571",
+      "lines": 32,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/infrastructure-concurrency-failures.json",
+      "bytes": 760,
+      "sha256": "59dc0dcaea6b6e9cfcd28acdce530ad3ad94fb2ee88064a069b19dec5913c0fe",
+      "lines": 33,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-final-contract.json",
+      "bytes": 2970,
+      "sha256": "7608bddf27b517cb500ec61d3c85a2ad38bdfde3403a96b5b996e83eef31ba84",
+      "lines": 135,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-performance.png",
+      "bytes": 77629,
+      "sha256": "a2d32c3d1b5374e10e85612aada106c39bb998b7d76b4f15164e830daeb271a8",
+      "kind": "figure",
+      "checks": [
+        "png-signature"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-permission-recurrence.json",
+      "bytes": 7505,
+      "sha256": "40d66940ef924994ac7f87d6d2f725cf3791b1bdf1828c946f04545274a89085",
+      "lines": 54,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-results-before-concurrency.json",
+      "bytes": 150773,
+      "sha256": "4087fe89a65867b02721220cfc4a107d8d75190a83a6b6cb60afd522434a45eb",
+      "lines": 1803,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-results.json",
+      "bytes": 150774,
+      "sha256": "0cc2eb38e77f56c2f87226c935eb26aeb11aabe0076be49b82003951f6852b2c",
+      "lines": 1803,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/infrastructure-tests.txt",
+      "bytes": 12521,
+      "sha256": "66874fdad6ca0dd50e5f7ab985e4a4f51dd4ed5d3195f663cf5426393005fcec",
+      "lines": 247,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/infrastructure-validation-2026-10-14.md",
+      "bytes": 8612,
+      "sha256": "c5dc5ae96c0a3f16c9f24337da7eb4a28417821eafee26ea4c1ad64a29db2548",
+      "lines": 144,
+      "kind": "historical evidence",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "evidence/live-demo-2026-10-14-approval.txt",
+      "bytes": 592,
+      "sha256": "07394722d3ef5df8345a36e322fc07254cc7be4fab84a54b75724a0ffc125cc7",
+      "lines": 15,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/live-demo-2026-10-14-gemini.txt",
+      "bytes": 729,
+      "sha256": "d5291d09729d0179dae99e8e2f62f443d5351651f466c0c8ec7dbf7c6f6275d8",
+      "lines": 15,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/live-demo-2026-10-14-high-risk.txt",
+      "bytes": 793,
+      "sha256": "c06b6cd3363fac31e15d144453c617b14c46a1c2291a4094bfeef2abfe476ddb",
+      "lines": 15,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/live-demo-2026-10-14-rejection.txt",
+      "bytes": 582,
+      "sha256": "8e8222ce396cce51122968fdfcc0b2c25c4146bff142a02ddc9c8e566edef4e0",
+      "lines": 15,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/live-demo-2026-10-14.md",
+      "bytes": 4056,
+      "sha256": "0ac32e23a940895f785cd2c3524722713c9281d5a8884be7bf76aa0cf6b31b64",
+      "lines": 73,
+      "kind": "historical evidence",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "evidence/operator-host-tests.txt",
+      "bytes": 2083,
+      "sha256": "632611e0c992078138d696225273acff4b3253dac9157dbb820584810ef8d690",
+      "lines": 50,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/operator-live-2026-10-14.txt",
+      "bytes": 1879,
+      "sha256": "3b47f152d893e42cbcc92447281a83d25a9d8d9113dba4278b69f9ffc93fa005",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/operator-live-cases.json",
+      "bytes": 13188,
+      "sha256": "261f314a6a3c25a8af5cfe6923248065149a700d3ae9cec73759384141eb4f64",
+      "lines": 96,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/operator-pilot-cases.json",
+      "bytes": 9820,
+      "sha256": "fc57351dbd79d13e188c176a20979fb74303b70cebab3d4d2fd8892f733430fc",
+      "lines": 69,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/operator-workflow-2026-10-14.md",
+      "bytes": 2923,
+      "sha256": "83ec5d340085e91d49cd95baed9233f2d5b4135bd983cc33d2b74a797f502d6a",
+      "lines": 52,
+      "kind": "historical evidence",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T153315Z-app-1-disk_leak-C/loop_events.jsonl",
+      "bytes": 933,
+      "sha256": "67e159111c3de2d94cf352217570fddb2c46219983e7dc549d8cd8092c09b0d7",
+      "lines": 2,
+      "kind": "historical evidence",
+      "records": 2,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T153315Z-app-1-disk_leak-C/run.log",
+      "bytes": 786,
+      "sha256": "cff1bcc37747cc73c7710f63292bee72415991be73f62920e55fa5da47fbd725",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T153315Z-app-1-disk_leak-C/samples.csv",
+      "bytes": 7029,
+      "sha256": "a544c763eb079dde9b7adfe20ff2632d9cfbe976581445d24cbc4d8843929c94",
+      "lines": 203,
+      "kind": "historical evidence",
+      "records": 202,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T153315Z-app-1-disk_leak-C/summary.json",
+      "bytes": 1437,
+      "sha256": "eb5b7733868d227cbc10d8109250a22587b28bc9e6d7866c17d40f91fb66b619",
+      "lines": 55,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T153917Z-app-2-disk_leak-C/loop_events.jsonl",
+      "bytes": 782,
+      "sha256": "1f58cd9e5ccb27b77a69ef732d16fc3c9e45f1541151530479003ed0575eddff",
+      "lines": 2,
+      "kind": "historical evidence",
+      "records": 2,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T153917Z-app-2-disk_leak-C/run.log",
+      "bytes": 646,
+      "sha256": "8d513457ca599564323a66adeac0a19be9ccfa858bfc62ffac12f8869f0ec0cf",
+      "lines": 6,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T153917Z-app-2-disk_leak-C/samples.csv",
+      "bytes": 6241,
+      "sha256": "cf70a9b5b14104880cb0116ee31b5235cd19fc05c297ae2920cd6870d8b543fb",
+      "lines": 186,
+      "kind": "historical evidence",
+      "records": 185,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T153917Z-app-2-disk_leak-C/summary.json",
+      "bytes": 1236,
+      "sha256": "85b399f08aedab675977aab322e3feff009bb5bffa45223b9bdf3f2b62a93a67",
+      "lines": 55,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T154500Z-app-2-config_drift-C/loop_events.jsonl",
+      "bytes": 325,
+      "sha256": "7abea7a4a75751c879e137bf21b74b6cad6d4aab83da0507702d114649d9b1f0",
+      "lines": 1,
+      "kind": "historical evidence",
+      "records": 1,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T154500Z-app-2-config_drift-C/run.log",
+      "bytes": 423,
+      "sha256": "9dd4954f3fee0a08f2c141a335395d2f556696fb2d350772db81b0e5a8121960",
+      "lines": 5,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T154500Z-app-2-config_drift-C/samples.csv",
+      "bytes": 2189,
+      "sha256": "3829159fe1f8f594e25d5fb18bb2030cab8274e97b2629dca945e0a4b2f2baa6",
+      "lines": 66,
+      "kind": "historical evidence",
+      "records": 65,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T154500Z-app-2-config_drift-C/summary.json",
+      "bytes": 696,
+      "sha256": "94dda02268565be8fb7eb4685df02bd3f247056b497168aa0304d14ad0af1443",
+      "lines": 33,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T154609Z-app-2-service_stop-C/loop_events.jsonl",
+      "bytes": 301,
+      "sha256": "4fa2fe679c0b98debedb17b2aea5f0e868311fa78c7dde8dd997147c9725be44",
+      "lines": 1,
+      "kind": "historical evidence",
+      "records": 1,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T154609Z-app-2-service_stop-C/run.log",
+      "bytes": 236,
+      "sha256": "a6633bc1f0ef561b960af00e581e2678c14863da15523b19756371edecfefe74",
+      "lines": 3,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T154609Z-app-2-service_stop-C/samples.csv",
+      "bytes": 1364,
+      "sha256": "3273e616f174cb9baac27f9db92e683262f3cdb8003d55706e2f28e3e960ada0",
+      "lines": 41,
+      "kind": "historical evidence",
+      "records": 40,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T154609Z-app-2-service_stop-C/summary.json",
+      "bytes": 593,
+      "sha256": "389dbfb83fe49dae2b600b14371d885ffaf1641f411b867e98dcd042a96f4d36",
+      "lines": 27,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T155357Z-app-1-disk_leak-A/loop_events.jsonl",
+      "bytes": 4734,
+      "sha256": "410a36156fc4eec38d523d1bdaa93bc03b4c05b8771797576e710c6652ddd371",
+      "lines": 17,
+      "kind": "historical evidence",
+      "records": 17,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T155357Z-app-1-disk_leak-A/run.log",
+      "bytes": 794,
+      "sha256": "6dcbdee563062f8aba659def81a7aeb8e81ba6b63881d83678157a6af55f7fab",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T155357Z-app-1-disk_leak-A/samples.csv",
+      "bytes": 11815,
+      "sha256": "4432ad942cab194e7a76cf377ce2e3076d2554ec1837c3643d01ebd80ee1d628",
+      "lines": 335,
+      "kind": "historical evidence",
+      "records": 334,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T155357Z-app-1-disk_leak-A/summary.json",
+      "bytes": 1953,
+      "sha256": "570e378fa544f947fadf3d9198232b2e9ce6711dabafdd31d614863fa854ed00",
+      "lines": 70,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T160014Z-app-1-disk_leak-A/loop_events.jsonl",
+      "bytes": 4734,
+      "sha256": "8ec3ffd6eb3ec1bc4e1db14ce714129048c6b9240bfafc0f550e13d34daaab2d",
+      "lines": 17,
+      "kind": "historical evidence",
+      "records": 17,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T160014Z-app-1-disk_leak-A/run.log",
+      "bytes": 786,
+      "sha256": "bfba52d874a86588350c5bd748be56fa390a8b27f727f109ad50093b1efe0be4",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T160014Z-app-1-disk_leak-A/samples.csv",
+      "bytes": 11815,
+      "sha256": "cdf8462a3cb44b430bcf0103a8c20f343b321c82a1ecfefa660757705d40560e",
+      "lines": 335,
+      "kind": "historical evidence",
+      "records": 334,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T160014Z-app-1-disk_leak-A/summary.json",
+      "bytes": 1662,
+      "sha256": "5b71369d57c58331562d1d6f2178770221362550247a130df3f9de827b9d5a7c",
+      "lines": 70,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T160143Z-app-2-config_drift-unmanaged-effector-check/loop_events.jsonl",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "kind": "historical evidence",
+      "records": 0,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T160143Z-app-2-config_drift-unmanaged-effector-check/run.log",
+      "bytes": 702,
+      "sha256": "a14aea84a2a4c02f3153637480b6c9dea5d5907c81e9ed93ddd4fa05d4597e1f",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T160143Z-app-2-config_drift-unmanaged-effector-check/samples.csv",
+      "bytes": 1166,
+      "sha256": "cdb2d47b128217d8cece845fafd46c30c41d3e745c1d3c19286d8ad621c61756",
+      "lines": 35,
+      "kind": "historical evidence",
+      "records": 34,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T160143Z-app-2-config_drift-unmanaged-effector-check/summary.json",
+      "bytes": 1085,
+      "sha256": "637cece18e55b4ff5e889e3a314c9e016f2f9083ce49254c566f7abbe1884439",
+      "lines": 42,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T161308Z-app-1-disk_leak-A/loop_events.jsonl",
+      "bytes": 4755,
+      "sha256": "9e5f4d59033b994254c7bae0c34e1c175215ee85be6a712ce9b542a741c577c3",
+      "lines": 17,
+      "kind": "historical evidence",
+      "records": 17,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T161308Z-app-1-disk_leak-A/run.log",
+      "bytes": 786,
+      "sha256": "5a4c86496c7517e5df82f799bb7364985e5d1022c5b29e129893efd78b30760b",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T161308Z-app-1-disk_leak-A/samples.csv",
+      "bytes": 11805,
+      "sha256": "04622cf03978c77fa994e567c80d42e9bc47d9d6b857dc1a3b90faf9f3e3b24f",
+      "lines": 335,
+      "kind": "historical evidence",
+      "records": 334,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T161308Z-app-1-disk_leak-A/summary.json",
+      "bytes": 1662,
+      "sha256": "775f689988f446351f14b562f11f221e45bc7f99a4e253c25cba5b0e6cc7e656",
+      "lines": 70,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T161925Z-app-1-disk_leak-A/loop_events.jsonl",
+      "bytes": 4734,
+      "sha256": "1315dd4d48f999684b44d0d1c13a58fa41759447164b99dbf40ba58cdd28ebb5",
+      "lines": 17,
+      "kind": "historical evidence",
+      "records": 17,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T161925Z-app-1-disk_leak-A/run.log",
+      "bytes": 786,
+      "sha256": "def97e363b10d720e5c855c78ecafa39b7eb07c3ca01fde5939b23b792f3d7d5",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T161925Z-app-1-disk_leak-A/samples.csv",
+      "bytes": 11816,
+      "sha256": "6ca771e8a6360cbb106d586e998d7ecfa6b6704cb5eabadaaca592e81fd1fd0e",
+      "lines": 335,
+      "kind": "historical evidence",
+      "records": 334,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T161925Z-app-1-disk_leak-A/summary.json",
+      "bytes": 1662,
+      "sha256": "424c1050f3696c320891194cb6adac3b91968ed4ecdb1316e29dc732e132a0e9",
+      "lines": 70,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T162759Z-app-1-disk_leak-B/loop_events.jsonl",
+      "bytes": 879,
+      "sha256": "5bd165c7f83b56e1bdb898dc27b768e6ac4e718b767259b026518e78b947c7e7",
+      "lines": 2,
+      "kind": "historical evidence",
+      "records": 2,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T162759Z-app-1-disk_leak-B/run.log",
+      "bytes": 786,
+      "sha256": "cbf4a6c422225355718a69f7b8c945d54f9e026bff08a73fc9c66b9c4dba4058",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T162759Z-app-1-disk_leak-B/samples.csv",
+      "bytes": 6907,
+      "sha256": "ec0bfe9e7085df437d4336b2ca6b5900f54d85f21a8ab88a427fbd7ebb44bede",
+      "lines": 200,
+      "kind": "historical evidence",
+      "records": 199,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T162759Z-app-1-disk_leak-B/summary.json",
+      "bytes": 1437,
+      "sha256": "4099cdcf64f7bc8bb3e60f6defe71f1ff320914acb97524d240c4afd7194bcbb",
+      "lines": 55,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T163202Z-app-1-disk_leak-B/loop_events.jsonl",
+      "bytes": 879,
+      "sha256": "c6e5624afadc160bdd93ca824c07d541903e0cc838a8dd60d70d7f9f0fb9b9d2",
+      "lines": 2,
+      "kind": "historical evidence",
+      "records": 2,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T163202Z-app-1-disk_leak-B/run.log",
+      "bytes": 786,
+      "sha256": "a011cf2b9cb81dec0f11531d6f26852d17418899dea4d1270b670266015d9f97",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T163202Z-app-1-disk_leak-B/samples.csv",
+      "bytes": 7132,
+      "sha256": "a0c49884cdb18f5114c0236ec7e4860144cd57302277e76e3f83509dc3290756",
+      "lines": 206,
+      "kind": "historical evidence",
+      "records": 205,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T163202Z-app-1-disk_leak-B/summary.json",
+      "bytes": 1437,
+      "sha256": "8b5746bce911c896199c6637a27c20bad96b3039bf93190ce73da6879f783b9f",
+      "lines": 55,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T163829Z-app-1-disk_leak-C/loop_events.jsonl",
+      "bytes": 513,
+      "sha256": "809d9665c0c4178e6fdbf57266349cedc4c636f4fb5c0c1c1ea6c1aacb228b04",
+      "lines": 1,
+      "kind": "historical evidence",
+      "records": 1,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T163829Z-app-1-disk_leak-C/run.log",
+      "bytes": 786,
+      "sha256": "a8a00c983dcf46c2c4df50b0a15705cc5c7480c609b508d2afee4fb20cf8b7f8",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T163829Z-app-1-disk_leak-C/samples.csv",
+      "bytes": 6513,
+      "sha256": "ff4e45fd1a5d2471b210e4b98cd7826bf5a03368cfc8873defbe79271feef00f",
+      "lines": 189,
+      "kind": "historical evidence",
+      "records": 188,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T163829Z-app-1-disk_leak-C/summary.json",
+      "bytes": 1420,
+      "sha256": "017f20ca40b3294f2d352309f5ee83186871401067ac533e30f2d4fd0400048f",
+      "lines": 54,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T164222Z-app-1-disk_leak-C/loop_events.jsonl",
+      "bytes": 4802,
+      "sha256": "276605676ab1f340e48ada0af879c41978875f594f43eacf9951acceef7cc55e",
+      "lines": 13,
+      "kind": "historical evidence",
+      "records": 13,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T164222Z-app-1-disk_leak-C/run.log",
+      "bytes": 646,
+      "sha256": "fdae0959c1c36251bcb70d0db844b8c5bb5fe996a4b8bae2d47c01f14faade92",
+      "lines": 6,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T164222Z-app-1-disk_leak-C/samples.csv",
+      "bytes": 6405,
+      "sha256": "413019bea97a50ef132e05be752fa907b09e9d8ec2a80eddc0c54c954f9214de",
+      "lines": 187,
+      "kind": "historical evidence",
+      "records": 186,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T164222Z-app-1-disk_leak-C/summary.json",
+      "bytes": 1403,
+      "sha256": "d05df292469e4badc70e563245233eed6c73d3c5b45a14c075ebd221e0f81912",
+      "lines": 66,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T164837Z-app-1-disk_leak-A/loop_events.jsonl",
+      "bytes": 4755,
+      "sha256": "80f33b4ddb0030e2d183714e402ac878b687a659f3d9168889634ca148e626b3",
+      "lines": 17,
+      "kind": "historical evidence",
+      "records": 17,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T164837Z-app-1-disk_leak-A/run.log",
+      "bytes": 786,
+      "sha256": "87a75ef7d9c17927b087c2c3070d9b4adc34ab454b2a59550e3ce872f6b6def9",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T164837Z-app-1-disk_leak-A/samples.csv",
+      "bytes": 11806,
+      "sha256": "28afa12144284305f07b20c3901f521b58efb597c9f3fecd0d5ec58b93586f86",
+      "lines": 335,
+      "kind": "historical evidence",
+      "records": 334,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T164837Z-app-1-disk_leak-A/summary.json",
+      "bytes": 1662,
+      "sha256": "af5b2415afdc470e2f15d7fd452d2729fa3230f1044b6559b8c0887b58bf52ae",
+      "lines": 70,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T165454Z-app-1-disk_leak-A/loop_events.jsonl",
+      "bytes": 4734,
+      "sha256": "64429dbc9c3cb737f3958abdde5cdc69511bd3217f432eccdb5a10f2e07fafe8",
+      "lines": 17,
+      "kind": "historical evidence",
+      "records": 17,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T165454Z-app-1-disk_leak-A/run.log",
+      "bytes": 786,
+      "sha256": "5fe9f8eff47b5e58e487c08c17683ecadb6c842ddbda2e9584de5bfa5324be44",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T165454Z-app-1-disk_leak-A/samples.csv",
+      "bytes": 11816,
+      "sha256": "27f60832f220ef5796bf3836bf70404f1ee7613c3c44a3fe093ddbef0e6faf2e",
+      "lines": 335,
+      "kind": "historical evidence",
+      "records": 334,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T165454Z-app-1-disk_leak-A/summary.json",
+      "bytes": 1662,
+      "sha256": "b61fe8e66119f5083d96ee308e9801b8a5787b3f709ce6076ca8ecbe8812387b",
+      "lines": 70,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T170330Z-app-1-disk_leak-B/loop_events.jsonl",
+      "bytes": 513,
+      "sha256": "774882f6d6cebfe6d21354af9d4e30cde1daf17c75fa91878be007275ffb6bd4",
+      "lines": 1,
+      "kind": "historical evidence",
+      "records": 1,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T170330Z-app-1-disk_leak-B/run.log",
+      "bytes": 786,
+      "sha256": "75a0a606b3e7456d5f1959f94dd194d38b73b51c3db41f31eea0b86ff8183532",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T170330Z-app-1-disk_leak-B/samples.csv",
+      "bytes": 6548,
+      "sha256": "05bf662db5a430d18a2c9fa556e154f50ebea83622cb6f26806b7031f301df3f",
+      "lines": 190,
+      "kind": "historical evidence",
+      "records": 189,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T170330Z-app-1-disk_leak-B/summary.json",
+      "bytes": 1420,
+      "sha256": "50cd7fa9ef86d5841f65ea3b165d7be3e1efbd399fff1f73b0f9f09ac2a90483",
+      "lines": 54,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T170723Z-app-1-disk_leak-B/loop_events.jsonl",
+      "bytes": 513,
+      "sha256": "ce02030573444b2cd9e459dd997a4dcc4e3915ce23a0e70bf16a32df9e6b7c2a",
+      "lines": 1,
+      "kind": "historical evidence",
+      "records": 1,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T170723Z-app-1-disk_leak-B/run.log",
+      "bytes": 786,
+      "sha256": "7138398ed20dde987c962d21b6505cf1434eaae6f57a80819bf0b46004f41213",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T170723Z-app-1-disk_leak-B/samples.csv",
+      "bytes": 6806,
+      "sha256": "3e310bbc8ee234a768eec8c050694d7e862ef5e76ac62e8df4ac5bbb1d2da209",
+      "lines": 197,
+      "kind": "historical evidence",
+      "records": 196,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T170723Z-app-1-disk_leak-B/summary.json",
+      "bytes": 1422,
+      "sha256": "9e5a3ae1995aced775d87278efe4bbf26ee364edf49b95fbf5bdc79929806c1d",
+      "lines": 54,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T171337Z-app-1-disk_leak-C/loop_events.jsonl",
+      "bytes": 879,
+      "sha256": "b175c10be1a85815d652f9a13d604b016d8bc95bba9088f64a4f1c15f92dd558",
+      "lines": 2,
+      "kind": "historical evidence",
+      "records": 2,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T171337Z-app-1-disk_leak-C/run.log",
+      "bytes": 786,
+      "sha256": "4179f682d24d8240f25de3483f5222a3221190c6896cf4a22950d1f076acffe0",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T171337Z-app-1-disk_leak-C/samples.csv",
+      "bytes": 6941,
+      "sha256": "028dbf349e10e729da8e0a030a3d3ed221d5b85fd5fbde00f11b9f896e1573bb",
+      "lines": 201,
+      "kind": "historical evidence",
+      "records": 200,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T171337Z-app-1-disk_leak-C/summary.json",
+      "bytes": 1437,
+      "sha256": "9f2c3c2c097b728c44b40f539bcb43f3fe4b899668cbac4b956e3e46f8866294",
+      "lines": 55,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T171744Z-app-1-disk_leak-C/loop_events.jsonl",
+      "bytes": 4067,
+      "sha256": "060eb97f409d77aaad8f49d006379b778851cbb16ee87106f619572d3b83f3c8",
+      "lines": 11,
+      "kind": "historical evidence",
+      "records": 11,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T171744Z-app-1-disk_leak-C/run.log",
+      "bytes": 646,
+      "sha256": "6947cb6ae71993db4d2db22c7fda97e3af314e63f85c7390a40f1425d63da115",
+      "lines": 6,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T171744Z-app-1-disk_leak-C/samples.csv",
+      "bytes": 6327,
+      "sha256": "f9dc2ae3e594ef18093b01f5107ebced1c0261690248501410f272cf8658a4cf",
+      "lines": 185,
+      "kind": "historical evidence",
+      "records": 184,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T171744Z-app-1-disk_leak-C/summary.json",
+      "bytes": 1373,
+      "sha256": "2f224a97266904cd23d19f5177d939b2473059b5fce9224e04b3914886187a8e",
+      "lines": 64,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T172351Z-app-1-disk_leak-A/loop_events.jsonl",
+      "bytes": 4200,
+      "sha256": "8e63a2c23c063aeea7dd1331cf2d8ffc2a1952b38ce6f20a32df53fe9af536ee",
+      "lines": 15,
+      "kind": "historical evidence",
+      "records": 15,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T172351Z-app-1-disk_leak-A/run.log",
+      "bytes": 786,
+      "sha256": "f2a031ccf0d057c8c018e2f344766ec1f5f5fa39ff95de6b0acfa502c37c6e82",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T172351Z-app-1-disk_leak-A/samples.csv",
+      "bytes": 11815,
+      "sha256": "f8fcb19ab40a4b8a411731cf7cd62847e7b19d54cdfeeb6aab879706163d7204",
+      "lines": 335,
+      "kind": "historical evidence",
+      "records": 334,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T172351Z-app-1-disk_leak-A/summary.json",
+      "bytes": 1630,
+      "sha256": "9161cbba915b4b9f740359102b425a70f60eab209e6f6059ae0d42c6b25878c3",
+      "lines": 68,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T173113Z-app-1-disk_leak-loop-not-running/loop_events.jsonl",
+      "bytes": 248,
+      "sha256": "c598c9e66a3be437675193728869bb4618565259a903774662d6985a07f46be2",
+      "lines": 1,
+      "kind": "historical evidence",
+      "records": 1,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T173113Z-app-1-disk_leak-loop-not-running/run.log",
+      "bytes": 678,
+      "sha256": "84352e5db787fa0c63aacef3512d2fd4a416c1be95f627a66a325a29e06cb960",
+      "lines": 6,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-13T173113Z-app-1-disk_leak-loop-not-running/samples.csv",
+      "bytes": 2743,
+      "sha256": "09731f9ac1385bfc2a86a5cd83d8c40739ee912b2945308d266ba17f16209e01",
+      "lines": 80,
+      "kind": "historical evidence",
+      "records": 79,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-13T173113Z-app-1-disk_leak-loop-not-running/summary.json",
+      "bytes": 1324,
+      "sha256": "dcedbfac1432ec69ea56252a8148e8cf19d77b45f7c3f88d8c30fba6fbb0dcc4",
+      "lines": 54,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T093319Z-app-1-disk_leak-C/loop_events.jsonl",
+      "bytes": 879,
+      "sha256": "bc2c24b6b4b2bf8becc7823216fe7284a2eff78424e058fa783a6db91eedff3e",
+      "lines": 2,
+      "kind": "historical evidence",
+      "records": 2,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T093319Z-app-1-disk_leak-C/run.log",
+      "bytes": 786,
+      "sha256": "071bfade19fd004342cfd1ad61e59b0336b820d71f25c4e7a92219d184bd813a",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-14T093319Z-app-1-disk_leak-C/samples.csv",
+      "bytes": 6907,
+      "sha256": "36a7237e075eb21968ad3396b1864a3dbcb2a05c3816cb3b645695646a8b7a75",
+      "lines": 200,
+      "kind": "historical evidence",
+      "records": 199,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T093319Z-app-1-disk_leak-C/summary.json",
+      "bytes": 1437,
+      "sha256": "3798ffbe43fbda4bf2973038b9ca8d4a3fcf006d1cb3cf7fe3a85f9918587dcf",
+      "lines": 55,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T093642Z-app-1-disk_leak-C/loop_events.jsonl",
+      "bytes": 5592,
+      "sha256": "452c573076f4d8727d44e8a1a01adffbb8e856e1e59c059238bf94aeaa63eafd",
+      "lines": 15,
+      "kind": "historical evidence",
+      "records": 15,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T093642Z-app-1-disk_leak-C/run.log",
+      "bytes": 786,
+      "sha256": "f3e8a540b69130fc829ab9a75f949c281e75e8e7abd975553a6e1b4547582c04",
+      "lines": 7,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-14T093642Z-app-1-disk_leak-C/samples.csv",
+      "bytes": 7131,
+      "sha256": "9d3f00dc70f288975e1125ba007aab4b789cb4d2fa93629275327693133b6eca",
+      "lines": 206,
+      "kind": "historical evidence",
+      "records": 205,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T093642Z-app-1-disk_leak-C/summary.json",
+      "bytes": 1632,
+      "sha256": "cf8131f142a4fff59800bbb2f771bf6e43e7da7669babc3ec92dc7e7fcf61dca",
+      "lines": 68,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094011Z-app-1-service_stop-C/loop_events.jsonl",
+      "bytes": 4996,
+      "sha256": "3299448b2d0b7ab405935ffaf8767cc7ffc0071280e6b7bc4f8162355612f8e1",
+      "lines": 16,
+      "kind": "historical evidence",
+      "records": 16,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094011Z-app-1-service_stop-C/run.log",
+      "bytes": 237,
+      "sha256": "0d87965658b8b8881b341d9a3022a3d0d4643ec3ea78b800c21260ab24a7c3b4",
+      "lines": 3,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094011Z-app-1-service_stop-C/samples.csv",
+      "bytes": 6197,
+      "sha256": "42a2156d29194e16295a6ed55d5909c1b8d473b9f89b0f34a328f5898cf12b7c",
+      "lines": 185,
+      "kind": "historical evidence",
+      "records": 184,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094011Z-app-1-service_stop-C/summary.json",
+      "bytes": 825,
+      "sha256": "5bc30aa82b45fdbdc553c89613d121ab830d7b3a0443872be2ab9a037fd465e3",
+      "lines": 42,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094318Z-app-1-config_drift-C/loop_events.jsonl",
+      "bytes": 333,
+      "sha256": "f3462714af65680a9c6136eec8d8cb8d91d5ee9dffa40d36d46c8fa6f37315db",
+      "lines": 1,
+      "kind": "historical evidence",
+      "records": 1,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094318Z-app-1-config_drift-C/run.log",
+      "bytes": 423,
+      "sha256": "39134077039e2603fed90aa87b8ed9550f7b4ba413b6c65a272236f25c42589d",
+      "lines": 5,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094318Z-app-1-config_drift-C/samples.csv",
+      "bytes": 2189,
+      "sha256": "2bd921f171eb4af05bcf1f06dc080ad9e9ba621e3c65a9ad4cb8dd80a604cb9f",
+      "lines": 66,
+      "kind": "historical evidence",
+      "records": 65,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094318Z-app-1-config_drift-C/summary.json",
+      "bytes": 696,
+      "sha256": "7865ca85dd971c548974a4bc1e6d8037ca2628f6b1925361eb9b0c071698aa1b",
+      "lines": 33,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094332Z-app-2-disk_leak-C/loop_events.jsonl",
+      "bytes": 434,
+      "sha256": "6c562c945e6b02413f31a4c661c5d89963baf27b79b698c8b170b468e97ab511",
+      "lines": 1,
+      "kind": "historical evidence",
+      "records": 1,
+      "checks": [
+        "jsonl-all-records"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094332Z-app-2-disk_leak-C/run.log",
+      "bytes": 647,
+      "sha256": "9c300c9b24d884717633ea5c8ebdb788b4a94d43052b793256a98f42743486a4",
+      "lines": 6,
+      "kind": "historical evidence",
+      "checks": []
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094332Z-app-2-disk_leak-C/samples.csv",
+      "bytes": 6241,
+      "sha256": "072561309c32b20ad0d769a92635e150d0c8a423907ff7c18ee832674ecba3dc",
+      "lines": 186,
+      "kind": "historical evidence",
+      "records": 185,
+      "checks": [
+        "csv-all-rows"
+      ]
+    },
+    {
+      "path": "evidence/runs/2026-10-14T094332Z-app-2-disk_leak-C/summary.json",
+      "bytes": 1222,
+      "sha256": "ab7899b181d0776ef201f846932416033614ce7aa89f0634398635ff8d7314fd",
+      "lines": 54,
+      "kind": "historical evidence",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "mapek/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/actions.py",
+      "bytes": 1524,
+      "sha256": "1874938c4d5a7e2eedb7bf099919682e393cfdf80f88d984177b060718941fba",
+      "lines": 54,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/advisor.py",
+      "bytes": 10968,
+      "sha256": "dacb2a26c13ddfdbfdf534c7bea7ec9efd46476ccfbc661908fc14b382a8506b",
+      "lines": 226,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/cloudstack.py",
+      "bytes": 6849,
+      "sha256": "b396661748cd4b36ebc93dd304937550aebba9c34cd4ced97d26553d376c744c",
+      "lines": 156,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/educloud.py",
+      "bytes": 29077,
+      "sha256": "c08c2321823f77842778a9ed7d237efb9d9b5ffe4a41351d242ff8730156c89f",
+      "lines": 674,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/guardrails.py",
+      "bytes": 1650,
+      "sha256": "8ff6ca21deefa6d81bff3e8abeeb3cc5c5cd621a2308ba904558ac514cd3222f",
+      "lines": 41,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/infrastructure.py",
+      "bytes": 14584,
+      "sha256": "060e459b75a4ff575e12076bfa6d29a841fd1913425d50637daa47d8f082446a",
+      "lines": 252,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/knowledge.py",
+      "bytes": 8874,
+      "sha256": "9f9ecc12e74531f4cf191b5c20880f36e526d2a5c910300261de24c1fbc2604e",
+      "lines": 221,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/loop.py",
+      "bytes": 12488,
+      "sha256": "851816f7d15af6c1282b0ccf0d3168e927ceac93f560bd28dbc3f3c9ea23a48e",
+      "lines": 280,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/operator.py",
+      "bytes": 13992,
+      "sha256": "168068f417c4f1fedbe720f868bbb742e0919e7d7564d2d3d31f8ce1b9a96fab",
+      "lines": 228,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/prometheus.py",
+      "bytes": 4169,
+      "sha256": "9cd8d574715398cdb49d72897bae248d49798592388e546b5a1ecd6e5654c7a7",
+      "lines": 98,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/stages.py",
+      "bytes": 8751,
+      "sha256": "d32d6ad236e936ac26db4dbf4cfe9e7dba6849ea8e7b4ba9e02af2d1d7d87bad",
+      "lines": 240,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "mapek/world.py",
+      "bytes": 5113,
+      "sha256": "bffdded6c6fb42bbbac849564ba837104c9f7076d96d811dbf8c155c2cb91b47",
+      "lines": 137,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "monitoring/blackbox.yml",
+      "bytes": 567,
+      "sha256": "f9654379078e50ec3de814848ab3229f243001b4655a197d8a5ac17851e23e54",
+      "lines": 22,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "monitoring/build_dashboard.py",
+      "bytes": 10697,
+      "sha256": "b3a1fce068e054d5757559171d8770b30308e060253004013c83e825d6979fa7",
+      "lines": 214,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "monitoring/build_infrastructure_dashboard.py",
+      "bytes": 1516,
+      "sha256": "df1742e23f7738d05fbd96394217e6c98eb71decb2b7557d9a31b26937b5bc12",
+      "lines": 21,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "monitoring/grafana/dashboards/infrastructure.json",
+      "bytes": 4905,
+      "sha256": "4245f9022ccb01240a6a74504ecc0ac213ac204918827375cf7be5432dd25471",
+      "lines": 233,
+      "kind": "source/config/docs",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "monitoring/grafana/dashboards/selfheal.json",
+      "bytes": 21262,
+      "sha256": "b504ee0bb98bb53e6e6cc17cee5c175ea860165eb478c3053c4c1d1a539397be",
+      "lines": 1152,
+      "kind": "source/config/docs",
+      "json_type": "dict",
+      "checks": [
+        "json-parsed"
+      ]
+    },
+    {
+      "path": "monitoring/grafana/provisioning/dashboards/selfheal.yml",
+      "bytes": 189,
+      "sha256": "784c0c2c167cd372246c5a1517a9c4f17043bb1c1347a09b6bc3e159fd248a0c",
+      "lines": 9,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "monitoring/grafana/provisioning/datasources/prometheus.yml",
+      "bytes": 196,
+      "sha256": "039e4611c06daaafe9bcd5cacd63ff2ed4608df2b71ffcdeeb91ab9392623139",
+      "lines": 10,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "monitoring/prometheus.yml",
+      "bytes": 2207,
+      "sha256": "716ca0f4adba735d54963c96d4f9fc2b3bc618744d64de37f95994e9b31a9cdc",
+      "lines": 72,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "monitoring/rules/healer.yml",
+      "bytes": 2142,
+      "sha256": "540a3b768fbbeebb30dcd61adb783e79d78d0f3303734a9574f78c2e5d975eaf",
+      "lines": 47,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "README.md",
+      "bytes": 16451,
+      "sha256": "6f15d62bf50d077f17c2f42cab6a9bbf58619638f119ba588b04b35d18954883",
+      "lines": 315,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 3546,
+      "sha256": "400d0480fd97ebf571baa024a7d02aa6187ecfab0ba296efdf071189679dce1d",
+      "lines": 38,
+      "kind": "source/config/docs",
+      "checks": [
+        "markdown-links/fences"
+      ]
+    },
+    {
+      "path": "tools/benchmark_infrastructure.py",
+      "bytes": 4617,
+      "sha256": "ccdde0baa6275d2bb6974ae925d8178991492d313ead9f3049240de786f267ad",
+      "lines": 74,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/capture_transaction_errors.py",
+      "bytes": 895,
+      "sha256": "01d667c0723c6fe151254138ed994e33cfb650e3873545e500b0827feab38da3",
+      "lines": 24,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/cloudstack_check.py",
+      "bytes": 4568,
+      "sha256": "9e37b5b016d13a1d494cfb0a9f6277a1bdbbe154fc8e355a64fa9500a9c1c3f3",
+      "lines": 112,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/configure_infrastructure_monitor.py",
+      "bytes": 2824,
+      "sha256": "28ae1333864d7310893e77ea924fb526c45e6dc39523e4027c2e374cfc7e761d",
+      "lines": 53,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/demo.py",
+      "bytes": 1560,
+      "sha256": "f94998ff17db64daadb08c48a889d8ab997aaec963fd910fea209e7d6e64ee52",
+      "lines": 51,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/demo_advice.py",
+      "bytes": 3944,
+      "sha256": "ae2fc44dd3ac2a9b0d622eb3f44f5b07d8d84cbd86a0bad8abb50cdbd731c99a",
+      "lines": 91,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/demo_infrastructure_live.py",
+      "bytes": 6837,
+      "sha256": "5e7af9fef5f6ca084fbc1757d6d784b61cab761b50c1e560a438ce85497159de",
+      "lines": 101,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/demo_operator_live.py",
+      "bytes": 4077,
+      "sha256": "8139f05393d606ae44ca79baa0349a21eb4bd848dbddc68a03d038699f074357",
+      "lines": 84,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/experiment.py",
+      "bytes": 4476,
+      "sha256": "d2514f454bbc8d507dbc8d0cc4f8af6105bd00a1ec282009aefea4c944bcc810",
+      "lines": 128,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/export_infrastructure_evidence.py",
+      "bytes": 4145,
+      "sha256": "0c4246b59ec943dc9418af5ff4f955ba8e68724cb2e3f944f5dab1bd899bb282",
+      "lines": 65,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/healer_service.py",
+      "bytes": 12019,
+      "sha256": "f517916fb3bae0095a54843c87ca42458fc4597a426fd02cbeb7cc1d52d827ba",
+      "lines": 251,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/incidents.py",
+      "bytes": 2970,
+      "sha256": "b9e1a79e168e1d15fc96507c65a0a2502f7708c1d93e9aa53e2f9b47b4cd1d5e",
+      "lines": 55,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/infrastructure.py",
+      "bytes": 6654,
+      "sha256": "93a82a9e45e15f3d3bee52b875cd33d1612e0abbd1e4730768105671988bdce6",
+      "lines": 122,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/infrastructure_service.py",
+      "bytes": 3648,
+      "sha256": "4afedde6c023e43325f0450e6fa6f0930a1f645fdcc0ece16e401a13f2c3975a",
+      "lines": 59,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/install_exporters.sh",
+      "bytes": 4013,
+      "sha256": "f9f95612799f3462931df065360bcf9105b1b03cdbc5bd47543415513077f7db",
+      "lines": 98,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/install_infrastructure.sh",
+      "bytes": 4555,
+      "sha256": "b06ee84586cf713d87f73c208013a0c0db059dcfd19f0de352f9f410d8928c2a",
+      "lines": 119,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/install_lab_host.sh",
+      "bytes": 11451,
+      "sha256": "0f31e24e97002e02f6e1a2cf397453416e4a140a1750efa4fe2cec6259850b22",
+      "lines": 305,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/install_monitor.sh",
+      "bytes": 5750,
+      "sha256": "a29e4c88f0d09ec7f114e2d7af367e5c41ac63750afb0c9c5c51092bb23fc43a",
+      "lines": 114,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/knowledge.py",
+      "bytes": 3269,
+      "sha256": "6dc432b69a538c9333abdc98a5eb3b3fd1f8b7b85b5a493e18bdadc2a9ae9592",
+      "lines": 76,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/lab-host/healer-logflood",
+      "bytes": 1770,
+      "sha256": "c989d6a36afbe36ec5d0032c4e21590e60cf044c31b4619dc8ce4ac7ca1f763b",
+      "lines": 51,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/lab-host/healer-metrics",
+      "bytes": 2287,
+      "sha256": "b158f21fdc449f9ec5cdbc356a2de77836099d9385d273b0141b40b33db4bf23",
+      "lines": 51,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/lab-host/healer-mount-guard",
+      "bytes": 2161,
+      "sha256": "0f3de9a30c3d1b34d771da6604769903bde4b03003bc4fc3b77ebb57435750f5",
+      "lines": 51,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/lab-host/healer-preflight",
+      "bytes": 1805,
+      "sha256": "3eb993bd93d96c82c44ee74a41e34b9d9ad84f30984a9018873257ae062ae2fa",
+      "lines": 49,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/lab.py",
+      "bytes": 5678,
+      "sha256": "8d6c2c43dbbc5bab83fb16c143de6e1a8cf356867f30824edc38908ab08af606",
+      "lines": 161,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/lab_shell.py",
+      "bytes": 1367,
+      "sha256": "465d3caa5575cb94865b2c70edf8a04ac001d2a5d43b442b6e285748e84f5862",
+      "lines": 40,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/live_experiment.py",
+      "bytes": 6400,
+      "sha256": "24f1dce66cd2191827e9377366f527610b06aeac96963bcb7ad67a679349f359",
+      "lines": 133,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/live_run.py",
+      "bytes": 10051,
+      "sha256": "92490b527436136760abebea0a1879ad28524c6878921cb1f3e2226470b33986",
+      "lines": 241,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/provision.sh",
+      "bytes": 1765,
+      "sha256": "8f590e4d1c47723a3bf1ab23d43db6634d2cd367e98bb4d8e483bea7888658fb",
+      "lines": 40,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/stack-host/transaction.py",
+      "bytes": 4484,
+      "sha256": "bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf",
+      "lines": 110,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/start_infrastructure.sh",
+      "bytes": 910,
+      "sha256": "8e5839c6ae8ee3cb776ed5426f7488f185cc1dcd1ad08946d254749db4bfd55d",
+      "lines": 27,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/start_loop.sh",
+      "bytes": 2308,
+      "sha256": "11ab7d5455b1c5aa5cc8bb83f37e90d466cd820f922daa35c5d4adab81e7b3b9",
+      "lines": 65,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/summarise_experiment.py",
+      "bytes": 6016,
+      "sha256": "ed4644fccc86a54a68837c167cb06aa29f68b245e1e47c177ce7be12d9819f09",
+      "lines": 122,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/test_adapter.py",
+      "bytes": 23781,
+      "sha256": "8a0c1ad09ad832abf9d8703ec1cb396990187bfe4aaab271fc59bf5e32c71d78",
+      "lines": 613,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/test_infrastructure.py",
+      "bytes": 10682,
+      "sha256": "a7ac0bf3ef9743cacda4bfb99cdc36c5457895bb8acbdbcea2a5d511cd8df2a2",
+      "lines": 148,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/test_lab_host.sh",
+      "bytes": 10965,
+      "sha256": "5fd7b5a430914723741ae4f7756f0a1938be6a055df02902b35f9025bff68098",
+      "lines": 305,
+      "kind": "source/config/docs",
+      "checks": []
+    },
+    {
+      "path": "tools/test_learning.py",
+      "bytes": 10584,
+      "sha256": "b688aabf854a66dbb4c583bb78e378b22d658d1927295de5d7f343951e5acb63",
+      "lines": 281,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/test_operator.py",
+      "bytes": 8952,
+      "sha256": "29c8aefb3258a313dbdbd1ade6a8b06af2ac74f8fa47bf38b30eea9ef9825b3f",
+      "lines": 178,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/test_safety.py",
+      "bytes": 8443,
+      "sha256": "1d83621f65a65719cd404e54f5d5b74f865ef0a99fc5e036873a8ed99408739e",
+      "lines": 246,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/test_transaction.py",
+      "bytes": 2833,
+      "sha256": "099513e81651dd43cd9fa54374b8a3da09cb65d56c5b248ba3d365b0454aa26d",
+      "lines": 46,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    },
+    {
+      "path": "tools/verify_permission_recurrence.py",
+      "bytes": 1258,
+      "sha256": "e44f0215810cfa9af9a6994f30d84084474cbd2b28aea187fbf49e43e8c2816d",
+      "lines": 23,
+      "kind": "python",
+      "checks": [
+        "python-AST"
+      ]
+    }
+  ],
+  "issues": [],
+  "base_revision": "124da87",
+  "initial_base_revision": "1697e9f",
+  "coverage": "All 250 tracked files on latest merged main read; source/config/docs and historical formats checked; not formal verification"
+}

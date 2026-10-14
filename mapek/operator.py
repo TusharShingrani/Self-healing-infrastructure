@@ -108,10 +108,14 @@ class Operator:
 
     def authorize(self, world, symptoms, cause, actions, observation):
         observation = world.observe(sample=False)
+        fresh_symptoms = Monitor().symptoms(observation)
+        if set(symptoms) != set(fresh_symptoms):
+            self.capture(world, fresh_symptoms, cause, actions, observation)
+            return False, 'Evidence changed; diagnose the fresh observation before execution'
         case = self.capture(world, symptoms, cause, actions, observation)
         self.current[case['target']] = case['id']
         proc = self.db.execute("SELECT id FROM procedures WHERE scope=? AND cause=? AND symptoms=? AND actions=? AND status='validated'", (case['scope'], cause, case['symptoms'], case['actions'])).fetchone()
-        automatic = (bool(proc) and set(symptoms) <= set(Monitor().symptoms(observation))
+        automatic = (bool(proc) and set(symptoms) == set(Monitor().symptoms(observation))
                      and cause != 'unknown' and not any(a in HIGH_RISK for a in actions))
         approved = case['status'] == 'approved' and (case['expires'] or 0) > self.clock()
         if not automatic and not approved:

@@ -111,7 +111,7 @@ class SimulatedWorld:
             self.disk_growth = 6.0
         elif fault == "config_drift":
             self.config_correct = False
-            self.service_running = False      # invalid config fails on reload
+            self.service_running = False      # models the deliberate restart protocol
         elif fault == "unreachable":
             self.reachable = False
         else:

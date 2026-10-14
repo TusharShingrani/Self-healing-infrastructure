@@ -17,6 +17,13 @@ class World(SimulatedWorld):
         self.lab = {'project_id': 'project-1', 'lab_instances': ['app-1','app-2'],
                     'service': 'nginx', 'config_path': '/test/config'}
 
+    def inject(self, fault):
+        super().inject(fault)
+        if fault == 'config_drift':
+            # These cases certify a configuration-only selector. Tests for
+            # additional service symptoms explicitly change service_running.
+            self.service_running = True
+
     def restore_config(self):
         result = super().restore_config()
         self.service_running = True  # production effector reload-or-restarts nginx

@@ -27,12 +27,14 @@ credentials.
 """
 
 import json
+import copy
 import os
 import threading
 import urllib.error
 import urllib.request
 
 from .actions import CATALOGUE, HIGH_RISK
+from .operator import redact
 
 ACTION_HELP = {
     "restart_service": "systemctl restart nginx on the instance",
@@ -111,11 +113,13 @@ class GeminiProvider:
         self._open = opener or urllib.request.urlopen
 
     def ask(self, system, prompt):
+        schema = copy.deepcopy(SCHEMA)
+        schema['properties']['actions']['items']['enum'] = sorted(CATALOGUE)
         body = {
             "systemInstruction": {"parts": [{"text": system}]},
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
             "generationConfig": {"responseMimeType": "application/json",
-                                 "responseSchema": SCHEMA,
+                                 "responseSchema": schema,
                                  "temperature": 0.2},
         }
         request = urllib.request.Request(
@@ -205,8 +209,19 @@ class Advisor:
     def _ask(self, advice_id, target, reason, symptoms, observation, cause, recent):
         model = getattr(self.provider, "model", "unknown")
         try:
-            data, model = self.provider.ask(SYSTEM, self._prompt(
-                target, reason, symptoms, observation, cause, recent))
+            system = SYSTEM
+            if observation.get('monitor_source') == 'direct-dependency-transaction':
+                system = ("You advise a human investigating a synthetic infrastructure transaction on Ubuntu VMs. "
+                          "app-1 runs HTTP :8088 and /var/lib/healer-stack/checkpoint; app-2 runs dedicated DNS :1053 "
+                          "and authenticated Redis :6380 with a 64 MiB budget. These are not nginx checks. "
+                          "Use the supplied independent probes and incident evidence, distinguish failed measurements "
+                          "from failed dependencies, and name precise checks and locations. You cannot execute. "
+                          "Only a human investigation binding and subsequent approval can select a typed recipe. "
+                          "If no reviewed recipe matches, return no actions and specify investigation checks. "
+                          "Never suggest platform reboot or rebuild for this composite. Available typed recipes: "
+                          + ', '.join(sorted(a for a in CATALOGUE if a.startswith('recipe_'))))
+            data, model = self.provider.ask(system, redact(self._prompt(
+                target, reason, symptoms, observation, cause, recent)))
             # validate again: the schema is a request, not a guarantee
             actions = [a for a in data["actions"] if a in CATALOGUE]
             risk = data["risk"] if data["risk"] in ("low", "medium", "high") else "high"

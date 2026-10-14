@@ -1,200 +1,139 @@
-# Healer handover: how everything connects, and how to replace the healer
+# Current lab handover and recovery
 
-This page is for whoever sits at a new healer (a person, or a Claude Code
-session that has lost its earlier context). It lists everything that depends
-on the healer, everything that lives only on the healer, and the order in
-which to bring a new one up. Written on 2026-10-13, after the healer ran out of
-memory (`evidence/2026-10-13-incident-healer-memory.md`).
+Read [the architecture](architecture.md) and [repository audit](repository-audit.md)
+before changes. This runbook covers both loops and their persistent incident
+state. An older backup containing only Knowledge is incomplete.
 
-## 1. The healer's identity is fixed, and other parts rely on it
+## Identity and access
 
-Keep these the same and nothing else needs to change.
+Healer name `healer-ubuntu` and address 10.1.1.205 are protected and relied on by
+monitoring and gateway SSH. app-1 is 10.1.1.60, app-2 10.1.1.61 and monitor
+10.1.1.50. The isolated network is 10.1.1.0/24. Only TCP 22 at 10.53.14.225 is
+forwarded to the healer. Its cloud keypair was originally `healer-lab-key`;
+the managed app keypair resource is `healer-lab-key2`.
 
-| Fixed value | Who relies on it | What breaks if it changes |
-|---|---|---|
-| Name `healer-ubuntu` | `config/lab.json` `healer_instance`; `tools/lab.py` and `mapek/educloud.py` refuse any deploy or destructive action on this name | The self-protection rule no longer covers the new machine |
-| Address `10.1.1.205` | `monitoring/prometheus.yml` (scrape targets `:9105` and `:9106`), `tools/live_run.py` (reads the loop config from `10.1.1.205:9105`), `tools/infrastructure_service.py` (binds `10.1.1.205:9106`), `config/lab.json` `healer_guest_ip`, the port forward on the virtual router | The dashboards lose both loops' metrics; the dependency service cannot start; every live run is labelled `loop-not-running` and the experiment runner stops |
-| Network `healer-isolated` 10.1.1.0/24 | Everything: the apps and the monitor have no port forward, so they are only reachable from inside | Nothing in the lab can be reached |
-| Port forward tcp/22 on 10.53.14.225, firewall from one VPN address | The only way in from the laptop | No access at all except the EduCloud console |
-| Keypair `healer-lab-key2` | Installed on app-1, app-2 and the monitor at deploy time | Nothing; the keypair only holds the public key. The private key is in section 2 |
+The Downloads copy `healer-lab-key2.key` was previously verified to match the
+healer's internal private key `~/.ssh/healer-lab-key`. Do not infer identity from
+filenames alone. Use the right private key for the healer login; the Ubuntu
+account is `ubuntu`, with SSH-key authentication rather than a shared password.
 
-The apps do not filter SSH by source address, so a new healer at the same
-address with the same private key is accepted straight away.
+Approved VPN source rules have included 172.16.16.2/32, .15/32 and .19/32. Check
+the actual portal rules against your assigned address before adding a rule.
+Do not assume the whole VPN subnet is permitted. Never remove a changed SSH pin
+without verifying the instance identity and fingerprint through its console.
+First contact is trust on first use; deleting registry/pins loses that history.
 
-## 2. What lives only on the healer
+## Discover active code and state
 
-The repository is on GitHub, so code, docs and committed evidence are safe.
-These are not in the repository, and some cannot be recreated.
+```bash
+systemctl --user show healer-loop healer-infrastructure -p WorkingDirectory -p ExecStart
+```
 
-| Item | Path | If it is lost |
-|---|---|---|
-| **Lab private key** | `~/.ssh/healer-lab-key` | **No SSH to app-1, app-2 or the monitor.** Recovery means a new keypair and resetting the key on every instance from CloudStack. Back this up first |
-| GitHub deploy key | `~/.ssh/github_selfheal`, `~/.ssh/config` (`Host github.com` uses it) | No push. Recreate: new key, add it to the repository's deploy keys with write access |
-| Pinned lab host keys | `~/.ssh/healer-lab-known-hosts/` (one file per address) | The loop re-learns them on first contact (trust on first use again); `tools/provision.sh` refuses until they exist |
-| Host registry | `~/.local/state/healer-lab/hosts.json` (address to instance id) | Rebuilt on first contact; an id change is then not explained |
-| nginx loop state | `state/` in the repository (ignored by git): `knowledge.db`, `operator.db`, `events.jsonl`, `experiment-console.log` | Knowledge, incident cases, the decision audit, validated procedures and the event history are gone. Run evidence under `evidence/` is unaffected |
-| Dependency loop state | `state/infrastructure/` in the checkout the service runs from. On 2026-10-14 that is `~/projects/broader-infrastructure`, not `~/projects/selfheal` | Investigations, cases, audit and the four validated dependency procedures are gone |
-| Demo backups | `~/healer-demo-backups/` | The Knowledge and state saved before the 14 October demo |
-| `CS_URL` export | last lines of `~/.bashrc` | Re-add: `export CS_URL=https://educloud.fontysict.nl/client/api` |
-| User lingering | `loginctl enable-linger ubuntu` | The loop service stops when you log out |
-| sysstat | package `sysstat` | No memory history after the next incident |
-| Claude Code memory | `~/.claude/projects/-home-ubuntu-projects-selfheal/` | Earlier session notes. Useful, not needed: this page and `CLAUDE.md` hold what matters |
+Historically nginx ran from `~/projects/selfheal` and dependencies from
+`~/projects/broader-infrastructure`. Use the live service configuration and audit
+deployment record to identify current paths. A GitHub merge does not upgrade a
+running service. Check `git rev-parse HEAD` and `git status --short` in both active
+directories. Avoid editing inactive checkouts while expecting live changes.
 
-`CS_KEY`, `CS_SECRET` and `GEMINI_API_KEY` are never on disk, so there is
-nothing to copy. You type them into the shell that starts the loop.
-
-## 3. First choice: resize in place, do not replace
-
-On 2026-10-13 the healer was resized in place to `Small Instance ++`
-(2 CPUs, 6 GiB), offering `5e2e56b0-5ce6-4966-9463-7c88a1419a72`.
-The guest confirmed two CPUs and about 5.8 GiB usable memory.
-The Downloads file `healer-lab-key2.key` was compared with
-`~/.ssh/healer-lab-key`: their public fingerprints match. The healer itself
-still uses its original `healer-lab-key` CloudStack keypair.
-A verified local backup now exists, so the lab private key is not the only copy.
-A 1 GiB `/swapfile` is active and configured in `/etc/fstab`.
-The gateway now permits TCP 22 from `172.16.16.2/32` and
-`172.16.16.15/32`. If the VPN assigns another address, check the current
-VPN address locally and add only that address as a `/32` on the gateway
-Firewall tab; keep TCP start and end ports at 22.
-See `evidence/2026-10-13-healer-resize.md` for the reconnect results.
-
-CloudStack can change the service offering of a stopped instance. The disk,
-the address, the port forward and every file in section 2 stay as they are.
-
-1. Stop both loops: `bash tools/start_loop.sh stop` and
-   `bash tools/start_infrastructure.sh stop`.
-2. In the EduCloud console, stop `healer-ubuntu`. Do this by hand. The loop
-   and the tools never act on the healer.
-3. Change the service offering to `Small Instance ++` (2 CPUs, 6 GiB).
-4. Start the instance, log in, then section 6.
-
-Back up section 2 anyway before step 2 (section 4, step 1). EduCloud does not
-guarantee backups.
-
-## 4. Replacing the healer, if resizing is not possible
-
-The new and the old healer cannot both hold 10.1.1.205, so the old one has to
-go first. Back up first.
-
-1. **Back up, from the laptop** (over the VPN, through the port forward):
-
-   ```bash
-   ssh <healer login> 'tar czf - .ssh/healer-lab-key .ssh/github_selfheal .ssh/github_selfheal.pub \
-       .ssh/config .ssh/healer-lab-known-hosts .local/state/healer-lab \
-       projects/selfheal/state projects/broader-infrastructure/state healer-demo-backups \
-       .claude/projects/-home-ubuntu-projects-selfheal' > healer-backup.tgz
-   tar tzf healer-backup.tgz          # check the lab key is in it
-   ```
-
-   Also make sure `git status` on the healer is clean and pushed.
-   The archive holds private keys: keep it on the laptop only, never in the
-   repository or a shared drive.
-
-2. Stop both loops, then destroy the old healer in the console. Expunge it, so
-   that 10.1.1.205 is released.
-
-3. **Deploy the new one in the console:**
-
-   | Setting | Value |
-   |---|---|
-   | Name | `healer-ubuntu` |
-   | Offering | `Small Instance ++` (2 CPUs, 6 GiB) |
-   | Template | Ubuntu 24.04 (the old healer ran 24.04.4) |
-   | Network | `healer-isolated`, IP address **10.1.1.205** |
-   | Keypair | `healer-lab-key2` |
-
-4. Recreate the port forward on 10.53.14.225 (tcp/22 to the new instance)
-   and the firewall rule for your VPN address. The old rule pointed at the old
-   instance and is gone with it.
-
-5. **Restore, on the new healer:**
-
-   ```bash
-   # from the laptop
-   scp healer-backup.tgz <new healer login>:
-   # on the healer: keys first, so the clone can use the deploy key
-   tar xzf healer-backup.tgz -C ~ --exclude=projects
-   chmod 700 ~/.ssh ~/.ssh/healer-lab-known-hosts && chmod 600 ~/.ssh/healer-lab-key ~/.ssh/github_selfheal
-   sudo apt-get update && sudo apt-get install -y git sysstat
-   loginctl enable-linger ubuntu
-   echo 'export CS_URL=https://educloud.fontysict.nl/client/api' >> ~/.bashrc
-   mkdir -p ~/projects
-   git clone git@github.com:TusharShingrani/Self-healing-infrastructure.git ~/projects/selfheal
-   tar xzf healer-backup.tgz -C ~ projects/selfheal/state      # then the nginx loop's state
-   tar xzf healer-backup.tgz --strip-components=2 -C ~/projects/selfheal \
-       projects/broader-infrastructure/state   # dependency state, into the one checkout
-   rm healer-backup.tgz
-   ```
-
-   The loop needs only Python 3 from the standard library, git and ssh. No
-   pip install.
-
-## 5. Sizing
-
-| Offering | Verdict |
+| State | Why preserve it |
 |---|---|
-| 1 CPU, 1 GiB, no swap (old) | Too small. Loop, experiment and an interactive Claude Code session (about 350 MB) together exhausted it |
-| **2 CPUs, 6 GiB** (`Small Instance ++`) | **Current healer size.** More room for the loop, experiment runner and interactive development |
-| 1 CPU, 4 GiB (`Small Instance +`) | Lower-resource alternative; used by the monitor |
-| 2 GiB | Works for the loop and experiments; tight with Claude Code running |
+| nginx state/knowledge.db | Incident outcomes, prevention candidates and advice |
+| nginx state/operator.db | Approvals, human repairs, verified cases and procedures |
+| infrastructure state/infrastructure/ | Separate Knowledge, incidents, investigations, procedures and events |
+| ~/.local/state/healer-lab/hosts.json | Address to CloudStack instance identity |
+| ~/.ssh/healer-lab-known-hosts/ | Per-address host pins |
+| ~/.ssh/healer-lab-key | Internal app/monitor login private key |
+| GitHub deploy key and SSH config | Repository access |
+| /etc/healer-stack/ generated credentials on app VMs | Redis admin and restricted transaction credentials |
+| Raw evidence in all active checkouts | Research samples and failed trials |
 
-On any size, a 1 GiB swap file is cheap insurance, so the machine slows down
-instead of locking up:
+## Back up consistently before upgrade or replacement
+
+Stop **both user loop services** before copying their SQLite databases. Direct
+service stops preserve the credential manager environment; `start_loop.sh stop`
+deliberately removes its secret variables, which also affects the other loop.
 
 ```bash
-sudo fallocate -l 1G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+systemctl --user stop healer-loop healer-infrastructure
 ```
 
-## 6. Bringing it back, and proving everything is connected
+From the laptop, archive the actual state paths identified above together with
+lab/GitHub keys, SSH configuration, host identity, user unit files and optional
+Claude memory. Store the archive privately on the laptop: it contains private
+keys. Check its member list and checksum. Do not commit it or paste its contents.
+Use stopped-state copies or SQLite's backup API; a tar of a writing database is
+not a guaranteed consistent backup. Restart the services after the backup if
+not continuing an upgrade. Keep generated Redis credentials private or regenerate
+them with the infrastructure installer on a clean replacement of the app pair.
 
-Run these in order. Each line says what it proves.
+## Credentials after reboot
+
+CloudStack/Gemini credentials are kept in process/user-manager memory. They
+must be entered again after a reboot. In the active checkout:
 
 ```bash
-cd ~/projects/selfheal
-export CS_KEY=... CS_SECRET=... LAB_SSH_KEY=~/.ssh/healer-lab-key
-
-free -h                                              # the new size is there
-for t in safety adapter learning operator infrastructure transaction; do python3 tools/test_$t.py 2>&1 | tail -1; done
-bash tools/test_lab_host.sh | tail -1                # code is intact
-python3 tools/lab.py status                          # CloudStack API and keys work
-curl -s http://10.1.1.60/healthz; curl -s http://10.1.1.61/healthz      # network: ok ok
-ssh -i $LAB_SSH_KEY -o UserKnownHostsFile=~/.ssh/healer-lab-known-hosts/10.1.1.60 \
-    -o StrictHostKeyChecking=yes ubuntu@10.1.1.60 true && echo pinned key ok
-curl -s -o /dev/null -w '%{http_code}\n' http://10.1.1.50:3000/api/health   # Grafana: 200
+export CS_URL=https://educloud.fontysict.nl/client/api
+read -rs -p 'CloudStack API key: ' CS_KEY; echo
+read -rs -p 'CloudStack secret: ' CS_SECRET; echo
+export CS_KEY CS_SECRET
+export LAB_SSH_KEY="$HOME/.ssh/healer-lab-key"
+# Optional advisor:
+read -rs -p 'Gemini API key: ' GEMINI_API_KEY; echo
+export GEMINI_API_KEY
+python3 tools/lab.py status
 bash tools/start_loop.sh start C
-curl -s http://10.1.1.205:9105/metrics | grep healer_loop_info               # loop exposes metrics
-curl -s 'http://10.1.1.50:9090/api/v1/query?query=up{job="mapek"}'           # Prometheus scrapes it: value 1
-python3 tools/knowledge.py events 5                   # loop is ticking
-python3 tools/incidents.py procedures                 # operator.db restored
 bash tools/start_infrastructure.sh start
-curl -s http://10.1.1.205:9106/metrics | grep -E 'healthy|validated'      # dependency loop: 1, and its procedures
-python3 tools/lab_shell.py python3 tools/infrastructure.py procedures
-git push --dry-run                                   # deploy key works
 ```
 
-If the host key check fails for an app, do not delete the file to make it
-pass. Check the fingerprint in the EduCloud console first (`CLAUDE.md`, hard
-safety rules).
+Never print the complete user-manager environment or put secret values in shell
+history. `python3 tools/lab_shell.py` opens a shell with existing manager values
+without printing them. An external SSH command does not automatically inherit
+those variables. User lingering keeps services alive after logout.
 
-Then write what happened to `evidence/` and commit it.
+## Resize, replace and restore
 
-## 7. Map of the connections, in one place
+The healer already has 2 CPUs, 6 GiB RAM and a configured 1 GiB swapfile.
+Check `free -h`, `swapon --show` and root disk use before changing resources.
+Do not recreate an existing swapfile or append duplicate fstab entries.
 
+Prefer resize in place when needed, after backup and stopping both loops.
+Stopping the healer VM ends SSH/assistant sessions and clears memory-only
+credentials. It is a separate operator cloud action; the automated healer must
+never target itself. Preserve its name, address and key-based access.
+
+For replacement, positively identify the old VM, back up first, preserve the
+fixed network address and recreate the gateway SSH forward and approved VPN
+source rule. Restore private keys, verified host identity files, all runtime
+state and user unit configuration. Re-establish credentials, then run the
+checks below before restarting action loops. A baseline template is plain Ubuntu.
+App replacements need nginx/exporter provisioning **and** the dependency
+installer, with app-2 installed before app-1. Monitor replacement needs its
+Prometheus/blackbox/Grafana configuration. Do not claim restore complete merely
+because SSH works. New app VM ids invalidate composite procedure scope and
+require investigation/repair revalidation before automatic use.
+
+## Reconnect checklist
+
+From the active checkout with credentials available:
+
+```bash
+bash tools/test_all.sh
+python3 tools/lab.py status
+python3 tools/infrastructure.py status
+python3 tools/incidents.py procedures
+python3 tools/infrastructure.py procedures
+curl -fsS http://10.1.1.60/healthz
+curl -fsS http://10.1.1.61/healthz
+curl -fsS http://10.1.1.60:8088/healthz
+systemctl --user is-active healer-loop healer-infrastructure
+curl -fsS http://10.1.1.205:9105/metrics
+curl -fsS http://10.1.1.205:9106/metrics
 ```
-laptop --VPN--> 10.53.14.225:22 --port forward--> healer 10.1.1.205
-healer  --SSH :22, key healer-lab-key, pinned host keys--> app-1 10.1.1.60, app-2 10.1.1.61, monitor 10.1.1.50
-healer  --HTTP :80 /healthz--> app-1, app-2         (verification after every repair)
-healer  --HTTP :8088 /healthz--> app-1              (dependency loop transaction, every tick)
-app-1   --DNS :1053, Redis :6380--> app-2           (the transaction's dependencies)
-healer  --PromQL :9090--> monitor                   (Monitor stage)
-monitor --scrape :9100 :9113, probe :80--> app-1, app-2
-monitor --scrape :9105 :9106--> healer              (both loops' metrics on the dashboards)
-monitor --probe :8088--> app-1                      (transaction availability)
-healer  --HTTPS, signed with CS_KEY/CS_SECRET--> CloudStack API (state, ownership, reboot, rebuild, deploy)
-healer  --HTTPS, optional GEMINI_API_KEY--> Gemini API (advice only)
-healer  --SSH, deploy key github_selfheal--> GitHub (code and evidence off-platform)
-```
 
-Ports and firewall rules in detail: `docs/architecture.md`, section 1.
+Check fresh tick timestamps, zero unexpected errors, all required transaction
+checks true, and all ten Prometheus targets up. An HTTP exporter returning 200
+does not mean its underlying probe succeeded. Check blackbox `probe_success` too.
+View both Grafana dashboards through an authenticated SSH tunnel. Verify GitHub
+access without publishing a change merely as a connection check. Review candidate,
+validated/revoked procedures and scope before demonstrating automatic repairs.
+Keep post-upgrade validation and restore evidence off-platform.

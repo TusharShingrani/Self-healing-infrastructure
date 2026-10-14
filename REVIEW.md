@@ -1,3 +1,7 @@
+Historical review of the earlier v4 implementation. Statements about missing
+live tests refer to that revision. See [the current audit](docs/repository-audit.md)
+for the current system and verification.
+
 # Review of selfheal-educloud(4)
 
 > **Historical.** An external review of an early snapshot, before the lab was

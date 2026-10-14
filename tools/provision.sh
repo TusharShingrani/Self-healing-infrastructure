@@ -30,7 +30,7 @@ START=$(date +%s)
 ssh "${SSHO[@]}" "ubuntu@$IP" 'rm -rf ~/lab && mkdir -p ~/lab/lab-host ~/lab/monitor' &&
 scp -q "${SSHO[@]}" "${FILES[@]}" "ubuntu@$IP:lab/" &&
 scp -q "${SSHO[@]}" "$HERE"/lab-host/* "ubuntu@$IP:lab/lab-host/" &&
-scp -q -r "${SSHO[@]}" "$HERE"/../monitoring/. "ubuntu@$IP:lab/monitor/" 2>/dev/null
+scp -q -r "${SSHO[@]}" "$HERE"/../monitoring/. "ubuntu@$IP:lab/monitor/" || { echo "Installer transfer failed; refusing to run stale files" >&2; exit 1; }
 ssh "${SSHO[@]}" "ubuntu@$IP" "$RUN"
 RC=$?
 echo "exit=$RC"

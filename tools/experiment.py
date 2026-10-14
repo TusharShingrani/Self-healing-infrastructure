@@ -1,4 +1,4 @@
-"""Runs the experiment: configurations A, B and C against the same faults.
+"""Runs the offline simulation experiment: configurations A, B and C against the same faults.
 
 Every run is scripted, so ten runs cost no more effort than one. That is the
 only way the experiment fits in the time budget, and it is also what makes
@@ -24,11 +24,11 @@ from mapek.world import SimulatedWorld  # noqa: E402
 FAULTS = ["service_stop", "disk_leak", "config_drift"]
 CONFIGS = ["A", "B", "C"]
 TICKS = 40
-MAINTENANCE_TICK = 20   # a routine reload, the moment a latent fault surfaces
+MAINTENANCE_TICK = 20   # a deliberate restart, the moment a latent fault surfaces
 
 
 def occurrence(healer, world, fault):
-    """One occurrence: inject, run, and perform a routine reload part way.
+    """One occurrence: inject, run, and perform a deliberate restart part way.
 
     The restart matters for the disk fault. A full log filesystem does not stop
     a running service by itself. On the lab host the service declares a startup
