@@ -209,6 +209,6 @@ dashboard = {
 
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                    "grafana", "dashboards", "selfheal.json")
-with open(out, "w") as fh:
+with open(out, "w", encoding="utf-8", newline="\n") as fh:
     json.dump(dashboard, fh, indent=1)
 print(f"wrote {out} with {len(panels)} panels")

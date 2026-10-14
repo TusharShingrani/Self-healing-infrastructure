@@ -1,0 +1,172 @@
+{
+  "audit_date": "2026-10-14",
+  "base_revision": "1697e9f",
+  "original_tracked_files_read": 250,
+  "offline_checks": {
+    "safety": 18,
+    "learning": 36,
+    "adapter": 66,
+    "operator": 24,
+    "infrastructure": 27,
+    "transaction": 5,
+    "repository": 14,
+    "host_scripts": 39,
+    "total": 229,
+    "status": "passed"
+  },
+  "additional_checks": [
+    "Python AST and compilation",
+    "Shell syntax including extensionless host scripts",
+    "13 candidate Prometheus rules and complete candidate configuration validated with promtool on monitor",
+    "Dashboard regeneration; historical nginx dashboard unchanged",
+    "All original JSON/JSONL/CSV and SQLite integrity checks",
+    "Performance figure inspected; benchmark 37497 of 37497 successful requests confirmed",
+    "Known credential and private-key scan passed",
+    "git diff --check passed; original raw evidence unchanged"
+  ],
+  "deployment": {
+    "audit_fixes": "prepared in isolated repository-audit checkout; not installed into running services",
+    "nginx": {
+      "path": "/home/ubuntu/projects/selfheal",
+      "revision": "20f85b8"
+    },
+    "infrastructure": {
+      "path": "/home/ubuntu/projects/broader-infrastructure",
+      "revision": "b3189a0"
+    }
+  },
+  "live_health_record": "Captured read-only; both active, all required checks pass, 10 of 10 targets up, zero pending repair incidents, four validated dependency procedures. Runtime health JSON stored with this record after final check.",
+  "live_health": {
+    "time": 1791996892.897961,
+    "units": {
+      "healer-loop": [
+        "NRestarts=0",
+        "WorkingDirectory=/home/ubuntu/projects/selfheal",
+        "ActiveState=active",
+        "SubState=running"
+      ],
+      "healer-infrastructure": [
+        "NRestarts=0",
+        "WorkingDirectory=/home/ubuntu/projects/broader-infrastructure",
+        "ActiveState=active",
+        "SubState=running"
+      ]
+    },
+    "health": {
+      "10.1.1.60": "ok",
+      "10.1.1.61": "ok",
+      "transaction": {
+        "tick": 1479,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "spool_write": true,
+          "dns_record": true,
+          "cache_write": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 2.434
+        }
+      }
+    },
+    "targets": [
+      {
+        "job": "healthz",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "healthz",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "infrastructure",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "infrastructure_transaction",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "mapek",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "nginx",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "nginx",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "node",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "node",
+        "health": "up",
+        "error": ""
+      },
+      {
+        "job": "prometheus",
+        "health": "up",
+        "error": ""
+      }
+    ],
+    "metrics": {
+      "9105": [
+        "healer_loop_ticks_total{node=\"app-1\"} 2191",
+        "healer_loop_tick_errors_total{node=\"app-1\"} 0",
+        "healer_loop_last_tick_timestamp_seconds{node=\"app-1\"} 1791996884.6",
+        "healer_loop_healthy{node=\"app-1\"} 1",
+        "healer_loop_downtime_ticks_total{node=\"app-1\"} 0",
+        "healer_loop_ticks_total{node=\"app-2\"} 2191",
+        "healer_loop_tick_errors_total{node=\"app-2\"} 0",
+        "healer_loop_last_tick_timestamp_seconds{node=\"app-2\"} 1791996885.0",
+        "healer_loop_healthy{node=\"app-2\"} 1",
+        "healer_loop_downtime_ticks_total{node=\"app-2\"} 0"
+      ],
+      "9106": [
+        "healer_infrastructure_healthy 1",
+        "healer_infrastructure_ticks_total 1479",
+        "healer_infrastructure_errors_total 0",
+        "healer_infrastructure_last_tick_seconds 1791996891.115712"
+      ]
+    },
+    "resources": {
+      "memory": "total        used        free      shared  buff/cache   available\nMem:            5924         775        3384           1        2065        5149\nSwap:           1023           0        1023",
+      "disk": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/vda1       8.7G  3.8G  4.9G  44% /"
+    },
+    "infrastructure_tick_age_seconds": 1.8,
+    "pending_incidents": 0,
+    "validated_procedures": 4,
+    "recent_errors": []
+  }
+}

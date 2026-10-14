@@ -1,5 +1,10 @@
 # Results: live A/B/C experiment on EduCloud
 
+Historical nginx A/B/C measurements. These used an earlier policy, before the
+current operator/infrastructure workflow. Values and raw evidence are preserved;
+see [the current architecture](architecture.md) for today's behavior.
+
+
 Source: `evidence/experiment-2026-10-13T161043Z/results.csv`, 13 valid fault runs of 14 recorded. Repetitions with at least one valid run per configuration: A: 3, B: 2, C: 2.
 
 Not every configuration has the same number of repetitions: the experiment stopped before it finished. The experiment log in the source folder records where, and the runs not counted are listed below.

@@ -1,5 +1,11 @@
 # Secrets never enter the repository. Credentials come from the environment.
 *.pem
+*.key
+.env.*
+cs-credentials.json
+private-backups/
+*.tgz
+*.tar.gz
 *-key
 *-key2
 id_*

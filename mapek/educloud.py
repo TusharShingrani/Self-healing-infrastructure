@@ -24,6 +24,8 @@ import os
 import shlex
 import subprocess
 import time
+import tempfile
+from contextlib import contextmanager
 import urllib.error
 import urllib.request
 
@@ -65,22 +67,60 @@ class HostRegistry:
 
     def __init__(self, path=None):
         self.path = path or os.path.join(lab_state_dir(), "hosts.json")
-        os.makedirs(os.path.dirname(self.path), exist_ok=True)
+        os.makedirs(os.path.dirname(os.path.abspath(self.path)), exist_ok=True)
+        self.data = self._read()
+
+    def _read(self):
         try:
-            with open(self.path) as fh:
-                self.data = json.load(fh)
-        except (OSError, ValueError):
-            self.data = {}
+            with open(self.path) as handle:
+                data = json.load(handle)
+        except FileNotFoundError:
+            return {}
+        if not isinstance(data, dict) or any(
+                not isinstance(record, dict) or not isinstance(record.get("instance_id"), str)
+                or not record["instance_id"] for record in data.values()):
+            raise HostIdentityChanged("Invalid host identity registry; verify before repairing it")
+        return data
+
+    @contextmanager
+    def _locked(self):
+        with open(self.path + ".lock", "a+b") as handle:
+            if os.name == "nt":
+                import msvcrt
+                handle.seek(0); handle.write(b"0"); handle.flush(); handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle, fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                if os.name == "nt":
+                    handle.seek(0); msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                else:
+                    fcntl.flock(handle, fcntl.LOCK_UN)
 
     def known_instance(self, address):
+        self.data = self._read()
         return self.data.get(address, {}).get("instance_id")
 
     def remember(self, address, instance_id):
-        self.data[address] = {"instance_id": instance_id, "seen": time.time()}
-        tmp = self.path + ".tmp"
-        with open(tmp, "w") as fh:
-            json.dump(self.data, fh, indent=2)
-        os.replace(tmp, self.path)
+        if not isinstance(instance_id, str) or not instance_id:
+            raise HostIdentityChanged("Missing instance identity")
+        with self._locked():
+            data = self._read()
+            data[address] = {"instance_id": instance_id, "seen": time.time()}
+            temporary = None
+            try:
+                with tempfile.NamedTemporaryFile(mode="w", dir=os.path.dirname(os.path.abspath(self.path)), delete=False) as handle:
+                    temporary = handle.name
+                    json.dump(data, handle, indent=2)
+                    handle.flush(); os.fsync(handle.fileno())
+                os.replace(temporary, self.path)
+                self.data = data
+            finally:
+                if temporary and os.path.exists(temporary):
+                    os.unlink(temporary)
 
 
 class SSHTarget:
@@ -450,9 +490,10 @@ class EduCloudWorld:
                            f"{self.service} restarted")
 
     def clear_logs(self):
+        self.assert_bounded_log_mount()
         return self._guest(
             f"sudo find {shlex.quote(self.log_mount)} -type f "
-            f"\\( -name '*.gz' -o -name '*.[0-9]' -o -name '*.old' \\) -delete; "
+            f"\\( -name '*.gz' -o -name '*.[0-9]' -o -name '*.old' \\) -delete && "
             f"sudo find {shlex.quote(self.log_mount)} -type f -size +50M "
             f"-exec truncate -s 0 {{}} \\;",
             "log filesystem reclaimed")
@@ -469,7 +510,7 @@ class EduCloudWorld:
             f"sudo cp {shlex.quote(self.reference_dir)}/nginx-healer.logrotate "
             f"{shlex.quote(self.rotation_policy)} && "
             f"sudo systemctl stop healer-logflood.timer healer-logflood.service "
-            f"2>/dev/null; "
+            f"&& "
             f"sudo logrotate -f {shlex.quote(self.rotation_policy)}",
             "log rotation restored, producer stopped, rotation run once")
 

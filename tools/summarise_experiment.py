@@ -60,6 +60,7 @@ def main():
     rep_text = ", ".join(f"{c}: {len(reps[c])}" for c in ("A", "B", "C"))
 
     out = ["# Results: live A/B/C experiment on EduCloud", "",
+           "Historical nginx protocol; current reviewed infrastructure policy differs. See [current architecture](architecture.md).", "",
            f"Source: `{os.path.relpath(folder, HERE)}/results.csv`, "
            f"{len(rows)} valid fault runs of {len(all_rows)} recorded. "
            f"Repetitions with at least one valid run per configuration: {rep_text}.", "",

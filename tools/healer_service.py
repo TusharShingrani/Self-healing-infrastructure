@@ -42,7 +42,7 @@ from mapek.prometheus import PrometheusSource                    # noqa: E402
 from mapek.operator import Operator
 
 SYMPTOMS = ["unreachable", "service_down", "disk_high", "disk_critical",
-            "disk_growing_fast", "config_drift", "probe_failed"]
+            "disk_growing_fast", "config_drift", "probe_failed", "http_unavailable"]
 
 
 class Node:
@@ -68,6 +68,7 @@ class Service:
         self.db_path = os.path.join(self.state, "knowledge.db")
         self.events_path = os.path.join(self.state, "events.jsonl")
         self.lock = threading.Lock()
+        self.metrics_snapshot = "healer_loop_snapshot_ready 0\n"
         self.stopping = threading.Event()
 
         cs = CloudStack(project=self.lab["project_id"])
@@ -127,6 +128,7 @@ class Service:
                 node.healer.approve_high_risk = approve
                 with self.lock:
                     self._tick(node, paused)
+                self.metrics_snapshot = self._build_metrics()
             self.stopping.wait(max(0.0, self.interval - (time.time() - started)))
 
     def _tick(self, node, paused):
@@ -151,6 +153,10 @@ class Service:
     # ------------------------------------------------------------- metrics
 
     def metrics(self):
+        # Serve the last complete tick without waiting for SSH/API repairs.
+        return self.metrics_snapshot
+
+    def _build_metrics(self):
         out = []
 
         def m(name, labels, value):

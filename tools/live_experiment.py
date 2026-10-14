@@ -52,13 +52,21 @@ def main():
     ap.add_argument("--reps", type=int, default=3)
     ap.add_argument("--configs", default="A,B,C")
     ap.add_argument("--no-reset", action="store_true")
+    ap.add_argument("--historical-policy", action="store_true",
+                    help="Explicitly select the earlier ungated nginx A/B/C protocol")
     args = ap.parse_args()
+    if not args.historical_policy:
+        ap.error("This historical runner resets hosts and bypasses current review policy; use the current operator demo instead")
+    if subprocess.run(["systemctl", "--user", "is-active", "--quiet", "healer-infrastructure"], check=False).returncode == 0:
+        ap.error("Stop the infrastructure loop and use a dedicated experiment host; reset would erase its dependencies")
+    if os.path.exists(os.path.join(HERE, "state", "operator.db")):
+        ap.error("Preserve production operator state and run this historical protocol in a separate checkout/state")
 
     out = os.path.join(HERE, "evidence", f"experiment-{stamp().replace(':', '')}")
     os.makedirs(out)
     log = open(os.path.join(out, "experiment.log"), "w")
     rows = []
-    env = dict(os.environ, HEALER_NODES=NODE)
+    env = dict(os.environ, HEALER_NODES=NODE, HEALER_REVIEW="0")
     print(f"experiment folder: {os.path.relpath(out, HERE)}", flush=True)
 
     for rep in range(1, args.reps + 1):
@@ -125,7 +133,7 @@ def main():
                 w.writeheader()
                 w.writerows(rows)
 
-    sh("bash tools/start_loop.sh start C", dict(os.environ), check=False)
+    sh("bash tools/start_loop.sh start C", log, env=dict(os.environ), check=False)
     print(f"{stamp()} done: {os.path.relpath(out, HERE)}/results.csv", flush=True)
 
 

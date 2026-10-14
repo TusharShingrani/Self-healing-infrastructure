@@ -60,6 +60,9 @@ app-1 hosts the synthetic transaction; app-2 hosts dedicated DNS and Redis.
 No network firewall or operating system DNS settings are modified.
 """
     def __init__(self, cs, lab, key_path=None, recipes=None):
+        if any(lab.get('addresses', {}).get(name) != address for name, address in
+               (('app-1', '10.1.1.60'), ('app-2', '10.1.1.61'))):
+            raise ProtectedTarget('This bounded capability book requires the documented fixed lab topology')
         self.lab, self.name = lab, 'app-1'
         self.service = 'healer-stack-transaction'
         self.config_path = '/etc/healer-stack/dns.conf'
@@ -105,6 +108,8 @@ No network firewall or operating system DNS settings are modified.
                 ok, out, err = self.command('app-2', REDIS+' --raw CONFIG GET maxmemory')
                 parts = out.splitlines()
                 obs['infrastructure_checks']['cache_budget'] = (parts == ['maxmemory','67108864']) if ok and len(parts)==2 else None
+                if obs['infrastructure_checks']['cache_budget'] is None:
+                    obs['probe_error'] = 'Unreadable independent cache budget probe'
             else:
                 obs['infrastructure_checks']['cache_budget'] = None
             try:
@@ -114,13 +119,13 @@ No network firewall or operating system DNS settings are modified.
             with response:
                 data = json.loads(response.read(16384))
             expected = {'dns_record','cache_write','spool_write'}
-            if not expected <= set(data.get('checks', {})) or any(data['checks'][k] is not None and type(data['checks'][k]) is not bool for k in expected):
+            if not isinstance(data, dict) or not isinstance(data.get('checks'), dict) or not expected <= set(data['checks']) or any(data['checks'][k] is not None and type(data['checks'][k]) is not bool for k in expected):
                 raise ValueError('Invalid transaction check payload')
             obs['infrastructure_checks'].update({k:data['checks'][k] for k in expected})
             obs['http_ok'] = response.code == 200 and data.get('healthy') is True and all(data['checks'][k] is True for k in expected)
             obs['transaction'] = data
             if obs['service_running'] is None or cache_service is None:
-                obs['probe_error'] = 'Unreadable systemd state'
+                obs['probe_error'] = (obs['probe_error'] + '; Unreadable systemd state').lstrip('; ')
         except (OSError, ValueError, RuntimeError) as error:
             obs['probe_error'] = f'{type(error).__name__}: {error}'[:500]
         self.latest = obs

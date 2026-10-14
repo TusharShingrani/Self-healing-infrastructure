@@ -62,15 +62,11 @@ workflow, not of independent LLM diagnostic accuracy.
 
 ## Personal demonstration
 
-SSH into the healer. The dependency code is merged into `main`, but on
-14 October 2026 the running `healer-infrastructure` service still uses the
-separate checkout `~/projects/broader-infrastructure`, and its state
-(`state/infrastructure/`) lives there. The CLI reads state relative to the
-current directory, so run it from the service's checkout. Check which one with
-`systemctl --user show healer-infrastructure -p WorkingDirectory`.
+SSH into the healer, then enter the active infrastructure checkout shown by
+`systemctl --user show healer-infrastructure -p WorkingDirectory`:
 
 ```bash
-cd ~/projects/broader-infrastructure
+# cd to the active checkout from the service configuration
 python3 tools/lab_shell.py
 python3 tools/infrastructure.py status
 python3 tools/infrastructure.py list
@@ -114,10 +110,9 @@ start|stop|status`. Its read-only `/metrics` and `/status` endpoints are on
 `10.1.1.205:9106`. Pause its actions with
 `touch state/infrastructure/paused`, and resume with `rm state/infrastructure/paused`.
 It observes while paused. The original nginx loop remains separate on 9105.
-The `http_unavailable` symptom added with this work also changes the nginx
-loop's symptom sets. A procedure validated before it existed may stop matching
-after the nginx loop restarts on this code, and then needs review again.
-Previous approvals are not silently widened to the new selector.
+The additional `http_unavailable` symptom in this branch also means that old
+nginx procedure selectors may need review if the original loop is upgraded to
+this branch. Previous approvals are not silently widened to the new selector.
 
 Tunnel Grafana using your usual authenticated healer SSH login:
 

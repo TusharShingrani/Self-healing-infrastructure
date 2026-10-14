@@ -51,6 +51,14 @@ class CloudStack:
 
     # ---------------------------------------------------------------- core
 
+    def _safe_error(self, value):
+        text = str(value)
+        for secret in (self.key, self.secret):
+            text = text.replace(secret, '[REDACTED]')
+        # A library/server diagnostic may include the complete signed URL.
+        import re
+        return re.sub(r'https?://\S+', '[URL REDACTED]', text)[:400]
+
     def _sign(self, params):
         items = sorted((k, str(v)) for k, v in params.items())
         query = urllib.parse.urlencode(items, quote_via=urllib.parse.quote)
@@ -68,15 +76,22 @@ class CloudStack:
             with urllib.request.urlopen(request, timeout=self.timeout) as response:
                 payload = json.loads(response.read().decode())
         except urllib.error.HTTPError as error:
-            body = error.read().decode()[:400]
+            body = self._safe_error(error.read().decode(errors='replace'))
             raise CloudStackError(f"{command} failed: {error.code} {body}") from None
         except (urllib.error.URLError, TimeoutError, OSError) as error:
             # A network failure is not an empty answer. Report it, and never
             # echo the signed URL, which carries the API key.
-            reason = getattr(error, "reason", error)
+            reason = self._safe_error(getattr(error, "reason", error))
             raise CloudStackError(f"{command} could not reach the API: {reason}") from None
+        if not isinstance(payload, dict):
+            raise CloudStackError(f"{command} returned an invalid response")
         key = command.lower() + "response"
-        return payload.get(key, payload)
+        result = payload.get("errorresponse", payload.get(key))
+        if not isinstance(result, dict):
+            raise CloudStackError(f"{command} returned an unrecognised response")
+        if "errorresponse" in payload or result.get("errorcode"):
+            raise CloudStackError(f"{command} failed: API error {result.get('errorcode', 'unknown')}")
+        return result
 
     def wait(self, response, label="job", poll=5, limit=900):
         """Block until an asynchronous job finishes. Returns its result."""
@@ -91,7 +106,7 @@ class CloudStack:
                 return result.get("jobresult", {})
             if status == 2:
                 reason = result.get("jobresult", {}).get("errortext", "unknown")
-                raise CloudStackError(f"{label} failed: {reason}")
+                raise CloudStackError(f"{label} failed: {self._safe_error(reason)}")
             time.sleep(poll)
         raise CloudStackError(f"{label} did not finish within {limit}s")
 

@@ -45,3 +45,34 @@ groups:
         labels: {severity: warning}
         annotations:
           summary: "{{ $labels.node }}: log rotation policy is missing"
+
+  - name: infrastructure-and-loop-health
+    rules:
+      - alert: InfrastructureTransactionUnavailable
+        expr: probe_success{job="infrastructure_transaction"} == 0
+        for: 10s
+        labels: {severity: critical}
+        annotations:
+          summary: "Synthetic DNS/cache/checkpoint transaction failed"
+      - alert: InfrastructureProbeUnreadable
+        expr: healer_infrastructure_check == -1
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.check }} unmeasured; inspect the dependency evidence"
+      - alert: InfrastructureLoopStale
+        expr: time() - healer_infrastructure_last_tick_seconds > 60
+        labels: {severity: warning}
+        annotations:
+          summary: "No completed dependency-loop tick for over 60 seconds"
+      - alert: NginxLoopStale
+        expr: time() - healer_loop_last_tick_timestamp_seconds > 60
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.node }}: no completed nginx-loop tick for over 60 seconds"
+      - alert: HealerExporterUnreachable
+        expr: up{job=~"mapek|infrastructure"} == 0
+        for: 20s
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.job }} exporter cannot be scraped"

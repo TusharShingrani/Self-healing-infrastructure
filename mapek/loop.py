@@ -92,6 +92,10 @@ class Healer:
 
         now = observation["tick"]
         symptoms = self.monitor.symptoms(observation)
+        if not healthy and not symptoms:
+            # Adapter health requirements can grow without a named symptom.
+            # Never silently clear an unhealthy, unreadable observation.
+            symptoms = ['probe_failed']
         self.last_observation, self.last_symptoms = observation, symptoms
         self.last_healthy = healthy
         self.stage_seconds["monitor"] = time.monotonic() - started

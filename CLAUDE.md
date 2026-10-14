@@ -1,185 +1,54 @@
-# Project context
+# Project working brief
 
-Read this before doing anything. It is the standing brief for this repository.
+Read [the current architecture](docs/architecture.md),
+[handover](docs/healer-handover.md), [operator workflow](docs/operator-workflow.md)
+and [research synthesis](docs/research-synthesis.md) before changing live code.
 
-## What this is
+This research lab has four Ubuntu VMs, not containers. Healer 10.1.1.205 runs
+two MAPE-K services. app-1 10.1.1.60 runs nginx and a synthetic transaction;
+app-2 10.1.1.61 runs nginx plus dedicated DNS/Redis; monitor 10.1.1.50 runs
+Prometheus/blackbox/Grafana. Nginx metrics use 9105, dependency metrics 9106.
+Check service WorkingDirectory and Git revision before assuming a checkout is
+live. State is relative to each active checkout and is not in Git.
 
-A final-year HBO ICT graduation project at Fontys, Eindhoven. Roughly 60 hours
-of work. The subject is **self-healing infrastructure**: infrastructure that
-detects a failure, repairs the cause rather than the symptom, and learns so the
-same failure is prevented next time.
+## Safety and evidence requirements
 
-The theory spine is the **MAPE-K loop** (Monitor, Analyse, Plan, Execute,
-Knowledge). The code mirrors it on purpose, so the report and the modules line
-up.
+- Never destroy, rebuild, reboot or inject faults into the healer or monitor.
+- Preserve runtime Knowledge **and operator databases**, host pins, lab keys,
+  infrastructure state, original evidence and private generated credentials.
+- Stop both loop services before code/state migration. Stop user services
+  directly if preserving their memory-only credential environment; the nginx
+  stop wrapper deliberately removes that environment.
+- Never reset either app while the dependency lab is operating. The template
+  is plain Ubuntu and does not contain the current stack.
+- Never disable host-key checks or accept an unexplained changed key. Verify
+  through the cloud console. First contact uses trust on first use.
+- Keep secrets out of Git, prompts and logs. Credentials come from environment
+  variables/user manager. Do not print the full manager environment.
+- Faults, scans and security experiments stay inside the isolated lab.
+- Do not count a claimed repair, manual cleanup, stale scrape or unknown probe
+  as success. Preserve raw samples and the verification contract.
+- Unknown dependency patterns need investigation, a bounded recipe and first
+  approval. Two verified occurrences plus explicit promotion allow exact scoped
+  reuse. Failed automatic repair revokes the procedure. Human notes are evidence,
+  never executable commands. New capabilities need review.
+- Gemini is advisory; no unrestricted shell execution or automatic investigation
+  binding. Do not claim model training or measured LLM diagnostic accuracy.
 
-Published systems already include learning and proactive mitigation (for example,
-Narya, OSDI 2020). This project's contribution is a bounded EduCloud prototype
-and reproducible evaluation of reviewed procedural learning, not a claim that
-learning is new. Read docs/research-synthesis.md and docs/infrastructure-lab.md.
+## Development and verification
 
-## Research questions
+Shared orchestration is in mapek/loop.py and stages.py. Nginx adapter is
+educloud.py; composite adapter/typed recipes are infrastructure.py and
+config/repair-recipes.json. operator.py implements persistent review and
+procedure validation; knowledge.py stores history/prevention/advice.
 
-Main: how can a self-healing infrastructure recover from failures and learn to
-prevent them?
+Run all eight offline suites listed in README. They use fake clients/mocked
+commands; they must never change production host identity files. Validate shell
+syntax and Prometheus configuration/rules, regenerate dashboard JSON from its
+source, and update diagrams and recovery instructions when the topology changes.
+Record exact live revisions and verification separately from historical results.
 
-1. Which infrastructure failures can be self-healed? (Library + Lab)
-2. Which self-healing methods are most effective for detecting and repairing
-   failures? (Library + Lab)
-3. How can a self-healing system learn from past failures to prevent them?
-   (Library + Lab)
-4. How does self-healing affect reliability, security, performance and scalability?
-   (Library + Lab)
-
-Scope is the **infrastructure layer**: services, storage, configuration,
-instances. Application code is out of scope. nginx is the managed service
-because it is infrastructure, not an application anyone wrote here.
-
-## Where things run
-
-If this is a new or resized healer, or a session without earlier context,
-read `docs/healer-handover.md` first: it lists what depends on the healer's
-name and address, what lives only on this machine, and a checklist that
-proves every connection works again.
-
-- **healer-ubuntu** (10.1.1.205) is the only instance with a port forward from
-  the gateway at 10.53.14.225. The loop and this repository live here.
-- **app-1, app-2** are the lab instances, reached over the internal network
-  10.1.1.0/24. They do not have port forwards.
-- **monitor** (10.1.1.50) runs Prometheus and Grafana. It is not in
-  `lab_instances`, so nothing destructive can target it.
-- The platform is EduCloud, which is Apache CloudStack. Project
-  `healer-lab`. All identifiers are in `config/lab.json`.
-- Credentials come from `CS_URL`, `CS_KEY`, `CS_SECRET` and `LAB_SSH_KEY` in
-  the environment. `CS_KEY` and `CS_SECRET` are the secrets: **never** write
-  them into a file, a commit, a log or a report. `CS_URL` is not a secret and
-  is exported from `~/.bashrc` on the healer (outside the repository).
-  `LAB_SSH_KEY` is a path; the key file itself never enters the repository.
-
-## State of play (2026-10-13)
-
-Built and observed live on EduCloud:
-
-- four instances from the private template at fixed addresses: healer-ubuntu
-  (10.1.1.205), monitor (10.1.1.50), app-1 (10.1.1.60), app-2 (10.1.1.61)
-- `tools/install_lab_host.sh` passes every check on fresh instances, including
-  the fill proof (a real outage and recovery)
-- Prometheus, a blackbox `/healthz` probe and Grafana on the monitor, with a
-  dashboard laid out along the MAPE-K stages
-- the loop runs as a user service (`tools/start_loop.sh`), Monitor via
-  Prometheus, Execute verified by direct probes, Knowledge shared by both apps
-- first live heal (app-1, 17 s outage), rule learned, and the same fault then
-  prevented on app-2 with zero downtime. Config drift and service stop healed
-- the optional LLM advisor uses Google Gemini (free tier) over REST, built and
-  tested with a fake provider; Gemini was also tested live on 2026-10-14; its key is now held only in
-  the user service manager memory
-- seven suites: `test_safety.py`, `test_adapter.py`, `test_learning.py`,
-  `test_operator.py`, `test_infrastructure.py`, `test_transaction.py`,
-  `test_lab_host.sh` (215 checks on 2026-10-14). Tests never touch real host
-  identity state
-
-Results of the live A/B/C experiment are in `docs/results.md`, generated by
-`tools/summarise_experiment.py`. Every number there traces to a folder under
-`evidence/`. The experiment completed three repetitions of A and two of B and
-C: the healer (1 GiB, no swap) ran out of memory during rep 3 and was powered
-off. See `evidence/2026-10-13-incident-healer-memory.md`. The healer was resized in place to 2 CPUs and 6 GiB on 2026-10-13.
-Its instance id, disk, guest address and port forward were retained.
-A 1 GiB swap file is active and persistent. The reconnect checks and remaining
-credential-dependent steps are in `evidence/2026-10-13-healer-resize.md`.
-After a healer reboot the loop is not running until `start_loop.sh` is run again.
-
-## Guided demo, 2026-10-14
-
-Read `docs/live-demo.md` for the personal walkthrough and
-`evidence/live-demo-2026-10-14.md` for the measured outcomes. The demo
-confirmed shared prevention on app-2 with zero downtime. A rapid app-1
-repeat and service stop were delayed by the existing 20-tick rate limit;
-do not describe those as successful prevention or fast healing. Config C
-is running, Gemini is available, and the learned rule survived a loop restart.
-The old Knowledge and runtime state remain under
-`~/healer-demo-backups/20261014T092750Z`. The original A/B/C results
-remain unchanged. Use `python3 tools/lab_shell.py` to open a lab shell
-with credentials already held in memory, without printing or saving them.
-
-## Reviewed repair workflow
-
-Read `docs/operator-workflow.md`. The live service defaults to HEALER_REVIEW=1.
-Use `tools/incidents.py` to inspect, approve/reject, capture human changes, and
-promote procedures. State is `state/operator.db`; preserve it with Knowledge.
-A repair needs two distinct verified occurrences and explicit promotion before
-automatic use. Existing prevention/LLM advice cannot bypass this gate.
-High-risk actions retain the separate gate and never become automatic procedures.
-The scripted live exercise on app-1 demonstrated an approved repair, a separately
-performed SSH repair, promotion, and automatic repair of the third occurrence.
-This is a terminal interface, not a web console or unrestricted autonomous agent.
-
-## How to work here
-
-- Start the loop with `bash tools/start_loop.sh start C` from a shell with the
-  credentials exported. It is a systemd user service; credentials stay in
-  memory only.
-- Run faults with `tools/live_run.py`, never by hand without measurement.
-- Pause the loop's actions with `touch state/paused`; allow high-risk actions
-  with `touch state/approve-high-risk`. Remove the files to undo.
-- Expect things to break. Fix them in this repository, with a test where the
-  failure was testable, and write the incident into `evidence/`.
-
-## How the failure is made deterministic
-
-Stock nginx does not go down when its log volume fills, and it rolls back a
-reload it cannot apply. So the lab host declares an explicit startup storage
-requirement: an `ExecStartPre` preflight that refuses to start nginx with less
-than 25 MiB free on the bounded log volume, and the maintenance operation is a
-deliberate restart rather than a reload.
-
-This is a lab protocol modelling a real requirement. Never describe it as stock
-nginx behaviour, in code comments or in the report.
-
-## Hard safety rules
-
-- **Never** destroy, rebuild or reboot `healer-ubuntu`. It is this machine.
-- Destructive actions only target names in `lab_instances`, and ownership must
-  be positively proven. Fail closed on missing metadata.
-- Never write to the root filesystem as a fault. The disk fault targets a
-  bounded loop-backed volume, validated by `tools/lab-host/healer-mount-guard`
-  before anything is written.
-- `reboot_instance` and `rebuild_instance` are high risk: the loop records a
-  proposal and escalates unless approval is explicitly enabled.
-- Fault injection and any scanning stay inside the project's own isolated
-  network. EduCloud's terms forbid scanning anything else.
-- EduCloud guarantees neither availability nor backups, and projects are
-  removed after about six months. Keep code and results off-platform.
-
-## Working rules
-
-- A failed probe is unknown, never healthy. Health requires every required
-  probe readable and satisfied.
-- Verify after every repair. An action reporting success while the service is
-  still down is the failure mode that makes automation dangerous.
-- When something cannot be established, say so. Do not report simulation
-  behaviour as observed behaviour. The distinction between "the tests pass" and
-  "this was observed on the lab" matters more here than anywhere else.
-- Capture evidence as you go: command output, timestamps, free space, service
-  status, journal lines, curl results. Write them to `evidence/` and commit.
-  That directory is the raw material for the report.
-- Prefer a test over a promise. If a bug was reproducible, add the test.
-
-## Writing style, for anything that ends up in the report
-
-Plain English, British spelling, no em dashes or en dashes, student voice, no
-marketing language. Short sentences. Say what is true, including what did not
-work.
-
-## Broader infrastructure, 14 October 2026
-
-The new dependency experiment is separate from the original nginx results.
-app-1 runs a synthetic transaction and checkpoint; app-2 runs dedicated DNS
-and authenticated Redis. See docs/infrastructure-lab.md. The reviewed loop
-uses state/infrastructure and metrics port 9106. Preserve both incident databases.
-On 2026-10-14 the `healer-infrastructure` service runs from the checkout
-`~/projects/broader-infrastructure`, so its state is there, while
-`healer-loop` runs from `~/projects/selfheal`. Check `WorkingDirectory` with
-`systemctl --user show` before moving either, and back up both state folders.
-Repair recipes are typed capabilities, never shell transcripts. Automatic reuse
-requires two verified occurrences and promotion. Both VM identities and recipe
-versions enter scope. Existing baseline resets require this installer afterward.
+The research questions concern healable failure classes, effective methods,
+learning/prevention, and reliability/security/performance/scalability. Published
+work already includes learning. Do not claim universal effectiveness or fleet
+scaling from this small pilot. See docs/repository-audit.md for the current review.

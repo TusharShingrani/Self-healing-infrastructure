@@ -1,6 +1,8 @@
 # Incident diagnosis, operator review and validated procedures
 
-The managed elements remain Ubuntu VMs running nginx, not containers.
+This page describes the nginx adapter on Ubuntu VMs, not containers. The
+[dependency adapter](infrastructure-lab.md) has a separate investigation workflow
+and incident database. See [the complete architecture](architecture.md).
 The running service now defaults to incident review (`HEALER_REVIEW=1`).
 Simulation tests still use the old ungated mode unless an Operator is attached.
 Original A/B/C measurements remain historical results of the earlier policy.
@@ -60,8 +62,9 @@ A verified fix first creates a candidate. Promotion requires two distinct
 verified incident occurrences plus explicit operator review. A promoted
 procedure is scoped to its target, project, template, service, paths, reference
 file contents, diagnosis, symptoms and action list. It is not a promise that
-arbitrary future failures can be repaired. Live fresh symptoms must still match.
-Failed verification revokes automatic use. Review again after adapter changes.
+arbitrary future failures can be repaired. Live fresh symptoms must match exactly; additional symptoms require a new diagnosis.
+Failed verification revokes automatic use. Promotion then requires two new
+verified occurrences after the last failure. Review again after adapter changes.
 
 High-risk reboot/rebuild never become automatic procedures. Their existing
 separate gate, target allowlist and ownership checks remain. Cooldown and action
