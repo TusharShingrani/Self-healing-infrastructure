@@ -10,9 +10,9 @@
     },
     {
       "path": "CLAUDE.md",
-      "bytes": 9584,
-      "sha256": "fa4b1d39203e6e4b16fcf9261b1c85ac100bc3943fa0d6e0ecea06ab05da5ed8",
-      "lines": 179,
+      "bytes": 9979,
+      "sha256": "563a59947a92eb08bc891d90f2a4da2fc6d0f75655c7c535d16d140879d4bb20",
+      "lines": 185,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -53,9 +53,9 @@
     },
     {
       "path": "docs/architecture.md",
-      "bytes": 18711,
-      "sha256": "c8e36415867cedf0167a5b6ae02a01c5fcc46d53ad735e6d8c8be738cf1f2518",
-      "lines": 335,
+      "bytes": 27367,
+      "sha256": "a84ebd2be95256f0627e8207437134c3ecd28b7f55d3947ce2914f87eccc86c3",
+      "lines": 451,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -63,9 +63,9 @@
     },
     {
       "path": "docs/context-report.md",
-      "bytes": 12029,
-      "sha256": "a78f4ab8dca69fd200518755712d0b306e871fe8a3c3a8ee9526ef338cb5ad95",
-      "lines": 200,
+      "bytes": 13462,
+      "sha256": "73c46d683c8150b2620490e0a6d4e6c2337dd60550d1eafde6cc60fc26da5984",
+      "lines": 205,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -73,9 +73,9 @@
     },
     {
       "path": "docs/design-notes.md",
-      "bytes": 11865,
-      "sha256": "1f76c377629d0e1b4c91af943e234ca58b3eb8489347ec62c509f274bd8751af",
-      "lines": 269,
+      "bytes": 12803,
+      "sha256": "250124a21b8f95ff62705889f18cecfd28c0b79f1024fc0e63c9af4951fafc53",
+      "lines": 283,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -83,9 +83,9 @@
     },
     {
       "path": "docs/healer-handover.md",
-      "bytes": 10422,
-      "sha256": "eeb313d43fd49069ea3997d57ba05c2adb310c1074730662a673f78e5c2dcae3",
-      "lines": 187,
+      "bytes": 11843,
+      "sha256": "7c48588a0aecaf0b4e8be6ff1a779b71d4a66e1c19a53d6d77b87d9289487b91",
+      "lines": 200,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -93,9 +93,9 @@
     },
     {
       "path": "docs/infrastructure-lab.md",
-      "bytes": 8221,
-      "sha256": "c108c47cd7b9795a9feb94305142191b26dbe0aad7f64beaddc35326c3f5e4a4",
-      "lines": 153,
+      "bytes": 8639,
+      "sha256": "01b9471f639a98483fac314a90900f40e3a79f84aefeb40688d9214e8babb9b8",
+      "lines": 159,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -103,9 +103,9 @@
     },
     {
       "path": "docs/live-demo.md",
-      "bytes": 8339,
-      "sha256": "54a4d81ba4fa66908883030d2d39b9888daf03f624d1e5af7572478a828fd276",
-      "lines": 192,
+      "bytes": 9990,
+      "sha256": "1a81c0bcb47bcfa046e02a96c7c0e3a0e01f63d55e25efee3e8150e5ac12219e",
+      "lines": 222,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -2045,9 +2045,9 @@
     },
     {
       "path": "mapek/world.py",
-      "bytes": 5032,
-      "sha256": "c06c86c8d7b81ea34278e9b5ab8c4ee2afc747cecf010fd8074afe075eb46637",
-      "lines": 136,
+      "bytes": 5113,
+      "sha256": "bffdded6c6fb42bbbac849564ba837104c9f7076d96d811dbf8c155c2cb91b47",
+      "lines": 137,
       "kind": "python",
       "checks": [
         "python-AST"
@@ -2137,9 +2137,9 @@
     },
     {
       "path": "README.md",
-      "bytes": 12676,
-      "sha256": "e16930154f0857b7b15046123f3d25f126ef44f8d747a354164f23a358eab767",
-      "lines": 256,
+      "bytes": 16451,
+      "sha256": "6f15d62bf50d077f17c2f42cab6a9bbf58619638f119ba588b04b35d18954883",
+      "lines": 315,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -2147,9 +2147,9 @@
     },
     {
       "path": "REVIEW.md",
-      "bytes": 2992,
-      "sha256": "7ce574f76e2e4b0208176e5667893432be2c2b12501631fe4e10c84f3e9a77bd",
-      "lines": 29,
+      "bytes": 3546,
+      "sha256": "400d0480fd97ebf571baa024a7d02aa6187ecfab0ba296efdf071189679dce1d",
+      "lines": 38,
       "kind": "source/config/docs",
       "checks": [
         "markdown-links/fences"
@@ -2197,9 +2197,9 @@
     },
     {
       "path": "tools/demo.py",
-      "bytes": 1460,
-      "sha256": "9d114b69498047bc129222f3fd0f1f1916f6db87c4b5f939bcd9185480a5b461",
-      "lines": 48,
+      "bytes": 1560,
+      "sha256": "f94998ff17db64daadb08c48a889d8ab997aaec963fd910fea209e7d6e64ee52",
+      "lines": 51,
       "kind": "python",
       "checks": [
         "python-AST"
@@ -2321,9 +2321,9 @@
     },
     {
       "path": "tools/install_monitor.sh",
-      "bytes": 5599,
-      "sha256": "dff5c0c426897bf3e49d230e7e03203d6f97f43b4b5a7a15b841068c3d3b79dc",
-      "lines": 112,
+      "bytes": 5750,
+      "sha256": "a29e4c88f0d09ec7f114e2d7af367e5c41ac63750afb0c9c5c51092bb23fc43a",
+      "lines": 114,
       "kind": "source/config/docs",
       "checks": []
     },
@@ -2532,12 +2532,8 @@
       ]
     }
   ],
-  "issues": [
-    [
-      "README.md",
-      "Possible mojibake"
-    ]
-  ],
-  "base_revision": "1697e9f",
-  "coverage": "All 250 original tracked files read; format validation and contract review, not formal verification"
+  "issues": [],
+  "base_revision": "124da87",
+  "initial_base_revision": "1697e9f",
+  "coverage": "All 250 tracked files on latest merged main read; source/config/docs and historical formats checked; not formal verification"
 }

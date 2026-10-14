@@ -1,6 +1,7 @@
 # Repository audit, 14 October 2026
 
-Base revision: `1697e9f` on GitHub main. The audit read all **250 tracked
+Base revision: `124da87` on GitHub main, including the concurrently merged
+documentation review. The audit began at `1697e9f` and reread the latest snapshot. The audit read all **250 tracked
 files**, including source, configuration, documents, raw samples, JSON/JSONL,
 historical SQLite databases and the performance figure. The file inventory
 records each original path, size, SHA-256 and format checks. Reading/validating

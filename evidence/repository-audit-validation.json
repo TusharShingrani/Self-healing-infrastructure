@@ -1,6 +1,6 @@
 {
   "audit_date": "2026-10-14",
-  "base_revision": "1697e9f",
+  "base_revision": "124da87",
   "original_tracked_files_read": 250,
   "offline_checks": {
     "safety": 18,
@@ -168,5 +168,7 @@
     "pending_incidents": 0,
     "validated_procedures": 4,
     "recent_errors": []
-  }
+  },
+  "initial_base_revision": "1697e9f",
+  "concurrent_change": "PR #6 reconciled; simulator/monitor/review corrections preserved"
 }
