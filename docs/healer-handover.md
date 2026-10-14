@@ -13,7 +13,7 @@ Keep these the same and nothing else needs to change.
 | Fixed value | Who relies on it | What breaks if it changes |
 |---|---|---|
 | Name `healer-ubuntu` | `config/lab.json` `healer_instance`; `tools/lab.py` and `mapek/educloud.py` refuse any deploy or destructive action on this name | The self-protection rule no longer covers the new machine |
-| Address `10.1.1.205` | `monitoring/prometheus.yml` (scrape target for the loop's metrics), `tools/live_run.py` (reads the loop config from `10.1.1.205:9105`), `config/lab.json` `healer_guest_ip`, the port forward on the virtual router | The dashboard loses the loop's metrics; every live run is labelled `loop-not-running` and the experiment runner stops |
+| Address `10.1.1.205` | `monitoring/prometheus.yml` (scrape targets `:9105` and `:9106`), `tools/live_run.py` (reads the loop config from `10.1.1.205:9105`), `tools/infrastructure_service.py` (binds `10.1.1.205:9106`), `config/lab.json` `healer_guest_ip`, the port forward on the virtual router | The dashboards lose both loops' metrics; the dependency service cannot start; every live run is labelled `loop-not-running` and the experiment runner stops |
 | Network `healer-isolated` 10.1.1.0/24 | Everything: the apps and the monitor have no port forward, so they are only reachable from inside | Nothing in the lab can be reached |
 | Port forward tcp/22 on 10.53.14.225, firewall from one VPN address | The only way in from the laptop | No access at all except the EduCloud console |
 | Keypair `healer-lab-key2` | Installed on app-1, app-2 and the monitor at deploy time | Nothing; the keypair only holds the public key. The private key is in section 2 |
@@ -32,7 +32,9 @@ These are not in the repository, and some cannot be recreated.
 | GitHub deploy key | `~/.ssh/github_selfheal`, `~/.ssh/config` (`Host github.com` uses it) | No push. Recreate: new key, add it to the repository's deploy keys with write access |
 | Pinned lab host keys | `~/.ssh/healer-lab-known-hosts/` (one file per address) | The loop re-learns them on first contact (trust on first use again); `tools/provision.sh` refuses until they exist |
 | Host registry | `~/.local/state/healer-lab/hosts.json` (address to instance id) | Rebuilt on first contact; an id change is then not explained |
-| Loop runtime state | `state/` in the repository (ignored by git): `knowledge.db`, `events.jsonl`, `experiment-console.log` | Knowledge and the loop's own event history are gone. Run evidence under `evidence/` is unaffected |
+| nginx loop state | `state/` in the repository (ignored by git): `knowledge.db`, `operator.db`, `events.jsonl`, `experiment-console.log` | Knowledge, incident cases, the decision audit, validated procedures and the event history are gone. Run evidence under `evidence/` is unaffected |
+| Dependency loop state | `state/infrastructure/` in the checkout the service runs from. On 2026-10-14 that is `~/projects/broader-infrastructure`, not `~/projects/selfheal` | Investigations, cases, audit and the four validated dependency procedures are gone |
+| Demo backups | `~/healer-demo-backups/` | The Knowledge and state saved before the 14 October demo |
 | `CS_URL` export | last lines of `~/.bashrc` | Re-add: `export CS_URL=https://educloud.fontysict.nl/client/api` |
 | User lingering | `loginctl enable-linger ubuntu` | The loop service stops when you log out |
 | sysstat | package `sysstat` | No memory history after the next incident |
@@ -60,7 +62,8 @@ See `evidence/2026-10-13-healer-resize.md` for the reconnect results.
 CloudStack can change the service offering of a stopped instance. The disk,
 the address, the port forward and every file in section 2 stay as they are.
 
-1. Stop the loop: `bash tools/start_loop.sh stop`.
+1. Stop both loops: `bash tools/start_loop.sh stop` and
+   `bash tools/start_infrastructure.sh stop`.
 2. In the EduCloud console, stop `healer-ubuntu`. Do this by hand. The loop
    and the tools never act on the healer.
 3. Change the service offering to `Small Instance ++` (2 CPUs, 6 GiB).
@@ -79,7 +82,8 @@ go first. Back up first.
    ```bash
    ssh <healer login> 'tar czf - .ssh/healer-lab-key .ssh/github_selfheal .ssh/github_selfheal.pub \
        .ssh/config .ssh/healer-lab-known-hosts .local/state/healer-lab \
-       projects/selfheal/state .claude/projects/-home-ubuntu-projects-selfheal' > healer-backup.tgz
+       projects/selfheal/state projects/broader-infrastructure/state healer-demo-backups \
+       .claude/projects/-home-ubuntu-projects-selfheal' > healer-backup.tgz
    tar tzf healer-backup.tgz          # check the lab key is in it
    ```
 
@@ -87,7 +91,7 @@ go first. Back up first.
    The archive holds private keys: keep it on the laptop only, never in the
    repository or a shared drive.
 
-2. Stop the loop, then destroy the old healer in the console. Expunge it, so
+2. Stop both loops, then destroy the old healer in the console. Expunge it, so
    that 10.1.1.205 is released.
 
 3. **Deploy the new one in the console:**
@@ -117,7 +121,9 @@ go first. Back up first.
    echo 'export CS_URL=https://educloud.fontysict.nl/client/api' >> ~/.bashrc
    mkdir -p ~/projects
    git clone git@github.com:TusharShingrani/Self-healing-infrastructure.git ~/projects/selfheal
-   tar xzf healer-backup.tgz -C ~ projects/selfheal/state      # then the loop's state
+   tar xzf healer-backup.tgz -C ~ projects/selfheal/state      # then the nginx loop's state
+   tar xzf healer-backup.tgz --strip-components=2 -C ~/projects/selfheal \
+       projects/broader-infrastructure/state   # dependency state, into the one checkout
    rm healer-backup.tgz
    ```
 
@@ -150,7 +156,7 @@ cd ~/projects/selfheal
 export CS_KEY=... CS_SECRET=... LAB_SSH_KEY=~/.ssh/healer-lab-key
 
 free -h                                              # the new size is there
-for t in safety adapter learning; do python3 tools/test_$t.py | tail -1; done
+for t in safety adapter learning operator infrastructure transaction; do python3 tools/test_$t.py 2>&1 | tail -1; done
 bash tools/test_lab_host.sh | tail -1                # code is intact
 python3 tools/lab.py status                          # CloudStack API and keys work
 curl -s http://10.1.1.60/healthz; curl -s http://10.1.1.61/healthz      # network: ok ok
@@ -161,6 +167,10 @@ bash tools/start_loop.sh start C
 curl -s http://10.1.1.205:9105/metrics | grep healer_loop_info               # loop exposes metrics
 curl -s 'http://10.1.1.50:9090/api/v1/query?query=up{job="mapek"}'           # Prometheus scrapes it: value 1
 python3 tools/knowledge.py events 5                   # loop is ticking
+python3 tools/incidents.py procedures                 # operator.db restored
+bash tools/start_infrastructure.sh start
+curl -s http://10.1.1.205:9106/metrics | grep -E 'healthy|validated'      # dependency loop: 1, and its procedures
+python3 tools/lab_shell.py python3 tools/infrastructure.py procedures
 git push --dry-run                                   # deploy key works
 ```
 
@@ -176,9 +186,12 @@ Then write what happened to `evidence/` and commit it.
 laptop --VPN--> 10.53.14.225:22 --port forward--> healer 10.1.1.205
 healer  --SSH :22, key healer-lab-key, pinned host keys--> app-1 10.1.1.60, app-2 10.1.1.61, monitor 10.1.1.50
 healer  --HTTP :80 /healthz--> app-1, app-2         (verification after every repair)
+healer  --HTTP :8088 /healthz--> app-1              (dependency loop transaction, every tick)
+app-1   --DNS :1053, Redis :6380--> app-2           (the transaction's dependencies)
 healer  --PromQL :9090--> monitor                   (Monitor stage)
 monitor --scrape :9100 :9113, probe :80--> app-1, app-2
-monitor --scrape :9105--> healer                    (loop metrics on the dashboard)
+monitor --scrape :9105 :9106--> healer              (both loops' metrics on the dashboards)
+monitor --probe :8088--> app-1                      (transaction availability)
 healer  --HTTPS, signed with CS_KEY/CS_SECRET--> CloudStack API (state, ownership, reboot, rebuild, deploy)
 healer  --HTTPS, optional GEMINI_API_KEY--> Gemini API (advice only)
 healer  --SSH, deploy key github_selfheal--> GitHub (code and evidence off-platform)

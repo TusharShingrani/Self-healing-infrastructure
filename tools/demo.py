@@ -1,4 +1,7 @@
-"""Live demo: the same failure twice. The second time it never happens.
+"""Simulation demo: the same failure twice. The second time it never happens.
+
+This runs against SimulatedWorld, not EduCloud. tools/live_run.py is the
+measured cloud run.
 
 Run:  python3 tools/demo.py
 """

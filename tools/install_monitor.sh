@@ -2,9 +2,11 @@
 # Observability for the lab, on the monitor instance (10.1.1.50):
 #   sudo bash install_monitor.sh     (files from monitoring/ are expected in ~/lab/monitor)
 #
-#   :9090  Prometheus         scrapes app-1, app-2 and the MAPE-K loop on the healer
-#   :9115  blackbox exporter  checks /healthz from outside the managed instance
-#   :3000  Grafana            dashboard "Self-healing infrastructure (MAPE-K)"
+#   :9090  Prometheus         scrapes app-1, app-2 and both MAPE-K loops on the healer
+#   :9115  blackbox exporter  checks nginx /healthz and the app-1 transaction from
+#                             outside the managed instance
+#   :3000  Grafana            dashboards "Self-healing infrastructure (MAPE-K)" and
+#                             "Infrastructure dependencies and reviewed learning"
 #
 # Only reachable on the isolated network. From a laptop, tunnel through the
 # healer:  ssh -L 3000:10.1.1.50:3000 <your usual healer ssh login>
