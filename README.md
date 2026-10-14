@@ -10,10 +10,14 @@ separate piece of code, every stage is visible in Grafana, and every claim in
 the results below comes from a measured live run on EduCloud, not from the
 simulation.
 
+**Try it yourself:** [guided live demo and approval walkthrough](docs/live-demo.md).
+The 14 October demo includes a live cross-instance prevention result and a
+rate-limit pacing finding; [raw demo account](evidence/live-demo-2026-10-14.md).
+
 **Documents:** [context report: the problem and the failure scenarios](docs/context-report.md)
-Â· [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
-Â· [results](docs/results.md) Â· [design notes](docs/design-notes.md)
-Â· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
+Ã‚Â· [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
+Ã‚Â· [results](docs/results.md) Ã‚Â· [design notes](docs/design-notes.md)
+Ã‚Â· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
 
 ## What runs where
 

@@ -1,0 +1,1 @@
+{"time": "2026-10-14T09:43:37Z", "node": "app-1", "config": "C", "tick": 67, "kind": "healed", "cause": "manual_configuration_change", "level": 0, "source": "rules", "symptoms": ["config_drift"], "actions": ["restore_config"], "detail": "restore_config: configuration restored from reference", "monitor_source": "prometheus+direct"}
