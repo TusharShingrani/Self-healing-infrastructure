@@ -96,6 +96,10 @@ results; no single cause of the throughput changes was isolated.
 - Changing the deployed transaction changed procedure scope. We preserved the
   original state and measurements, then repeated the complete learning sequence
   against the corrected workload. No old approval was silently inherited.
+- A service restart interrupted one asynchronous advisor request, leaving it
+  deduplicated indefinitely. Requested advice now expires after a 120-second
+  lease; a late response cannot revive it. Four completed Gemini responses are
+  retained separately from that interrupted request.
 - A revoked recipe can no longer be promoted using successes from before its
   failure. Two new verified occurrences and review are required.
 
@@ -110,7 +114,7 @@ was not claimed to invent that code patch automatically.
 
 ## Final checks and remaining boundaries
 
-212 offline checks passed across safety, learning/advisor, adapter, host scripts,
+215 offline checks passed across safety, learning/advisor, adapter, host scripts,
 operator, infrastructure and production-transaction suites. Both nginx health
 endpoints are healthy. Four infrastructure procedures are validated; zero repair
 incidents are pending. Ten Prometheus targets are up. The new eight-panel Grafana
@@ -135,4 +139,6 @@ an independently measured absence of failure.
 - `infrastructure-concurrency-failures.json`: exact faulty readback observations.
 - `infrastructure-benchmark-smoke-after-concurrency.json`: corrected smoke sweep.
 - `infrastructure-final-contract.json`: deployed scope, endpoints, targets and real model metadata.
-- `infrastructure-tests.txt`: complete final test output.
+- `infrastructure-tests.txt`, `infrastructure-capability-tests.txt` and
+  `infrastructure-advisor-regression.txt`: test outputs, including the later
+  strengthened verification and abandoned-request checks.

@@ -44,6 +44,7 @@ def main():
         start=time.monotonic()
         with lock:
             try:
+                healer.knowledge.expire_advice()
                 healer.config='A' if os.path.exists('state/infrastructure/paused') else 'C'
                 healer.tick();ticks+=1
                 snapshot={'time':time.time(),'observation':world.latest,'events':[e.__dict__ for e in healer.events[-1:]],'tick_seconds':time.monotonic()-start}

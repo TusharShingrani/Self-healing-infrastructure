@@ -1,5 +1,5 @@
 {
-  "time": 1791981913.6148481,
+  "time": 1791982111.5455918,
   "healthy": true,
   "observation": {
     "tick": 0,
@@ -12,9 +12,9 @@
     "infrastructure_checks": {
       "cache_service": true,
       "cache_budget": true,
-      "cache_write": true,
       "dns_record": true,
-      "spool_write": true
+      "spool_write": true,
+      "cache_write": true
     },
     "disk_percent": null,
     "disk_growth": null,
@@ -30,7 +30,7 @@
         "cache_write": "SET and GET on expiring canary key",
         "spool_write": "/var/lib/healer-stack/checkpoint"
       },
-      "latency_ms": 3.422
+      "latency_ms": 2.699
     }
   },
   "validated_procedures": 4,
@@ -126,7 +126,7 @@
     },
     {
       "id": 5,
-      "status": "requested",
+      "status": "failed",
       "model": null,
       "cause": null,
       "actions": null

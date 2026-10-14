@@ -1,5 +1,6 @@
 test_changed_evidence_blocks_investigation (__main__.Tests.test_changed_evidence_blocks_investigation) ... ok
 test_composite_never_rebuilds_one_dependency (__main__.Tests.test_composite_never_rebuilds_one_dependency) ... ok
+test_current_advisor_request_keeps_its_lease (__main__.Tests.test_current_advisor_request_keeps_its_lease) ... ok
 test_failed_automatic_recipe_cannot_reuse_old_successes (__main__.Tests.test_failed_automatic_recipe_cannot_reuse_old_successes) ... ok
 test_functional_recovery_cannot_certify_world_writable_checkpoint (__main__.Tests.test_functional_recovery_cannot_certify_world_writable_checkpoint) ... ok
 test_health_requires_every_dependency (__main__.Tests.test_health_requires_every_dependency) ... ok
@@ -9,6 +10,8 @@ test_human_unknown_command_cannot_be_learned (__main__.Tests.test_human_unknown_
 test_investigated_diagnosis_has_procedure (__main__.Tests.test_investigated_diagnosis_has_procedure) ... ok
 test_investigation_rejects_unknown_recipe (__main__.Tests.test_investigation_rejects_unknown_recipe) ... ok
 test_investigation_still_needs_approval (__main__.Tests.test_investigation_still_needs_approval) ... ok
+test_late_advisor_response_cannot_resurrect_expired_request (__main__.Tests.test_late_advisor_response_cannot_resurrect_expired_request) ... ok
+test_lost_advisor_request_expires_and_can_retry (__main__.Tests.test_lost_advisor_request_expires_and_can_retry) ... ok
 test_poisoned_evidence_does_not_grant_execution (__main__.Tests.test_poisoned_evidence_does_not_grant_execution) ... ok
 test_recipe_digest_changes_with_composition (__main__.Tests.test_recipe_digest_changes_with_composition) ... ok
 test_recipe_rejects_duplicates (__main__.Tests.test_recipe_rejects_duplicates) ... ok
@@ -24,6 +27,6 @@ test_unproven_composite_never_sends_ssh_command (__main__.Tests.test_unproven_co
 test_unrelated_catalogue_action_cannot_be_recorded (__main__.Tests.test_unrelated_catalogue_action_cannot_be_recorded) ... ok
 
 ----------------------------------------------------------------------
-Ran 24 tests in 0.016s
+Ran 27 tests in 0.018s
 
 OK
