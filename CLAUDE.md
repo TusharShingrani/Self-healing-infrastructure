@@ -13,10 +13,10 @@ The theory spine is the **MAPE-K loop** (Monitor, Analyse, Plan, Execute,
 Knowledge). The code mirrors it on purpose, so the report and the modules line
 up.
 
-The gap this project addresses: published self-healing systems (Red Hat's
-stack, Netflix's Winston, the practitioner write-ups) all stop at detect and
-repair. None of them learn. Stages 5 and 6, remember and prevent, are the
-contribution.
+Published systems already include learning and proactive mitigation (for example,
+Narya, OSDI 2020). This project's contribution is a bounded EduCloud prototype
+and reproducible evaluation of reviewed procedural learning, not a claim that
+learning is new. Read docs/research-synthesis.md and docs/infrastructure-lab.md.
 
 ## Research questions
 
@@ -28,7 +28,7 @@ prevent them?
    failures? (Library + Lab)
 3. How can a self-healing system learn from past failures to prevent them?
    (Library + Lab)
-4. How does self-healing affect reliability, security and performance?
+4. How does self-healing affect reliability, security, performance and scalability?
    (Library + Lab)
 
 Scope is the **infrastructure layer**: services, storage, configuration,
@@ -71,7 +71,8 @@ Built and observed live on EduCloud:
 - first live heal (app-1, 17 s outage), rule learned, and the same fault then
   prevented on app-2 with zero downtime. Config drift and service stop healed
 - the optional LLM advisor uses Google Gemini (free tier) over REST, built and
-  tested with a fake provider; no GEMINI_API_KEY is configured on the healer yet
+  tested with a fake provider; Gemini was also tested live on 2026-10-14; its key is now held only in
+  the user service manager memory
 - four suites: `test_safety.py`, `test_adapter.py`, `test_learning.py`,
   `test_lab_host.sh`. Tests never touch real host identity state
 
@@ -84,6 +85,31 @@ Its instance id, disk, guest address and port forward were retained.
 A 1 GiB swap file is active and persistent. The reconnect checks and remaining
 credential-dependent steps are in `evidence/2026-10-13-healer-resize.md`.
 After a healer reboot the loop is not running until `start_loop.sh` is run again.
+
+## Guided demo, 2026-10-14
+
+Read `docs/live-demo.md` for the personal walkthrough and
+`evidence/live-demo-2026-10-14.md` for the measured outcomes. The demo
+confirmed shared prevention on app-2 with zero downtime. A rapid app-1
+repeat and service stop were delayed by the existing 20-tick rate limit;
+do not describe those as successful prevention or fast healing. Config C
+is running, Gemini is available, and the learned rule survived a loop restart.
+The old Knowledge and runtime state remain under
+`~/healer-demo-backups/20261014T092750Z`. The original A/B/C results
+remain unchanged. Use `python3 tools/lab_shell.py` to open a lab shell
+with credentials already held in memory, without printing or saving them.
+
+## Reviewed repair workflow
+
+Read `docs/operator-workflow.md`. The live service defaults to HEALER_REVIEW=1.
+Use `tools/incidents.py` to inspect, approve/reject, capture human changes, and
+promote procedures. State is `state/operator.db`; preserve it with Knowledge.
+A repair needs two distinct verified occurrences and explicit promotion before
+automatic use. Existing prevention/LLM advice cannot bypass this gate.
+High-risk actions retain the separate gate and never become automatic procedures.
+The scripted live exercise on app-1 demonstrated an approved repair, a separately
+performed SSH repair, promotion, and automatic repair of the third occurrence.
+This is a terminal interface, not a web console or unrestricted autonomous agent.
 
 ## How to work here
 
@@ -141,3 +167,13 @@ nginx behaviour, in code comments or in the report.
 Plain English, British spelling, no em dashes or en dashes, student voice, no
 marketing language. Short sentences. Say what is true, including what did not
 work.
+
+## Broader infrastructure, 14 October 2026
+
+The new dependency experiment is separate from the original nginx results.
+app-1 runs a synthetic transaction and checkpoint; app-2 runs dedicated DNS
+and authenticated Redis. See docs/infrastructure-lab.md. The reviewed loop
+uses state/infrastructure and metrics port 9106. Preserve both incident databases.
+Repair recipes are typed capabilities, never shell transcripts. Automatic reuse
+requires two verified occurrences and promotion. Both VM identities and recipe
+versions enter scope. Existing baseline resets require this installer afterward.

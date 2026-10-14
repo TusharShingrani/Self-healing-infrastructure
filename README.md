@@ -2,7 +2,8 @@
 
 A graduation project (HBO ICT, Fontys). Infrastructure on Fontys EduCloud that
 detects a failure, repairs the cause rather than the symptom, verifies the
-repair, and learns so the same failure is prevented next time.
+repair, and learns verified procedures for later recovery. Prevention is measured
+separately where an early warning is available.
 
 The loop follows the MAPE-K reference model (Kephart and Chess, 2003):
 Monitor, Analyse, Plan, Execute, over shared Knowledge. Every stage is a
@@ -10,10 +11,24 @@ separate piece of code, every stage is visible in Grafana, and every claim in
 the results below comes from a measured live run on EduCloud, not from the
 simulation.
 
+**Broader infrastructure:** [DNS, Redis, permissions and investigated learning](docs/infrastructure-lab.md).
+[Research synthesis answering all four subquestions](docs/research-synthesis.md).
+The new dependency loop has separate state and a read-only Grafana dashboard.
+[Measured outcomes and retained implementation findings](evidence/infrastructure-validation-2026-10-14.md).
+
+**Current operator workflow:** [incident diagnosis, human repairs and validated procedures](docs/operator-workflow.md).
+New live repairs now require incident approval until a narrowly scoped procedure
+has two verified successes and explicit promotion. Earlier demo and A/B/C
+results describe the previous execution policy.
+
+**Try it yourself:** [guided live demo and approval walkthrough](docs/live-demo.md).
+The 14 October demo includes a live cross-instance prevention result and a
+rate-limit pacing finding; [raw demo account](evidence/live-demo-2026-10-14.md).
+
 **Documents:** [context report: the problem and the failure scenarios](docs/context-report.md)
-Â· [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
-Â· [results](docs/results.md) Â· [design notes](docs/design-notes.md)
-Â· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
+Ãƒâ€šÃ‚Â· [architecture and design: network, MAPE-K, learning, design decisions](docs/architecture.md)
+Ãƒâ€šÃ‚Â· [results](docs/results.md) Ãƒâ€šÃ‚Â· [design notes](docs/design-notes.md)
+Ãƒâ€šÃ‚Â· [healer handover: connections, backup, replacing or resizing the healer](docs/healer-handover.md)
 
 ## What runs where
 

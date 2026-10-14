@@ -1,0 +1,1803 @@
+{
+  "started": 1791980372.2283533,
+  "protocol": "mechanism-validation; scripted investigator/operator; three occurrences per class",
+  "baseline": {
+    "tick": 0,
+    "reachable": true,
+    "service_running": true,
+    "config_correct": true,
+    "http_ok": true,
+    "probe_error": "",
+    "monitor_source": "direct-dependency-transaction",
+    "infrastructure_checks": {
+      "cache_service": true,
+      "cache_budget": true,
+      "cache_write": true,
+      "spool_write": true,
+      "dns_record": true
+    },
+    "disk_percent": null,
+    "disk_growth": null,
+    "transaction": {
+      "healthy": true,
+      "checks": {
+        "dns_record": true,
+        "cache_write": true,
+        "spool_write": true
+      },
+      "evidence": {
+        "dns_record": "10.1.1.61",
+        "cache_write": "SET and GET on expiring canary key",
+        "spool_write": "/var/lib/healer-stack/checkpoint"
+      },
+      "latency_ms": 3.534
+    }
+  },
+  "runs": [
+    {
+      "fault": "dns_drift",
+      "repetition": 1,
+      "injected_at": 1791980373.616026,
+      "failed_observation": {
+        "tick": 0,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": null,
+          "spool_write": true,
+          "dns_record": false
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": false,
+            "cache_write": null,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.62",
+            "cache_write": "not attempted: DNS contract failed",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 0.567
+        }
+      },
+      "frontend_restart": {
+        "command_success": true,
+        "healthy": false,
+        "observation": {
+          "tick": 0,
+          "reachable": true,
+          "service_running": true,
+          "config_correct": true,
+          "http_ok": false,
+          "probe_error": "",
+          "monitor_source": "direct-dependency-transaction",
+          "infrastructure_checks": {
+            "cache_service": true,
+            "cache_budget": true,
+            "cache_write": null,
+            "spool_write": true,
+            "dns_record": false
+          },
+          "disk_percent": null,
+          "disk_growth": null,
+          "transaction": {
+            "healthy": false,
+            "checks": {
+              "dns_record": false,
+              "cache_write": null,
+              "spool_write": true
+            },
+            "evidence": {
+              "dns_record": "10.1.1.62",
+              "cache_write": "not attempted: DNS contract failed",
+              "spool_write": "/var/lib/healer-stack/checkpoint"
+            },
+            "latency_ms": 0.616
+          }
+        }
+      },
+      "first_tick_completed_at": 1791980381.3579795,
+      "detection_tick_seconds": 3.442023515701294,
+      "events_before_decision": [
+        {
+          "tick": 1,
+          "kind": "escalated",
+          "detail": "no diagnosis matched",
+          "symptoms": [
+            "http_unavailable",
+            "infra:dns_record"
+          ],
+          "cause": "",
+          "actions": [],
+          "level": 0
+        }
+      ],
+      "mode": "investigated-approved",
+      "recovered_at": 1791980398.468345,
+      "repair_and_verification_seconds": 13.689164876937866,
+      "injection_to_verified_seconds": 24.85231900215149,
+      "after": {
+        "tick": 2,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 1.841
+        }
+      },
+      "case_id": 2,
+      "verified": true,
+      "automatic_procedure_id": null
+    },
+    {
+      "fault": "dns_drift",
+      "repetition": 2,
+      "injected_at": 1791980435.540673,
+      "failed_observation": {
+        "tick": 6,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": null,
+          "spool_write": true,
+          "dns_record": false
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": false,
+            "cache_write": null,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.62",
+            "cache_write": "not attempted: DNS contract failed",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 0.56
+        }
+      },
+      "first_tick_completed_at": 1791980443.400905,
+      "detection_tick_seconds": 5.566570520401001,
+      "events_before_decision": [
+        {
+          "tick": 7,
+          "kind": "blocked",
+          "detail": "incident #3 requires review: tools/incidents.py show 3",
+          "symptoms": [
+            "http_unavailable",
+            "infra:dns_record"
+          ],
+          "cause": "dns_record_drift",
+          "actions": [
+            "recipe_dns_reference"
+          ],
+          "level": 0
+        }
+      ],
+      "mode": "recorded-manual",
+      "recovered_at": 1791980450.7082794,
+      "repair_and_verification_seconds": 7.307302713394165,
+      "injection_to_verified_seconds": 15.167606353759766,
+      "after": {
+        "tick": 7,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 2.085
+        }
+      },
+      "case_id": 3,
+      "verified": true,
+      "automatic_procedure_id": null
+    },
+    {
+      "fault": "dns_drift",
+      "repetition": 3,
+      "injected_at": 1791980453.4746125,
+      "failed_observation": {
+        "tick": 8,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": null,
+          "spool_write": true,
+          "dns_record": false
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": false,
+            "cache_write": null,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.62",
+            "cache_write": "not attempted: DNS contract failed",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 1.912
+        }
+      },
+      "first_tick_completed_at": 1791980468.6039958,
+      "detection_tick_seconds": 12.818933248519897,
+      "events_before_decision": [
+        {
+          "tick": 9,
+          "kind": "healed",
+          "detail": "recipe_dns_reference: {\"dns_record\": true, \"endpoint\": true}",
+          "symptoms": [
+            "http_unavailable",
+            "infra:dns_record"
+          ],
+          "cause": "dns_record_drift",
+          "actions": [
+            "recipe_dns_reference"
+          ],
+          "level": 0
+        }
+      ],
+      "mode": "promoted-automatic",
+      "recovered_at": 1791980469.9874825,
+      "repair_and_verification_seconds": 14.202419996261597,
+      "injection_to_verified_seconds": 16.51287007331848,
+      "after": {
+        "tick": 9,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 3.653
+        }
+      },
+      "case_id": 4,
+      "verified": true,
+      "automatic_procedure_id": 1
+    },
+    {
+      "fault": "cache_budget",
+      "repetition": 1,
+      "injected_at": 1791980472.8104982,
+      "failed_observation": {
+        "tick": 10,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": false,
+          "cache_write": false,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": false,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "-OOM command not allowed when used memory > 'maxmemory'.",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 2.312
+        }
+      },
+      "frontend_restart": {
+        "command_success": true,
+        "healthy": false,
+        "observation": {
+          "tick": 10,
+          "reachable": true,
+          "service_running": true,
+          "config_correct": true,
+          "http_ok": false,
+          "probe_error": "",
+          "monitor_source": "direct-dependency-transaction",
+          "infrastructure_checks": {
+            "cache_service": true,
+            "cache_budget": false,
+            "cache_write": false,
+            "spool_write": true,
+            "dns_record": true
+          },
+          "disk_percent": null,
+          "disk_growth": null,
+          "transaction": {
+            "healthy": false,
+            "checks": {
+              "dns_record": true,
+              "cache_write": false,
+              "spool_write": true
+            },
+            "evidence": {
+              "dns_record": "10.1.1.61",
+              "cache_write": "-OOM command not allowed when used memory > 'maxmemory'.",
+              "spool_write": "/var/lib/healer-stack/checkpoint"
+            },
+            "latency_ms": 2.081
+          }
+        }
+      },
+      "first_tick_completed_at": 1791980481.1525018,
+      "detection_tick_seconds": 3.443950653076172,
+      "events_before_decision": [
+        {
+          "tick": 11,
+          "kind": "escalated",
+          "detail": "no diagnosis matched",
+          "symptoms": [
+            "http_unavailable",
+            "infra:cache_budget",
+            "infra:cache_write"
+          ],
+          "cause": "",
+          "actions": [],
+          "level": 0
+        }
+      ],
+      "mode": "investigated-approved",
+      "recovered_at": 1791980498.510669,
+      "repair_and_verification_seconds": 13.832305431365967,
+      "injection_to_verified_seconds": 25.700170755386353,
+      "after": {
+        "tick": 12,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 4.208
+        }
+      },
+      "case_id": 6,
+      "verified": true,
+      "automatic_procedure_id": null
+    },
+    {
+      "fault": "cache_budget",
+      "repetition": 2,
+      "injected_at": 1791980605.549162,
+      "failed_observation": {
+        "tick": 22,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": false,
+          "cache_write": false,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": false,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "-OOM command not allowed when used memory > 'maxmemory'.",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 1.643
+        }
+      },
+      "first_tick_completed_at": 1791980614.028557,
+      "detection_tick_seconds": 5.491149663925171,
+      "events_before_decision": [
+        {
+          "tick": 23,
+          "kind": "blocked",
+          "detail": "incident #7 requires review: tools/incidents.py show 7",
+          "symptoms": [
+            "http_unavailable",
+            "infra:cache_budget",
+            "infra:cache_write"
+          ],
+          "cause": "cache_memory_limit_drift",
+          "actions": [
+            "recipe_cache_budget"
+          ],
+          "level": 0
+        }
+      ],
+      "mode": "recorded-manual",
+      "recovered_at": 1791980621.3485768,
+      "repair_and_verification_seconds": 7.31991982460022,
+      "injection_to_verified_seconds": 15.799414873123169,
+      "after": {
+        "tick": 23,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 3.445
+        }
+      },
+      "case_id": 7,
+      "verified": true,
+      "automatic_procedure_id": null
+    },
+    {
+      "fault": "cache_budget",
+      "repetition": 3,
+      "injected_at": 1791980624.1192813,
+      "failed_observation": {
+        "tick": 24,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": false,
+          "cache_write": false,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": false,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "-OOM command not allowed when used memory > 'maxmemory'.",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 0.918
+        }
+      },
+      "first_tick_completed_at": 1791980639.1154573,
+      "detection_tick_seconds": 12.733692407608032,
+      "events_before_decision": [
+        {
+          "tick": 25,
+          "kind": "healed",
+          "detail": "recipe_cache_budget: {\"cache_budget\": true, \"cache_write\": true, \"endpoint\": true}",
+          "symptoms": [
+            "http_unavailable",
+            "infra:cache_budget",
+            "infra:cache_write"
+          ],
+          "cause": "cache_memory_limit_drift",
+          "actions": [
+            "recipe_cache_budget"
+          ],
+          "level": 0
+        }
+      ],
+      "mode": "promoted-automatic",
+      "recovered_at": 1791980640.51653,
+      "repair_and_verification_seconds": 14.134765148162842,
+      "injection_to_verified_seconds": 16.3972487449646,
+      "after": {
+        "tick": 25,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 3.146
+        }
+      },
+      "case_id": 8,
+      "verified": true,
+      "automatic_procedure_id": 2
+    },
+    {
+      "fault": "permissions",
+      "repetition": 1,
+      "injected_at": 1791980678.1586916,
+      "failed_observation": {
+        "tick": 29,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": false,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": false
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'"
+          },
+          "latency_ms": 3.069
+        }
+      },
+      "frontend_restart": {
+        "command_success": true,
+        "healthy": false,
+        "observation": {
+          "tick": 29,
+          "reachable": true,
+          "service_running": true,
+          "config_correct": true,
+          "http_ok": false,
+          "probe_error": "",
+          "monitor_source": "direct-dependency-transaction",
+          "infrastructure_checks": {
+            "cache_service": true,
+            "cache_budget": true,
+            "cache_write": true,
+            "spool_write": false,
+            "dns_record": true
+          },
+          "disk_percent": null,
+          "disk_growth": null,
+          "transaction": {
+            "healthy": false,
+            "checks": {
+              "dns_record": true,
+              "cache_write": true,
+              "spool_write": false
+            },
+            "evidence": {
+              "dns_record": "10.1.1.61",
+              "cache_write": "SET and GET on expiring canary key",
+              "spool_write": "[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'"
+            },
+            "latency_ms": 2.152
+          }
+        }
+      },
+      "first_tick_completed_at": 1791980685.997234,
+      "detection_tick_seconds": 3.457322359085083,
+      "events_before_decision": [
+        {
+          "tick": 30,
+          "kind": "escalated",
+          "detail": "no diagnosis matched",
+          "symptoms": [
+            "http_unavailable",
+            "infra:spool_write"
+          ],
+          "cause": "",
+          "actions": [],
+          "level": 0
+        }
+      ],
+      "mode": "investigated-approved",
+      "recovered_at": 1791980703.2383358,
+      "repair_and_verification_seconds": 13.809859275817871,
+      "injection_to_verified_seconds": 25.079644203186035,
+      "after": {
+        "tick": 31,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 2.212
+        }
+      },
+      "case_id": 10,
+      "verified": true,
+      "automatic_procedure_id": null
+    },
+    {
+      "fault": "permissions",
+      "repetition": 2,
+      "injected_at": 1791980741.0860171,
+      "failed_observation": {
+        "tick": 35,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": false,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": false
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'"
+          },
+          "latency_ms": 3.071
+        }
+      },
+      "first_tick_completed_at": 1791980748.9713972,
+      "detection_tick_seconds": 5.527567625045776,
+      "events_before_decision": [
+        {
+          "tick": 36,
+          "kind": "blocked",
+          "detail": "incident #11 requires review: tools/incidents.py show 11",
+          "symptoms": [
+            "http_unavailable",
+            "infra:spool_write"
+          ],
+          "cause": "checkpoint_permission_drift",
+          "actions": [
+            "recipe_checkpoint_permissions"
+          ],
+          "level": 0
+        }
+      ],
+      "mode": "recorded-manual",
+      "recovered_at": 1791980756.372263,
+      "repair_and_verification_seconds": 7.4006969928741455,
+      "injection_to_verified_seconds": 15.286245822906494,
+      "after": {
+        "tick": 36,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 3.558
+        }
+      },
+      "case_id": 11,
+      "verified": true,
+      "automatic_procedure_id": null
+    },
+    {
+      "fault": "permissions",
+      "repetition": 3,
+      "injected_at": 1791980759.238496,
+      "failed_observation": {
+        "tick": 37,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": false,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": false
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'"
+          },
+          "latency_ms": 2.566
+        }
+      },
+      "first_tick_completed_at": 1791980774.442869,
+      "detection_tick_seconds": 12.850952863693237,
+      "events_before_decision": [
+        {
+          "tick": 38,
+          "kind": "healed",
+          "detail": "recipe_checkpoint_permissions: {\"endpoint\": true, \"spool_write\": true}",
+          "symptoms": [
+            "http_unavailable",
+            "infra:spool_write"
+          ],
+          "cause": "checkpoint_permission_drift",
+          "actions": [
+            "recipe_checkpoint_permissions"
+          ],
+          "level": 0
+        }
+      ],
+      "mode": "promoted-automatic",
+      "recovered_at": 1791980775.8335834,
+      "repair_and_verification_seconds": 14.2416672706604,
+      "injection_to_verified_seconds": 16.59508728981018,
+      "after": {
+        "tick": 38,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 2.547
+        }
+      },
+      "case_id": 12,
+      "verified": true,
+      "automatic_procedure_id": 3
+    },
+    {
+      "fault": "cache_stop",
+      "repetition": 1,
+      "injected_at": 1791980847.8616118,
+      "failed_observation": {
+        "tick": 45,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": false,
+          "cache_budget": null,
+          "cache_write": false,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": false,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "[Errno 111] Connection refused",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 0.588
+        }
+      },
+      "frontend_restart": {
+        "command_success": true,
+        "healthy": false,
+        "observation": {
+          "tick": 45,
+          "reachable": true,
+          "service_running": true,
+          "config_correct": true,
+          "http_ok": false,
+          "probe_error": "",
+          "monitor_source": "direct-dependency-transaction",
+          "infrastructure_checks": {
+            "cache_service": false,
+            "cache_budget": null,
+            "cache_write": false,
+            "spool_write": true,
+            "dns_record": true
+          },
+          "disk_percent": null,
+          "disk_growth": null,
+          "transaction": {
+            "healthy": false,
+            "checks": {
+              "dns_record": true,
+              "cache_write": false,
+              "spool_write": true
+            },
+            "evidence": {
+              "dns_record": "10.1.1.61",
+              "cache_write": "[Errno 111] Connection refused",
+              "spool_write": "/var/lib/healer-stack/checkpoint"
+            },
+            "latency_ms": 0.657
+          }
+        }
+      },
+      "first_tick_completed_at": 1791980854.8234785,
+      "detection_tick_seconds": 3.126253604888916,
+      "events_before_decision": [
+        {
+          "tick": 46,
+          "kind": "escalated",
+          "detail": "no diagnosis matched",
+          "symptoms": [
+            "http_unavailable",
+            "infra:cache_service",
+            "infra:cache_write"
+          ],
+          "cause": "",
+          "actions": [],
+          "level": 0
+        }
+      ],
+      "mode": "investigated-approved",
+      "recovered_at": 1791980871.7664359,
+      "repair_and_verification_seconds": 13.816957712173462,
+      "injection_to_verified_seconds": 23.904824018478394,
+      "after": {
+        "tick": 47,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 1.852
+        }
+      },
+      "case_id": 14,
+      "verified": true,
+      "automatic_procedure_id": null
+    },
+    {
+      "fault": "cache_stop",
+      "repetition": 2,
+      "injected_at": 1791980908.896751,
+      "failed_observation": {
+        "tick": 51,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": false,
+          "cache_budget": null,
+          "cache_write": false,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": false,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "[Errno 111] Connection refused",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 1.606
+        }
+      },
+      "first_tick_completed_at": 1791980915.9892101,
+      "detection_tick_seconds": 4.97694206237793,
+      "events_before_decision": [
+        {
+          "tick": 52,
+          "kind": "blocked",
+          "detail": "incident #15 requires review: tools/incidents.py show 15",
+          "symptoms": [
+            "http_unavailable",
+            "infra:cache_service",
+            "infra:cache_write"
+          ],
+          "cause": "cache_dependency_stopped",
+          "actions": [
+            "recipe_cache_dependency"
+          ],
+          "level": 0
+        }
+      ],
+      "mode": "recorded-manual",
+      "recovered_at": 1791980923.9098597,
+      "repair_and_verification_seconds": 7.920468807220459,
+      "injection_to_verified_seconds": 15.013108730316162,
+      "after": {
+        "tick": 52,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 2.245
+        }
+      },
+      "case_id": 15,
+      "verified": true,
+      "automatic_procedure_id": null
+    },
+    {
+      "fault": "cache_stop",
+      "repetition": 3,
+      "injected_at": 1791980926.7541459,
+      "failed_observation": {
+        "tick": 53,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": false,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": false,
+          "cache_budget": null,
+          "cache_write": false,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": false,
+          "checks": {
+            "dns_record": true,
+            "cache_write": false,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "[Errno 111] Connection refused",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 0.834
+        }
+      },
+      "first_tick_completed_at": 1791980941.1590667,
+      "detection_tick_seconds": 12.246651411056519,
+      "events_before_decision": [
+        {
+          "tick": 54,
+          "kind": "healed",
+          "detail": "recipe_cache_dependency: {\"cache_service\": true, \"cache_write\": true, \"endpoint\": true}",
+          "symptoms": [
+            "http_unavailable",
+            "infra:cache_service",
+            "infra:cache_write"
+          ],
+          "cause": "cache_dependency_stopped",
+          "actions": [
+            "recipe_cache_dependency"
+          ],
+          "level": 0
+        }
+      ],
+      "mode": "promoted-automatic",
+      "recovered_at": 1791980942.5498526,
+      "repair_and_verification_seconds": 13.637437343597412,
+      "injection_to_verified_seconds": 15.795706748962402,
+      "after": {
+        "tick": 54,
+        "reachable": true,
+        "service_running": true,
+        "config_correct": true,
+        "http_ok": true,
+        "probe_error": "",
+        "monitor_source": "direct-dependency-transaction",
+        "infrastructure_checks": {
+          "cache_service": true,
+          "cache_budget": true,
+          "cache_write": true,
+          "spool_write": true,
+          "dns_record": true
+        },
+        "disk_percent": null,
+        "disk_growth": null,
+        "transaction": {
+          "healthy": true,
+          "checks": {
+            "dns_record": true,
+            "cache_write": true,
+            "spool_write": true
+          },
+          "evidence": {
+            "dns_record": "10.1.1.61",
+            "cache_write": "SET and GET on expiring canary key",
+            "spool_write": "/var/lib/healer-stack/checkpoint"
+          },
+          "latency_ms": 2.354
+        }
+      },
+      "case_id": 16,
+      "verified": true,
+      "automatic_procedure_id": 4
+    }
+  ],
+  "cases": [
+    {
+      "id": 16,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"], \"cache_dependency_stopped\", [\"recipe_cache_dependency\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"bc01fbf9dc495ed91da85cf74237985468d17baf71a5ffb86aeaaff85d0dff68\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "cache_dependency_stopped",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"]",
+      "actions": "[\"recipe_cache_dependency\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9781248\\nCPUUsageNSec=127904000\\nActiveState=active\"}, \"app-2\": {\"command_success\": false, \"stderr\": \"Could not connect to Redis at 127.0.0.1:6380: Connection refused\", \"stdout\": \"MemoryCurrent=[not set]\\nCPUUsageNSec=30448000\\nActiveState=inactive\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=19505000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": null, \"cache_service\": false, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"hypothesis\": \"cache_dependency_stopped\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": null, \"cache_service\": false, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 54, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"[Errno 111] Connection refused\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.579}}, \"plan\": {\"actions\": [\"recipe_cache_dependency\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"[Errno 111] Connection refused\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.579}}",
+      "status": "verified",
+      "opened": 1791980931.9843907,
+      "expires": null,
+      "operator": null,
+      "notes": null,
+      "after_evidence": "{\"checks\": {\"recipe_cache_dependency\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 54, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 3.351}}, \"recipe_checks\": {\"recipe_cache_dependency\": {\"cache_service\": true, \"cache_write\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": 4
+    },
+    {
+      "id": 15,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"], \"cache_dependency_stopped\", [\"recipe_cache_dependency\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"bc01fbf9dc495ed91da85cf74237985468d17baf71a5ffb86aeaaff85d0dff68\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "cache_dependency_stopped",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"]",
+      "actions": "[\"recipe_cache_dependency\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9773056\\nCPUUsageNSec=111361000\\nActiveState=active\"}, \"app-2\": {\"command_success\": false, \"stderr\": \"Could not connect to Redis at 127.0.0.1:6380: Connection refused\", \"stdout\": \"MemoryCurrent=[not set]\\nCPUUsageNSec=79953000\\nActiveState=inactive\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=18787000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": null, \"cache_service\": false, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"hypothesis\": \"cache_dependency_stopped\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": null, \"cache_service\": false, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 52, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"[Errno 111] Connection refused\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.745}}, \"plan\": {\"actions\": [\"recipe_cache_dependency\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"[Errno 111] Connection refused\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.745}}",
+      "status": "verified",
+      "opened": 1791980914.0808694,
+      "expires": null,
+      "operator": "scripted-manual-operator",
+      "notes": "Applied the bounded recipe separately from loop execution; Transaction remains running; app-2 Redis is inactive and its write connection fails",
+      "after_evidence": "{\"checks\": {\"recipe_cache_dependency\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 52, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 3.297}}, \"recipe_checks\": {\"recipe_cache_dependency\": {\"cache_service\": true, \"cache_write\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": null
+    },
+    {
+      "id": 14,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"], \"cache_dependency_stopped\", [\"recipe_cache_dependency\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"bc01fbf9dc495ed91da85cf74237985468d17baf71a5ffb86aeaaff85d0dff68\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "cache_dependency_stopped",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"]",
+      "actions": "[\"recipe_cache_dependency\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9756672\\nCPUUsageNSec=72281000\\nActiveState=active\"}, \"app-2\": {\"command_success\": false, \"stderr\": \"Could not connect to Redis at 127.0.0.1:6380: Connection refused\", \"stdout\": \"MemoryCurrent=[not set]\\nCPUUsageNSec=820344000\\nActiveState=inactive\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=17369000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": null, \"cache_service\": false, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"hypothesis\": \"cache_dependency_stopped\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": null, \"cache_service\": false, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 46, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"[Errno 111] Connection refused\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.699}}, \"plan\": {\"actions\": [\"recipe_cache_dependency\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"[Errno 111] Connection refused\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.699}}",
+      "status": "verified",
+      "opened": 1791980857.9045029,
+      "expires": 1791981757.9169533,
+      "operator": "scripted-operator",
+      "notes": "Reviewed bounded operations and cause-specific verification",
+      "after_evidence": "{\"checks\": {\"recipe_cache_dependency\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 47, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 4.114}}, \"recipe_checks\": {\"recipe_cache_dependency\": {\"cache_service\": true, \"cache_write\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": null
+    },
+    {
+      "id": 13,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"], \"unknown\", [], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"bc01fbf9dc495ed91da85cf74237985468d17baf71a5ffb86aeaaff85d0dff68\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "unknown",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"]",
+      "actions": "[]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9756672\\nCPUUsageNSec=70693000\\nActiveState=active\"}, \"app-2\": {\"command_success\": false, \"stderr\": \"Could not connect to Redis at 127.0.0.1:6380: Connection refused\", \"stdout\": \"MemoryCurrent=[not set]\\nCPUUsageNSec=820344000\\nActiveState=inactive\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=17326000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": null, \"cache_service\": false, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"hypothesis\": \"unknown\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": null, \"cache_service\": false, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 46, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"[Errno 111] Connection refused\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 1.588}}, \"plan\": {\"actions\": [], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"[Errno 111] Connection refused\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 1.588}}",
+      "status": "investigated",
+      "opened": 1791980854.7931852,
+      "expires": null,
+      "operator": null,
+      "notes": null,
+      "after_evidence": null,
+      "verified": 0,
+      "procedure_id": null
+    },
+    {
+      "id": 12,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:spool_write\"], \"checkpoint_permission_drift\", [\"recipe_checkpoint_permissions\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"d190c0ffe53a01621ce38ae3000aec03ad31468d4df37789a8dd3393da59a5ff\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "checkpoint_permission_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:spool_write\"]",
+      "actions": "[\"recipe_checkpoint_permissions\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9781248\\nCPUUsageNSec=128373000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=731805000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=15576000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\\nmaxmemory\\n67108864\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"hypothesis\": \"checkpoint_permission_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 38, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'\"}, \"healthy\": false, \"latency_ms\": 3.142}}, \"plan\": {\"actions\": [\"recipe_checkpoint_permissions\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'\"}, \"healthy\": false, \"latency_ms\": 3.142}}",
+      "status": "verified",
+      "opened": 1791980764.9921415,
+      "expires": null,
+      "operator": null,
+      "notes": null,
+      "after_evidence": "{\"checks\": {\"recipe_checkpoint_permissions\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 38, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 3.574}}, \"recipe_checks\": {\"recipe_checkpoint_permissions\": {\"endpoint\": true, \"spool_write\": true}}}",
+      "verified": 1,
+      "procedure_id": 3
+    },
+    {
+      "id": 11,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:spool_write\"], \"checkpoint_permission_drift\", [\"recipe_checkpoint_permissions\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"d190c0ffe53a01621ce38ae3000aec03ad31468d4df37789a8dd3393da59a5ff\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "checkpoint_permission_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:spool_write\"]",
+      "actions": "[\"recipe_checkpoint_permissions\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9773056\\nCPUUsageNSec=109880000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=710550000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=14937000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\\nmaxmemory\\n67108864\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"hypothesis\": \"checkpoint_permission_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 36, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'\"}, \"healthy\": false, \"latency_ms\": 2.034}}, \"plan\": {\"actions\": [\"recipe_checkpoint_permissions\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'\"}, \"healthy\": false, \"latency_ms\": 2.034}}",
+      "status": "verified",
+      "opened": 1791980746.8363826,
+      "expires": null,
+      "operator": "scripted-manual-operator",
+      "notes": "Applied the bounded recipe separately from loop execution; Checkpoint write fails with permission denied on the exact lab file",
+      "after_evidence": "{\"checks\": {\"recipe_checkpoint_permissions\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 36, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 4.785}}, \"recipe_checks\": {\"recipe_checkpoint_permissions\": {\"endpoint\": true, \"spool_write\": true}}}",
+      "verified": 1,
+      "procedure_id": null
+    },
+    {
+      "id": 10,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:spool_write\"], \"checkpoint_permission_drift\", [\"recipe_checkpoint_permissions\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"d190c0ffe53a01621ce38ae3000aec03ad31468d4df37789a8dd3393da59a5ff\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "checkpoint_permission_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:spool_write\"]",
+      "actions": "[\"recipe_checkpoint_permissions\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9756672\\nCPUUsageNSec=71587000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=634438000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=13550000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\\nmaxmemory\\n67108864\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"hypothesis\": \"checkpoint_permission_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 30, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'\"}, \"healthy\": false, \"latency_ms\": 2.061}}, \"plan\": {\"actions\": [\"recipe_checkpoint_permissions\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'\"}, \"healthy\": false, \"latency_ms\": 2.061}}",
+      "status": "verified",
+      "opened": 1791980689.387046,
+      "expires": 1791981589.3991058,
+      "operator": "scripted-operator",
+      "notes": "Reviewed bounded operations and cause-specific verification",
+      "after_evidence": "{\"checks\": {\"recipe_checkpoint_permissions\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 31, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 2.715}}, \"recipe_checks\": {\"recipe_checkpoint_permissions\": {\"endpoint\": true, \"spool_write\": true}}}",
+      "verified": 1,
+      "procedure_id": null
+    },
+    {
+      "id": 9,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:spool_write\"], \"unknown\", [], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"d190c0ffe53a01621ce38ae3000aec03ad31468d4df37789a8dd3393da59a5ff\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "unknown",
+      "symptoms": "[\"http_unavailable\", \"infra:spool_write\"]",
+      "actions": "[]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9756672\\nCPUUsageNSec=69873000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=630747000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=13495000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\\nmaxmemory\\n67108864\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"hypothesis\": \"unknown\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 30, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'\"}, \"healthy\": false, \"latency_ms\": 2.126}}, \"plan\": {\"actions\": [], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": false}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"[Errno 13] Permission denied: '/var/lib/healer-stack/checkpoint'\"}, \"healthy\": false, \"latency_ms\": 2.126}}",
+      "status": "investigated",
+      "opened": 1791980685.9676974,
+      "expires": null,
+      "operator": null,
+      "notes": null,
+      "after_evidence": null,
+      "verified": 0,
+      "procedure_id": null
+    },
+    {
+      "id": 8,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"], \"cache_memory_limit_drift\", [\"recipe_cache_budget\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"47eee803000b15ae3f129b5dd16c9a3d31a642d55f05e8a60d24a8b6dfa0e9fc\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "cache_memory_limit_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"]",
+      "actions": "[\"recipe_cache_budget\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9793536\\nCPUUsageNSec=148419000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=564770000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=12223000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\\nmaxmemory\\n1\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": false, \"cache_service\": true, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"hypothesis\": \"cache_memory_limit_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": false, \"cache_service\": true, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 25, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"-OOM command not allowed when used memory > 'maxmemory'.\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 1.859}}, \"plan\": {\"actions\": [\"recipe_cache_budget\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"-OOM command not allowed when used memory > 'maxmemory'.\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 1.859}}",
+      "status": "verified",
+      "opened": 1791980629.6858091,
+      "expires": null,
+      "operator": null,
+      "notes": null,
+      "after_evidence": "{\"checks\": {\"recipe_cache_budget\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 25, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 1.581}}, \"recipe_checks\": {\"recipe_cache_budget\": {\"cache_budget\": true, \"cache_write\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": 2
+    },
+    {
+      "id": 7,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"], \"cache_memory_limit_drift\", [\"recipe_cache_budget\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"47eee803000b15ae3f129b5dd16c9a3d31a642d55f05e8a60d24a8b6dfa0e9fc\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "cache_memory_limit_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"]",
+      "actions": "[\"recipe_cache_budget\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9785344\\nCPUUsageNSec=129730000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=541953000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=11691000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\\nmaxmemory\\n1\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": false, \"cache_service\": true, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"hypothesis\": \"cache_memory_limit_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": false, \"cache_service\": true, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 23, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"-OOM command not allowed when used memory > 'maxmemory'.\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 1.642}}, \"plan\": {\"actions\": [\"recipe_cache_budget\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"-OOM command not allowed when used memory > 'maxmemory'.\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 1.642}}",
+      "status": "verified",
+      "opened": 1791980611.9052494,
+      "expires": null,
+      "operator": "scripted-manual-operator",
+      "notes": "Applied the bounded recipe separately from loop execution; SET returns OOM and effective maxmemory is one byte, not approved 64 MiB",
+      "after_evidence": "{\"checks\": {\"recipe_cache_budget\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 23, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 2.614}}, \"recipe_checks\": {\"recipe_cache_budget\": {\"cache_budget\": true, \"cache_write\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": null
+    },
+    {
+      "id": 6,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"], \"cache_memory_limit_drift\", [\"recipe_cache_budget\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"47eee803000b15ae3f129b5dd16c9a3d31a642d55f05e8a60d24a8b6dfa0e9fc\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "cache_memory_limit_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"]",
+      "actions": "[\"recipe_cache_budget\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9764864\\nCPUUsageNSec=64765000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=388250000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=9380000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\\nmaxmemory\\n1\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": false, \"cache_service\": true, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"hypothesis\": \"cache_memory_limit_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": false, \"cache_service\": true, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 11, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"-OOM command not allowed when used memory > 'maxmemory'.\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 3.1}}, \"plan\": {\"actions\": [\"recipe_cache_budget\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"-OOM command not allowed when used memory > 'maxmemory'.\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 3.1}}",
+      "status": "verified",
+      "opened": 1791980484.6365898,
+      "expires": 1791981384.6493666,
+      "operator": "scripted-operator",
+      "notes": "Reviewed bounded operations and cause-specific verification",
+      "after_evidence": "{\"checks\": {\"recipe_cache_budget\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 12, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 3.917}}, \"recipe_checks\": {\"recipe_cache_budget\": {\"cache_budget\": true, \"cache_write\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": null
+    },
+    {
+      "id": 5,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"], \"unknown\", [], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"47eee803000b15ae3f129b5dd16c9a3d31a642d55f05e8a60d24a8b6dfa0e9fc\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "unknown",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"]",
+      "actions": "[]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9764864\\nCPUUsageNSec=61813000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=384135000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=9241000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.61\\nmaxmemory\\n1\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": false, \"cache_service\": true, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"hypothesis\": \"unknown\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": false, \"cache_service\": true, \"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 11, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"-OOM command not allowed when used memory > 'maxmemory'.\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 1.606}}, \"plan\": {\"actions\": [], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": false, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"-OOM command not allowed when used memory > 'maxmemory'.\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 1.606}}",
+      "status": "investigated",
+      "opened": 1791980481.123596,
+      "expires": null,
+      "operator": null,
+      "notes": null,
+      "after_evidence": null,
+      "verified": 0,
+      "procedure_id": null
+    },
+    {
+      "id": 4,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:dns_record\"], \"dns_record_drift\", [\"recipe_dns_reference\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"7a4e81918e11b6bbe93449f8f25ee2db2122168c2b9a282ec9e4838cb53cf739\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "dns_record_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:dns_record\"]",
+      "actions": "[\"recipe_dns_reference\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9785344\\nCPUUsageNSec=119541000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3121152\\nCPUUsageNSec=357132000\\nActiveState=active\\n\\nMemoryCurrent=737280\\nCPUUsageNSec=11247000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.62\\nmaxmemory\\n67108864\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"hypothesis\": \"dns_record_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 9, \"transaction\": {\"checks\": {\"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"not attempted: DNS contract failed\", \"dns_record\": \"10.1.1.62\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.503}}, \"plan\": {\"actions\": [\"recipe_dns_reference\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"not attempted: DNS contract failed\", \"dns_record\": \"10.1.1.62\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.503}}",
+      "status": "verified",
+      "opened": 1791980459.1436367,
+      "expires": null,
+      "operator": null,
+      "notes": null,
+      "after_evidence": "{\"checks\": {\"recipe_dns_reference\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 9, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 3.516}}, \"recipe_checks\": {\"recipe_dns_reference\": {\"dns_record\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": 1
+    },
+    {
+      "id": 3,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:dns_record\"], \"dns_record_drift\", [\"recipe_dns_reference\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"7a4e81918e11b6bbe93449f8f25ee2db2122168c2b9a282ec9e4838cb53cf739\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "dns_record_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:dns_record\"]",
+      "actions": "[\"recipe_dns_reference\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9777152\\nCPUUsageNSec=102799000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3145728\\nCPUUsageNSec=337828000\\nActiveState=active\\n\\nMemoryCurrent=741376\\nCPUUsageNSec=11718000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.62\\nmaxmemory\\n67108864\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"hypothesis\": \"dns_record_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 7, \"transaction\": {\"checks\": {\"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"not attempted: DNS contract failed\", \"dns_record\": \"10.1.1.62\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.414}}, \"plan\": {\"actions\": [\"recipe_dns_reference\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"not attempted: DNS contract failed\", \"dns_record\": \"10.1.1.62\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.414}}",
+      "status": "verified",
+      "opened": 1791980441.246683,
+      "expires": null,
+      "operator": "scripted-manual-operator",
+      "notes": "Applied the bounded recipe separately from loop execution; DNS answer is .62 but the approved reference is .61",
+      "after_evidence": "{\"checks\": {\"recipe_dns_reference\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 7, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 3.713}}, \"recipe_checks\": {\"recipe_dns_reference\": {\"dns_record\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": null
+    },
+    {
+      "id": 2,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:dns_record\"], \"dns_record_drift\", [\"recipe_dns_reference\"], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"7a4e81918e11b6bbe93449f8f25ee2db2122168c2b9a282ec9e4838cb53cf739\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "dns_record_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:dns_record\"]",
+      "actions": "[\"recipe_dns_reference\"]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9756672\\nCPUUsageNSec=67543000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3145728\\nCPUUsageNSec=252884000\\nActiveState=active\\n\\nMemoryCurrent=737280\\nCPUUsageNSec=12031000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.62\\nmaxmemory\\n67108864\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"hypothesis\": \"dns_record_drift\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 1, \"transaction\": {\"checks\": {\"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"not attempted: DNS contract failed\", \"dns_record\": \"10.1.1.62\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.54}}, \"plan\": {\"actions\": [\"recipe_dns_reference\"], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"not attempted: DNS contract failed\", \"dns_record\": \"10.1.1.62\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.54}}",
+      "status": "verified",
+      "opened": 1791980384.7350183,
+      "expires": 1791981284.7485244,
+      "operator": "scripted-operator",
+      "notes": "Reviewed bounded operations and cause-specific verification",
+      "after_evidence": "{\"checks\": {\"recipe_dns_reference\": true, \"required_probes\": true}, \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": true, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 2, \"transaction\": {\"checks\": {\"cache_write\": true, \"dns_record\": true, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"SET and GET on expiring canary key\", \"dns_record\": \"10.1.1.61\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": true, \"latency_ms\": 3.29}}, \"recipe_checks\": {\"recipe_dns_reference\": {\"dns_record\": true, \"endpoint\": true}}}",
+      "verified": 1,
+      "procedure_id": null
+    },
+    {
+      "id": 1,
+      "identity": "[\"a62925f8-da3c-4075-821f-7bfd5daa4afb\", {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, [\"http_unavailable\", \"infra:dns_record\"], \"unknown\", [], {\"config_correct\": true, \"disk_critical\": false, \"http_ok\": false, \"live_config\": \"7a4e81918e11b6bbe93449f8f25ee2db2122168c2b9a282ec9e4838cb53cf739\", \"reachable\": true, \"service_running\": true}]",
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "target": "app-1",
+      "cause": "unknown",
+      "symptoms": "[\"http_unavailable\", \"infra:dns_record\"]",
+      "actions": "[]",
+      "evidence": "{\"app-1\": {\"command_success\": true, \"stderr\": \"stat: cannot statx '/var/lib/healer-stack/checkpoint': Permission denied\", \"stdout\": \"MemoryCurrent=9756672\\nCPUUsageNSec=65001000\\nActiveState=active\"}, \"app-2\": {\"command_success\": true, \"stderr\": \"\", \"stdout\": \"MemoryCurrent=3145728\\nCPUUsageNSec=248164000\\nActiveState=active\\n\\nMemoryCurrent=737280\\nCPUUsageNSec=11910000\\nActiveState=active\\nport=1053\\nlisten-address=127.0.0.1,10.1.1.61\\nbind-interfaces\\nno-resolv\\nno-hosts\\naddress=/cache.lab.test/10.1.1.62\\nmaxmemory\\n67108864\"}, \"certainty\": \"hypothesis requiring operator review\", \"checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"hypothesis\": \"unknown\", \"observation\": {\"config_correct\": true, \"disk_growth\": null, \"disk_percent\": null, \"http_ok\": false, \"infrastructure_checks\": {\"cache_budget\": true, \"cache_service\": true, \"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"monitor_source\": \"direct-dependency-transaction\", \"probe_error\": \"\", \"reachable\": true, \"service_running\": true, \"tick\": 1, \"transaction\": {\"checks\": {\"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"not attempted: DNS contract failed\", \"dns_record\": \"10.1.1.62\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.622}}, \"plan\": {\"actions\": [], \"expected_outcome\": \"required service probes pass and action-specific cause checks pass\", \"risk\": \"guest repair\", \"scope\": {\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}, \"verification\": [\"fresh direct service/config/HTTP probes\"]}, \"topology\": {\"cache\": \"app-2:6380\", \"checkpoint\": \"app-1:/var/lib/healer-stack/checkpoint\", \"dns\": \"app-2:1053\", \"transaction\": \"app-1:8088\"}, \"transaction\": {\"checks\": {\"cache_write\": null, \"dns_record\": false, \"spool_write\": true}, \"evidence\": {\"cache_write\": \"not attempted: DNS contract failed\", \"dns_record\": \"10.1.1.62\", \"spool_write\": \"/var/lib/healer-stack/checkpoint\"}, \"healthy\": false, \"latency_ms\": 0.622}}",
+      "status": "investigated",
+      "opened": 1791980381.3242786,
+      "expires": null,
+      "operator": null,
+      "notes": null,
+      "after_evidence": null,
+      "verified": 0,
+      "procedure_id": null
+    }
+  ],
+  "procedures": [
+    {
+      "id": 1,
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "cause": "dns_record_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:dns_record\"]",
+      "actions": "[\"recipe_dns_reference\"]",
+      "status": "validated",
+      "operator": "scripted-reviewer",
+      "created": 1791980397.055869
+    },
+    {
+      "id": 2,
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "cause": "cache_memory_limit_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_budget\", \"infra:cache_write\"]",
+      "actions": "[\"recipe_cache_budget\"]",
+      "status": "validated",
+      "operator": "scripted-reviewer",
+      "created": 1791980497.0853133
+    },
+    {
+      "id": 3,
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "cause": "checkpoint_permission_drift",
+      "symptoms": "[\"http_unavailable\", \"infra:spool_write\"]",
+      "actions": "[\"recipe_checkpoint_permissions\"]",
+      "status": "validated",
+      "operator": "scripted-reviewer",
+      "created": 1791980701.7835255
+    },
+    {
+      "id": 4,
+      "scope": "{\"config_path\": \"/etc/healer-stack/dns.conf\", \"log_image\": null, \"log_mount\": null, \"project_id\": \"cfa1df4c-6202-4295-8a54-dfa0aa1209dc\", \"reference_dir\": \"/opt/healer-stack/reference\", \"references\": [\"bc0434cf13f751b3bafeb47d035144460e314f10714aae2f045cab0c36a55acf\", \"1543d6a26cead4779e912f1b3a21f3ff50d01595588586dca425a06b4af16fb0\", \"71c230f81d209f32ae480d4eb17a83a2d356cb0877e30a8803e43af557a65d9a\", \"41a599dc0b378793f137dff29fb0bae2c754a321ad1a12270bfa856970cb3b5a\", \"{\\\"app-1\\\": [\\\"a62925f8-da3c-4075-821f-7bfd5daa4afb\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"], \\\"app-2\\\": [\\\"c1c9437b-1d66-4a0e-92c8-39d2139bd545\\\", \\\"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\\\"]}\"], \"service\": \"healer-stack-transaction\", \"target\": \"app-1\", \"template_id\": \"dd6c3301-25f7-4e1e-90a0-2e47a7bb9f97\"}",
+      "cause": "cache_dependency_stopped",
+      "symptoms": "[\"http_unavailable\", \"infra:cache_service\", \"infra:cache_write\"]",
+      "actions": "[\"recipe_cache_dependency\"]",
+      "status": "validated",
+      "operator": "scripted-reviewer",
+      "created": 1791980870.3203814
+    }
+  ],
+  "audit": [
+    {
+      "id": 1,
+      "time": 1791980383.4700165,
+      "subject": "incident:1",
+      "operator": "scripted-investigator",
+      "event": "investigate",
+      "notes": "DNS answer is .62 but the approved reference is .61"
+    },
+    {
+      "id": 2,
+      "time": 1791980384.7659035,
+      "subject": "incident:2",
+      "operator": "scripted-operator",
+      "event": "approve",
+      "notes": "Reviewed bounded operations and cause-specific verification"
+    },
+    {
+      "id": 3,
+      "time": 1791980449.2619,
+      "subject": "incident:3",
+      "operator": "scripted-manual-operator",
+      "event": "record-human",
+      "notes": "Applied the bounded recipe separately from loop execution; DNS answer is .62 but the approved reference is .61"
+    },
+    {
+      "id": 4,
+      "time": 1791980449.303086,
+      "subject": "procedure:1",
+      "operator": "scripted-reviewer",
+      "event": "promote",
+      "notes": "Two distinct verified occurrences reviewed"
+    },
+    {
+      "id": 5,
+      "time": 1791980483.338234,
+      "subject": "incident:5",
+      "operator": "scripted-investigator",
+      "event": "investigate",
+      "notes": "SET returns OOM and effective maxmemory is one byte, not approved 64 MiB"
+    },
+    {
+      "id": 6,
+      "time": 1791980484.6655467,
+      "subject": "incident:6",
+      "operator": "scripted-operator",
+      "event": "approve",
+      "notes": "Reviewed bounded operations and cause-specific verification"
+    },
+    {
+      "id": 7,
+      "time": 1791980619.9016109,
+      "subject": "incident:7",
+      "operator": "scripted-manual-operator",
+      "event": "record-human",
+      "notes": "Applied the bounded recipe separately from loop execution; SET returns OOM and effective maxmemory is one byte, not approved 64 MiB"
+    },
+    {
+      "id": 8,
+      "time": 1791980619.9383142,
+      "subject": "procedure:2",
+      "operator": "scripted-reviewer",
+      "event": "promote",
+      "notes": "Two distinct verified occurrences reviewed"
+    },
+    {
+      "id": 9,
+      "time": 1791980688.1389143,
+      "subject": "incident:9",
+      "operator": "scripted-investigator",
+      "event": "investigate",
+      "notes": "Checkpoint write fails with permission denied on the exact lab file"
+    },
+    {
+      "id": 10,
+      "time": 1791980689.415747,
+      "subject": "incident:10",
+      "operator": "scripted-operator",
+      "event": "approve",
+      "notes": "Reviewed bounded operations and cause-specific verification"
+    },
+    {
+      "id": 11,
+      "time": 1791980754.9422693,
+      "subject": "incident:11",
+      "operator": "scripted-manual-operator",
+      "event": "record-human",
+      "notes": "Applied the bounded recipe separately from loop execution; Checkpoint write fails with permission denied on the exact lab file"
+    },
+    {
+      "id": 12,
+      "time": 1791980754.9811902,
+      "subject": "procedure:3",
+      "operator": "scripted-reviewer",
+      "event": "promote",
+      "notes": "Two distinct verified occurrences reviewed"
+    },
+    {
+      "id": 13,
+      "time": 1791980856.6871903,
+      "subject": "incident:13",
+      "operator": "scripted-investigator",
+      "event": "investigate",
+      "notes": "Transaction remains running; app-2 Redis is inactive and its write connection fails"
+    },
+    {
+      "id": 14,
+      "time": 1791980857.9354858,
+      "subject": "incident:14",
+      "operator": "scripted-operator",
+      "event": "approve",
+      "notes": "Reviewed bounded operations and cause-specific verification"
+    },
+    {
+      "id": 15,
+      "time": 1791980922.468564,
+      "subject": "incident:15",
+      "operator": "scripted-manual-operator",
+      "event": "record-human",
+      "notes": "Applied the bounded recipe separately from loop execution; Transaction remains running; app-2 Redis is inactive and its write connection fails"
+    },
+    {
+      "id": 16,
+      "time": 1791980922.5103333,
+      "subject": "procedure:4",
+      "operator": "scripted-reviewer",
+      "event": "promote",
+      "notes": "Two distinct verified occurrences reviewed"
+    }
+  ],
+  "finished": 1791980943.9576364,
+  "final": {
+    "tick": 55,
+    "reachable": true,
+    "service_running": true,
+    "config_correct": true,
+    "http_ok": true,
+    "probe_error": "",
+    "monitor_source": "direct-dependency-transaction",
+    "infrastructure_checks": {
+      "cache_service": true,
+      "cache_budget": true,
+      "cache_write": true,
+      "spool_write": true,
+      "dns_record": true
+    },
+    "disk_percent": null,
+    "disk_growth": null,
+    "transaction": {
+      "healthy": true,
+      "checks": {
+        "dns_record": true,
+        "cache_write": true,
+        "spool_write": true
+      },
+      "evidence": {
+        "dns_record": "10.1.1.61",
+        "cache_write": "SET and GET on expiring canary key",
+        "spool_write": "/var/lib/healer-stack/checkpoint"
+      },
+      "latency_ms": 1.696
+    }
+  }
+}

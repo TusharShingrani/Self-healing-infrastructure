@@ -160,10 +160,19 @@ class Knowledge:
                         human_checks, risk, model, status="pending"):
         self.db.execute(
             "UPDATE advice SET cause=?, actions=?, explanation=?, human_checks=?,"
-            " risk=?, model=?, status=? WHERE id=?",
+            " risk=?, model=?, status=? WHERE id=? AND status='requested'",
             (cause, json.dumps(actions), explanation, json.dumps(human_checks),
              risk, model, status, advice_id))
         self.db.commit()
+
+    def expire_advice(self, max_age=120, now=None):
+        """A lost worker must not leave the same request deduplicated forever."""
+        now = time.time() if now is None else now
+        cur = self.db.execute(
+            "UPDATE advice SET status='failed',explanation=? WHERE status='requested' AND created_at<?",
+            ('No completed response within the request lease; retry or investigate manually', now-max_age))
+        self.db.commit()
+        return cur.rowcount
 
     def decide_advice(self, advice_id, approve, who="human"):
         cur = self.db.execute(
