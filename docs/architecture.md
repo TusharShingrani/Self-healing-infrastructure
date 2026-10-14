@@ -67,7 +67,7 @@ only from one VPN address. Fault injection and every probe stay inside
 
 ```mermaid
 flowchart TB
-    subgraph H["healer-ubuntu (1 CPU, 1 GiB)"]
+    subgraph H["healer-ubuntu (2 CPUs, 6 GiB)"]
         svc["healer-loop.service (systemd user unit)<br/>tools/healer_service.py"]
         k[("state/knowledge.db<br/>SQLite: incidents, rules, advice")]
         ev[("state/events.jsonl")]

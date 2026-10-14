@@ -43,14 +43,27 @@ nothing to copy. You type them into the shell that starts the loop.
 
 ## 3. First choice: resize in place, do not replace
 
+On 2026-10-13 the healer was resized in place to `Small Instance ++`
+(2 CPUs, 6 GiB), offering `5e2e56b0-5ce6-4966-9463-7c88a1419a72`.
+The guest confirmed two CPUs and about 5.8 GiB usable memory.
+The Downloads file `healer-lab-key2.key` was compared with
+`~/.ssh/healer-lab-key`: their public fingerprints match. The healer itself
+still uses its original `healer-lab-key` CloudStack keypair.
+A verified local backup now exists, so the lab private key is not the only copy.
+A 1 GiB `/swapfile` is active and configured in `/etc/fstab`.
+The gateway now permits TCP 22 from `172.16.16.2/32` and
+`172.16.16.15/32`. If the VPN assigns another address, check the current
+VPN address locally and add only that address as a `/32` on the gateway
+Firewall tab; keep TCP start and end ports at 22.
+See `evidence/2026-10-13-healer-resize.md` for the reconnect results.
+
 CloudStack can change the service offering of a stopped instance. The disk,
 the address, the port forward and every file in section 2 stay as they are.
 
 1. Stop the loop: `bash tools/start_loop.sh stop`.
 2. In the EduCloud console, stop `healer-ubuntu`. Do this by hand. The loop
    and the tools never act on the healer.
-3. Change the service offering to `Small Instance +` (1 CPU, 4 GiB), the
-   offering the monitor already uses.
+3. Change the service offering to `Small Instance ++` (2 CPUs, 6 GiB).
 4. Start the instance, log in, then section 6.
 
 Back up section 2 anyway before step 2 (section 4, step 1). EduCloud does not
@@ -82,7 +95,7 @@ go first. Back up first.
    | Setting | Value |
    |---|---|
    | Name | `healer-ubuntu` |
-   | Offering | `Small Instance +` (1 CPU, 4 GiB) |
+   | Offering | `Small Instance ++` (2 CPUs, 6 GiB) |
    | Template | Ubuntu 24.04 (the old healer ran 24.04.4) |
    | Network | `healer-isolated`, IP address **10.1.1.205** |
    | Keypair | `healer-lab-key2` |
@@ -116,7 +129,8 @@ go first. Back up first.
 | Offering | Verdict |
 |---|---|
 | 1 CPU, 1 GiB, no swap (old) | Too small. Loop, experiment and an interactive Claude Code session (about 350 MB) together exhausted it |
-| **1 CPU, 4 GiB** (`Small Instance +`) | **Recommended.** Same as the monitor, plenty of room |
+| **2 CPUs, 6 GiB** (`Small Instance ++`) | **Current healer size.** More room for the loop, experiment runner and interactive development |
+| 1 CPU, 4 GiB (`Small Instance +`) | Lower-resource alternative; used by the monitor |
 | 2 GiB | Works for the loop and experiments; tight with Claude Code running |
 
 On any size, a 1 GiB swap file is cheap insurance, so the machine slows down

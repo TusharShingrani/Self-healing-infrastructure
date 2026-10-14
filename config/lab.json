@@ -46,5 +46,7 @@
   "monitor_instance": "monitor",
   "monitor_offering_id": "8b3b96e0-b40e-4dd6-8b43-46ead1d3d552",
   "monitor_offering_name": "Small Instance + (1 CPU, 4 GiB)",
-  "prometheus_url": "http://10.1.1.50:9090"
+  "prometheus_url": "http://10.1.1.50:9090",
+  "healer_offering_id": "5e2e56b0-5ce6-4966-9463-7c88a1419a72",
+  "healer_offering_name": "Small Instance ++ (2 CPUs, 6 GiB)"
 }
