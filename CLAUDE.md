@@ -99,6 +99,18 @@ The old Knowledge and runtime state remain under
 remain unchanged. Use `python3 tools/lab_shell.py` to open a lab shell
 with credentials already held in memory, without printing or saving them.
 
+## Reviewed repair workflow
+
+Read `docs/operator-workflow.md`. The live service defaults to HEALER_REVIEW=1.
+Use `tools/incidents.py` to inspect, approve/reject, capture human changes, and
+promote procedures. State is `state/operator.db`; preserve it with Knowledge.
+A repair needs two distinct verified occurrences and explicit promotion before
+automatic use. Existing prevention/LLM advice cannot bypass this gate.
+High-risk actions retain the separate gate and never become automatic procedures.
+The scripted live exercise on app-1 demonstrated an approved repair, a separately
+performed SSH repair, promotion, and automatic repair of the third occurrence.
+This is a terminal interface, not a web console or unrestricted autonomous agent.
+
 ## How to work here
 
 - Start the loop with `bash tools/start_loop.sh start C` from a shell with the

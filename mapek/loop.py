@@ -61,6 +61,7 @@ class Healer:
 
         self.events = []
         self.pending_approval = []      # proposals a human must authorise
+        self.operator = None           # optional persistent incident-review gate
         self.open_incident = None       # {"tick", "early_signs"}
         self._attempts = {}             # cause -> escalation level already tried
 
@@ -95,6 +96,8 @@ class Healer:
         self.last_healthy = healthy
         self.stage_seconds["monitor"] = time.monotonic() - started
         if not symptoms:
+            if self.operator is not None:
+                self.operator.reconcile(self.world, observation)
             self._attempts.clear()
             self.diagnosis = None
             return
@@ -115,6 +118,8 @@ class Healer:
         self.stage_seconds["analyse"] = time.monotonic() - mark
         self.diagnosis = diagnosis
         if diagnosis is None or diagnosis.cause == "unknown":
+            if self.operator is not None:
+                self.operator.capture(self.world, symptoms, 'unknown', [], observation)
             self._log(LoopEvent(now, "escalated", "no diagnosis matched", symptoms))
             self._ask_advisor("no diagnosis matched", symptoms, observation)
             return
@@ -146,6 +151,13 @@ class Healer:
         if self.advisor is None:
             return
         try:
+            if self.operator is not None:
+                observation = dict(observation)
+                cases = [c for c in self.operator.cases()
+                         if c['target'] == getattr(self.world, 'name', 'simulated')]
+                if cases:
+                    import json
+                    observation['incident_evidence'] = json.loads(cases[0]['evidence'])
             self.advisor.request(
                 target=getattr(self.world, "name", "simulated"), reason=reason,
                 symptoms=symptoms, observation=observation, cause=cause,
@@ -176,6 +188,8 @@ class Healer:
             self.open_incident = {"tick": now, "early_signs": set(symptoms)}
 
     def _act(self, now, symptoms, cause, actions, kind, source="rules", level=0):
+        if self.operator is not None:
+            self.operator.capture(self.world, symptoms, cause, actions, self.last_observation)
         risky = [a for a in actions if a in HIGH_RISK]
         if risky and not self.approve_high_risk:
             # Waiting for approval must not consume the escalation level. The
@@ -206,11 +220,20 @@ class Healer:
                                 actions, level))
             return
 
+        if self.operator is not None:
+            allowed, reason = self.operator.authorize(self.world, symptoms, cause,
+                                                      actions, self.last_observation)
+            if not allowed:
+                self._log(LoopEvent(now, 'blocked', reason, symptoms, cause, actions, level))
+                return
+
         results = self.executor.execute(actions)
         for r in results:
             self.action_counts[(r.action, "ok" if r.ok else "failed")] += 1
         self.guardrails.record(actions, now)
         ok = all(r.ok for r in results) and self.executor.verify()
+        if self.operator is not None:
+            ok = self.operator.finish(self.world, ok) and ok
         detail = "; ".join(f"{r.action}: {r.detail}" for r in results)
 
         if not ok:
