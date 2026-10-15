@@ -1,6 +1,0 @@
-2026-10-13T17:31:14Z +   1.0s  run disk_leak on app-1 (10.1.1.60), loop config loop-not-running, deliberate restart at +150s
-2026-10-13T17:32:14Z +  60.6s  inject disk_leak: confirmed: log filesystem at 27% and rising on /var/log/nginx /dev/loop0 ext4 487MiB
-2026-10-13T17:32:14Z +  60.7s  waiting 94s for the maintenance window
-2026-10-13T17:34:41Z + 207.6s  deliberate restart: FAILED (log volume 89.5% used): ssh timed out
-2026-10-13T17:35:14Z + 240.4s  measurement ended, 79 samples
-2026-10-13T17:39:05Z + 472.0s  post-run reset by the experiment, idempotent, not counted as healing: clear_logs=failed, fix_log_rotation=failed, restore_config=failed, restart_service=failed

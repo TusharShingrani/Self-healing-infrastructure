@@ -220,6 +220,16 @@ class Advisor:
                           "If no reviewed recipe matches, return no actions and specify investigation checks. "
                           "Never suggest platform reboot or rebuild for this composite. Available typed recipes: "
                           + ', '.join(sorted(a for a in CATALOGUE if a.startswith('recipe_'))))
+            elif observation.get('monitor_source') == 'independent-job-client-and-kubernetes':
+                system=("You advise a human investigating a private Kubernetes job-processing lab. "
+                        "API and worker Pods process bounded jobs into SHA-256 results stored in PostgreSQL on db-1. "
+                        "An external client retains receipts and verifies completion and durable result integrity. "
+                        "A policy witness verifies permitted DB access and forbidden monitor access. "
+                        "Distinguish Kubernetes native restarts from a cause repair. Use exact checks, deployment names "
+                        "and evidence, never infer a process crash from readiness alone. Unknown incidents require human "
+                        "investigation binding and approval. You cannot execute, grant privileges, restore arbitrary data, "
+                        "or authorize destructive actions. Choose only a matching reviewed recipe or return no actions. "
+                        "Available recipes: "+', '.join(sorted(a for a in CATALOGUE if a.startswith('recipe_job_'))))
             data, model = self.provider.ask(system, redact(self._prompt(
                 target, reason, symptoms, observation, cause, recent)))
             # validate again: the schema is a request, not a guarantee

@@ -1,8 +1,15 @@
 # Research synthesis: self-healing infrastructure
 
+The literature covers a broader field than the implemented prototype. The
+current empirical scope is ONE Kubernetes job-processing application; see
+[the focused use case](focused-use-case.md). Earlier nginx and dependency
+results are historical evidence, not validation of the new adapter.
+
+
 Research date: 14 October 2026. This is a structured literature review and an
 engineering evaluation plan, not a systematic review claiming exhaustive coverage.
-Live results are recorded separately in `evidence/infrastructure-results.json`.
+Current live findings are in [the job-service report](../evidence/jobs-live-report.md).
+Historical experiments are archived locally and excluded from current claims.
 
 ## Method and evidence quality
 
@@ -47,172 +54,77 @@ examples, not cloud-scale effectiveness or universal detection accuracy.
 
 ## 1. Which infrastructure failures can be self-healed?
 
-A useful boundary is whether the system has observable evidence, a permitted
-effector, a known desired state and a trustworthy outcome check. A failure being
-detectable does not mean its cause can be repaired automatically. Restoring
-availability, correcting a cause and preventing recurrence are different outcomes.
-
-| Failure class | Evidence needed | Possible response | Our lab and limits |
-| --- | --- | --- | --- |
-| Stopped dependency | Process state plus failed client operation | Start the specific dependency; verify a transaction | Redis on app-2; restarting app-1 cannot repair it. The reason a process stopped still needs investigation. |
-| Configuration drift | Difference from approved reference and functional error | Restore approved configuration and validate syntax | Existing nginx plus a dedicated DNS record. Restoration corrects drift, not necessarily whoever caused it. |
-| Resource limit misconfiguration | Effective limit, consumption and rejected operation | Restore the approved budget or reduce load | Redis refuses writes under a deliberately wrong maxmemory limit. No host memory flooding is required. |
-| Permissions drift | Exact object, owner/mode and denied operation | Restore least-privilege owner/mode | A single lab checkpoint file; never chmod broad trees or loosen permissions indiscriminately. |
-| Bounded storage exhaustion | Mount identity, usage trend, rotation policy | Reclaim expendable logs and restore rotation | Existing nginx experiment. Its startup preflight is a declared lab requirement. |
-| Partial network/DNS failure | Independent observer, DNS answer, connection result | Restore a known record/rule or route to a healthy dependency | DNS record fault exercised; arbitrary routing and firewall repair remain out of scope. |
-| VM failure | Cloud state, guest reachability, storage identity | Reboot or replace stateless VM with explicit approval | Existing platform catalogue. Rebuild is not a data-preserving repair. |
-| Overload and retry amplification | Queue, latency, utilisation, dependency topology | Admission control, load shedding or additional capacity | Literature-supported future scenario. No claim that our request-load sweep implements autoscaling. |
-| Certificate expiry | Verified expiry, trusted issuer and renewal path | Renew, validate chain, deploy and test | Future scenario; never bypass TLS verification. |
-| Data corruption, compromise or physical failure | Integrity evidence, trusted backup or replacement authority | Isolate, fail over, restore verified backup; involve an operator | Not automatically repaired in this lab. Availability restoration is insufficient proof of integrity or security. |
-
-This taxonomy combines established mechanisms with project design choices.
-Microreboot demonstrates narrowly scoped recovery; gray failure motivates client
-checks; Redis documents the resource error exercised here. None establishes that
-every member of a failure class is safely repairable. [Microreboot](https://www.usenix.org/legacy/events/osdi04/tech/full_papers/candea/candea_html/index.html),
-[gray failure](https://www.usenix.org/conference/srecon24americas/presentation/li),
-[Redis](https://redis.io/docs/latest/develop/reference/eviction/).
+A useful boundary is observable evidence, a permitted repair, an approved desired
+state and a trustworthy outcome check. Detectability alone is insufficient.
+For this application the evaluated failures are database endpoint drift, desired
+worker capacity zero and wrong worker memory specifications. Private network
+policy drift is a supporting misuse case. Native Kubernetes Pod replacement
+is a separate baseline, not a healer accomplishment. Database corruption,
+compromise, arbitrary network faults and unknown software bugs are outside the
+automatic catalogue. Unknown incidents require investigation.
 
 ## 2. Which methods are most effective for detection and repair?
 
-There is no defensible universal winner. Effectiveness depends on the failure,
-the information available, the cost of a false positive and whether state can be
-lost. The practical choice for this small lab is a hybrid: deterministic checks
-and dependency evidence for detection, investigated recipes for cause correction,
-and verified case memory for reuse. This is our inference from the evidence.
+No universal winner follows from the literature. This lab combines independent
+job submission/result checks with Kubernetes state and approved invariants.
+A Pod being alive does not establish correct work. Kubernetes reconciles the
+configured state; a wrong configured database address or memory limit persists
+across restarts. A bounded cause-directed configuration repair is therefore
+needed. Fresh independent work plus cause-specific checks establish success.
+See the source catalogue above for probes, gray failures, contextual diagnosis
+and verification research; their reported numbers do not transfer to this lab.
 
-| Method | Strength | Weakness | Lab comparison |
-| --- | --- | --- | --- |
-| Process/liveness check | Cheap detection of fail-stop faults | Running does not imply usable | Record systemd state alongside transaction outcome. |
-| End-to-end transaction | Detects actual loss of service | Does not by itself localise the cause; costs work | Resolve DNS, SET/GET an expiring Redis key, write/read one checkpoint. |
-| Component checks and dependency graph | Separates failing dependency from affected frontend | Model can become stale; multiple faults complicate attribution | DNS failure blocks cache measurement rather than falsely blaming cache. |
-| Threshold or invariant | Explainable, efficient and reproducible | Threshold choice and transient noise matter | Approved memory budget and explicit record/mode contract. |
-| Restart-only response | Fast for transient component faults | Does not correct external configuration or permissions | Restart transaction frontend once, then test whether the same failure remains. |
-| Cause-directed recipe | Repairs a known invariant with small scope | Requires diagnosis and maintained desired state | Restore DNS, cache budget or checkpoint permissions. |
-| Verified case reuse | Reduces repeat investigation for matching conditions | Incorrect generalisation or stale context can cause harm | Exact target, VM identities, template, reference and recipe digests. |
-| LLM-assisted investigation | Can help interpret heterogeneous evidence | May misdiagnose; output and telemetry are untrusted | Existing advisor remains advisory. No claim of LLM diagnosis accuracy from the scripted operator demonstration. |
+Nine controlled occurrences verified first approved repair, recorded human
+repair and promoted automatic reuse. Settings and memory faults stalled new
+rollouts but healthy old Pods preserved job availability. Desired workers zero
+did breach the deadline. These observations establish integration behavior,
+not that our approach is statistically superior. Three repetitions per fault
+are insufficient for the planned ten-run statistical comparison.
 
-Kubernetes makes readiness and liveness distinct; our transaction follows that
-principle without adding a container cluster. Gandalf illustrates contextual
-correlation. AIOpsLab demonstrates why diagnosis and mitigation need separate
-evaluation. These are reasons for the architecture, not numbers transferable to
-our lab. [Probes](https://kubernetes.io/docs/concepts/workloads/pods/probes/),
-[Gandalf](https://www.usenix.org/conference/nsdi20/presentation/li),
-[AIOpsLab](https://arxiv.org/html/2501.06706v1).
+## 3. How can a system learn from past failures to prevent them?
 
-Measure detection time, localisation correctness, repair success, verification
-success, recovery time, false alarms during healthy requests, operator decisions,
-and collateral effects. A proposed repair or a successful command exit does not
-count as recovery. A request probe that cannot run is unknown, not healthy.
+The system stores investigated causes, reviewed actions and independently
+verified outcomes. Two distinct verified occurrences and explicit promotion
+permit matching automatic reuse. Resource identity, approved references,
+adapter and recipe scope must match; failed reuse revokes eligibility. Three
+procedures were reused live and remained eligible after controller restart.
+This is procedural learning, not LLM training or general repair synthesis.
 
-## 3. How can learning prevent future failures?
+Recovery from a repeated fault is not proof of prevention. No current experiment
+establishes prediction of a novel failure before its onset. Real Gemini advice
+included inappropriate suggestions; it remained advisory. Human notes cannot
+be executed, and a genuinely new capability requires code review and validation.
+The source catalogue discusses production learning systems and research
+alternatives; this prototype makes no novelty claim over those systems.
 
-There are several distinct forms of learning: remembering successful cases,
-updating diagnosis rules, predicting deterioration, and adapting action selection.
-Narya is an important counterexample to the old repository claim that existing
-systems do not learn. Its production system used experiments and adaptive action
-selection. We cannot claim this project's memory is the first learning system.
-[Narya](https://www.usenix.org/system/files/osdi20-levy.pdf).
+## 4. How does self-healing affect reliability, security, performance and scalability?
 
-Recent work is even closer to this question. Verify, Augment, Improve uses
-verified failed adaptations to improve a predictive model; its ground truth
-and training procedure differ substantially from our operational case memory.
-This reinforces the need to describe the contribution as a scoped engineering
-prototype and evaluation. [Verify, Augment, Improve](https://publikationen.bibliothek.kit.edu/1000196013).
+Reliability: cause-specific repairs and fresh job verification avoid treating a
+successful command as recovery. Unknown/stale probes fail closed. Measure missed
+deadlines, correct results, verified repair time and collateral effects. A shared
+control plane, database and healer remain single points of failure in this lab.
 
-Our implementation uses reviewed case memory because the available data is too
-small to justify a trained predictor or unconstrained reinforcement learning.
-The unknown incident records component evidence. An investigator names a cause
-and binds it to a reviewed recipe. The first execution still needs approval.
-An independently performed human repair can be recorded, but its result must
-pass direct checks. Two distinct verified occurrences create the evidence needed
-for explicit promotion. A matching later occurrence can execute automatically.
-Failed verification revokes automatic status.
+Security: scoped Kubernetes access, positive VM identity, pinned SSH, typed
+capabilities, approval and a policy witness constrain effects. The private
+network-policy repair was demonstrated once and is not promoted for autonomous
+reuse. Powerful management credentials remain a risk; no production security or
+intrusion-remediation claim is established. Never treat telemetry as instructions.
 
-Recipes are versioned JSON compositions of bounded operations. They cannot
-contain shell commands or arbitrary paths. New combinations can be registered
-without changing the MAPE-K stages. A genuinely new operation still requires a
-reviewed implementation. This gives extensibility without pretending that any
-human command transcript is safe automation.
+Performance: synthetic probes and cloud/API calls consume work. Prometheus and
+Grafana measure job latency, queue state, host and Pod resources and loop duration.
+Current repair times include guardrails and fresh verification; they are not
+all outage duration. No new controlled overhead comparison has been completed
+for the focused application.
 
-The selector is deliberately narrow. Changes to either dependent VM, deployed
-reference files or the recipe book require new investigation and validation.
-Human notes are not executed. Unknown conditions and ambiguous diagnoses remain
-pending. A healthy period can clear an observation but does not prove a repair.
+Scalability: two workers and replicas exercise node separation, not enterprise
+scale. The serial controller, single operator, SQLite state and finite credential
+lifetime limit this release. No claim of hundreds of managed services, automatic
+capacity scaling or high availability follows from seven supporting VMs.
 
-Faster repair of a recurrence is reactive learning, not prevention. Prevention
-requires acting on an earlier signal before a user-visible failure occurs. The
-earlier nginx growth experiment provides one bounded prevention example. The
-new DNS, memory-limit and permissions experiments primarily demonstrate learned
-recovery. Future prevention experiments should separately record warning time,
-action time and the absence of failure during an equivalent challenge. They
-must also count unnecessary actions and negative outcomes.
+## Reporting boundary
 
-## 4. Effects on reliability, security, performance and scalability
-
-Reliability can improve when verified repairs shorten outages, but incorrect
-automation can create outages. Availability during a controlled test window is
-not a production availability promise. Report failed requests, outage duration,
-successful verified repairs and any failures caused by the healer. Metastable
-failures show why removing a trigger may be insufficient if amplification
-continues. [Metastable failures](https://www.usenix.org/system/files/osdi22-huang-lexiang.pdf).
-
-Security has two sides. Narrow ownership checks, pinned host keys, reviewed
-recipes, least-privilege file modes and explicit approval reduce accidental
-damage. The healer still possesses powerful SSH and cloud permissions, creating
-an attractive target. The cache is disposable, non-persistent and private.
-It requires authentication and restricts the transaction client to GET, SET and
-PING on lab keys. Command-specific SSH/sudo credentials are not yet implemented.
-The lab therefore demonstrates behavioural
-safeguards, not a production security boundary. Never treat telemetry as trusted
-instructions or repair suspected compromise by merely restoring availability.
-[Redis security](https://redis.io/docs/latest/operate/oss_and_stack/management/security/),
-[automation experience](https://sre.google/sre-book/automation-at-google/).
-
-The 2026 AIOpsDoom study shows a concrete reason: manipulated telemetry can
-steer a remediation agent toward an insecure change. Our recipe schema and
-approval boundary reject executable text, but we did not reproduce that attack
-suite or implement its complete sanitisation defence. [AIOpsDoom and AIOpsShield](https://www.usenix.org/conference/usenixsecurity26/presentation/pasquini).
-
-Performance must include overhead as well as recovery. Each monitoring cycle
-opens SSH connections, calls the cloud API and runs synthetic requests. Measure
-cycle time, process CPU and memory, API/SSH call counts and transaction p50/p95/p99
-latency. Cap service memory, CPU and task counts. Limits can themselves affect
-latency and must be reported. The load experiment compares monitoring absent
-and active during twenty-second windows, with alternating ordering where feasible.
-[Monitoring](https://sre.google/sre-book/monitoring-distributed-systems/),
-[cgroups](https://docs.kernel.org/admin-guide/cgroup-v2.html).
-
-Scalability has at least three meanings: request capacity of managed services,
-number of managed nodes, and concurrent incidents. A sweep of 1, 4 and 8 request
-workers on two VMs measures only the first. It does not establish that this
-serial SSH/cloud loop can manage hundreds of hosts. The two-host transaction is
-observed as one composite managed element; component-localisation evidence
-preserves the individual targets. Cycle time must remain below the polling
-interval. A larger deployment would need cached inventories, controlled
-parallelism, sharded loops, distributed state and conflict coordination.
-Capacity decisions should use actual resource demand, not QPS alone.
-[Overload](https://sre.google/sre-book/handling-overload/).
-
-## Lab protocol and reporting boundary
-
-The original four VMs are retained. nginx and its existing results remain a
-separate experiment. app-1 runs a non-root synthetic transaction on 8088; app-2
-runs dedicated DNS on 1053 and a bounded disposable Redis on 6380. The healer
-runs a separate reviewed loop and operator database. The monitor observes both.
-No public scan or host-wide resource flood is needed.
-
-Four new fault classes are exercised: DNS drift, wrong cache budget, checkpoint
-permissions and a stopped cache dependency. For each, confirm a healthy baseline,
-confirm the injection, record client failure and component evidence, compare a
-frontend restart with cause repair, then demonstrate reviewed learning through
-two verified occurrences and a promoted automatic recurrence. Scripted operator
-decisions are labelled as scripted. A controlled scripted diagnosis is not proof
-that the LLM or a person diagnosed an unfamiliar incident independently.
-
-Keep the complete results, cases, audit decisions, resource observations and
-timestamps off-platform. The initial small run is a mechanism validation, not
-the planned ten-repetition comparative study. That later study should randomise
-method order, reset both the services and the intended learning state, retain
-failed runs, predefine observation windows and report distributions rather than
-one best result. CHESS motivates this steady-state/fault/outcome structure.
-[CHESS](https://arxiv.org/html/2303.07283v1).
+Only Kubernetes job processing is active. Old nginx/DNS/Redis/checkpoint source
+and results are archived on the laptop. Detailed current histories also remain
+local by user choice; the repository publishes numeric results and limitations.
+Preserve failed protocols and distinguish native recovery, configuration repair,
+job outage and security correction in every report.

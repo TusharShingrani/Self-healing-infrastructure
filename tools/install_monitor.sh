@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
-# Observability for the lab, on the monitor instance (10.1.1.50):
-#   sudo bash install_monitor.sh     (files from monitoring/ are expected in ~/lab/monitor)
-#
-#   :9090  Prometheus         scrapes app-1, app-2 and both MAPE-K loops on the healer
-#   :9115  blackbox exporter  checks nginx /healthz and the app-1 transaction from
-#                             outside the managed instance
-#   :3000  Grafana            dashboards "Self-healing infrastructure (MAPE-K)" and
-#                             "Infrastructure dependencies and reviewed learning"
-#
-# Only reachable on the isolated network. From a laptop, tunnel through the
-# healer:  ssh -L 3000:10.1.1.50:3000 <your usual healer ssh login>
+# Bootstrap the dedicated job-service monitor from ~/lab/monitor assets.
+# Then run configure_jobs_monitor.py from the healer to install scoped probes
+# and the Kubernetes CA. Only the job-service dashboard is provisioned.
 set -euo pipefail
 SRC=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/monitor
 [ -f "$SRC/prometheus.yml" ] || { echo "missing $SRC/prometheus.yml" >&2; exit 1; }
@@ -81,7 +73,7 @@ Environment=GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
 Environment=GF_USERS_ALLOW_SIGN_UP=false
 Environment=GF_ANALYTICS_REPORTING_ENABLED=false
 Environment=GF_ANALYTICS_CHECK_FOR_UPDATES=false
-Environment=GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/selfheal.json
+Environment=GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/jobs.json
 UNIT
 install -m 644 "$SRC"/grafana/provisioning/datasources/*.yml /etc/grafana/provisioning/datasources/
 install -m 644 "$SRC"/grafana/provisioning/dashboards/*.yml /etc/grafana/provisioning/dashboards/
@@ -99,16 +91,10 @@ for i in $(seq 1 30); do curl -fsS http://127.0.0.1:3000/api/health >/dev/null 2
 sleep 12   # let Prometheus complete at least one scrape of every target
 TARGETS=$(curl -fsS http://127.0.0.1:9090/api/v1/targets) || TARGETS=""
 check "Prometheus is ready" 'curl -fsS http://127.0.0.1:9090/-/ready >/dev/null'
-check "rules loaded" '[ "$(curl -fsS http://127.0.0.1:9090/api/v1/rules | grep -o "\"name\":\"healer-" | wc -l)" -ge 2 ]'
-for job in node nginx healthz; do
-    check "every $job target is up" \
-        '[ "$(grep -o "\"job\":\"'$job'\"[^}]*}[^}]*\"health\":\"[a-z]*\"" <<<"$TARGETS" | grep -c "\"health\":\"up\"")" -ge 2 ]'
-done
-check "/healthz probes succeed for both apps" \
-    '[ "$(curl -fsS "http://127.0.0.1:9090/api/v1/query?query=sum(probe_success%7Bjob%3D%22healthz%22%7D)" | grep -o "\"[0-9]*\"\]" | tr -dc 0-9)" = 2 ]'
+check "job rules loaded" 'curl -fsS http://127.0.0.1:9090/api/v1/rules | grep -q job-workflow-contract'
 check "Grafana is healthy" 'curl -fsS http://127.0.0.1:3000/api/health | grep -q "\"database\": *\"ok\""'
-check "the MAPE-K dashboard is provisioned" \
-    'curl -fsS "http://127.0.0.1:3000/api/search?query=MAPE-K" | grep -q selfheal-mapek'
+check "job dashboard is provisioned" 'curl -fsS http://127.0.0.1:3000/api/dashboards/uid/selfheal-jobs >/dev/null'
+echo "Run tools/configure_jobs_monitor.py on the healer, then verify every active target."
 echo "   info  grafana $(dpkg-query -W -f='${Version}' grafana), prometheus $(dpkg-query -W -f='${Version}' prometheus)"
 [ "$fail" -eq 0 ] || { echo "monitor install finished with failures" >&2; exit 1; }
 echo "==> monitor ready"

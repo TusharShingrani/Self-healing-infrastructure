@@ -1,0 +1,80 @@
+{
+  "started": 1792077995.173579,
+  "finished": 1792078584.2186294,
+  "protocol": "scripted investigator/operator; independent job receipts and cause checks; normal cooldowns",
+  "outcome": "completed",
+  "runs": [
+    {
+      "fault": "settings",
+      "repetition": 1,
+      "mode": "investigated-approved",
+      "business_failure_observed": false,
+      "injection_to_verified_seconds": 20.61854076385498,
+      "verified": true
+    },
+    {
+      "fault": "settings",
+      "repetition": 2,
+      "mode": "recorded-human-and-promoted",
+      "business_failure_observed": false,
+      "injection_to_verified_seconds": 16.63492226600647,
+      "verified": true
+    },
+    {
+      "fault": "settings",
+      "repetition": 3,
+      "mode": "promoted-automatic",
+      "business_failure_observed": false,
+      "injection_to_verified_seconds": 20.469577312469482,
+      "verified": true
+    },
+    {
+      "fault": "workers",
+      "repetition": 1,
+      "mode": "investigated-approved",
+      "business_failure_observed": true,
+      "injection_to_verified_seconds": 90.21763777732849,
+      "verified": true
+    },
+    {
+      "fault": "workers",
+      "repetition": 2,
+      "mode": "recorded-human-and-promoted",
+      "business_failure_observed": true,
+      "injection_to_verified_seconds": 91.57898259162903,
+      "verified": true
+    },
+    {
+      "fault": "workers",
+      "repetition": 3,
+      "mode": "promoted-automatic",
+      "business_failure_observed": true,
+      "injection_to_verified_seconds": 95.23521375656128,
+      "verified": true
+    },
+    {
+      "fault": "limits",
+      "repetition": 1,
+      "mode": "investigated-approved",
+      "business_failure_observed": false,
+      "injection_to_verified_seconds": 23.663015127182007,
+      "verified": true
+    },
+    {
+      "fault": "limits",
+      "repetition": 2,
+      "mode": "recorded-human-and-promoted",
+      "business_failure_observed": false,
+      "injection_to_verified_seconds": 20.178197860717773,
+      "verified": true
+    },
+    {
+      "fault": "limits",
+      "repetition": 3,
+      "mode": "promoted-automatic",
+      "business_failure_observed": false,
+      "injection_to_verified_seconds": 19.94485116004944,
+      "verified": true
+    }
+  ]
+}

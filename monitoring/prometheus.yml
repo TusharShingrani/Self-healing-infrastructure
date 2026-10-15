@@ -1,72 +1,16 @@
-# Prometheus on the monitor instance (10.1.1.50).
-# Fast intervals on purpose: the MAPE-K Monitor stage reads these series, and a
-# slow scrape would show up directly as detection delay in the experiment.
+# Base monitoring: job-specific probes and five role hosts are added by configure_jobs_monitor.py.
 global:
   scrape_interval: 10s
   evaluation_interval: 10s
-
 rule_files:
-  - /etc/prometheus/rules/*.yml
-
+  - /etc/prometheus/rules/jobs.yml
 scrape_configs:
   - job_name: prometheus
     static_configs:
       - targets: ["127.0.0.1:9090"]
-
-  # Host metrics, systemd unit state and the healer-* facts from each app.
-  - job_name: node
+  - job_name: support_nodes
     static_configs:
-      - targets: ["10.1.1.60:9100"]
-        labels: {node: app-1}
-      - targets: ["10.1.1.61:9100"]
-        labels: {node: app-2}
-
-  - job_name: nginx
-    static_configs:
-      - targets: ["10.1.1.60:9113"]
-        labels: {node: app-1}
-      - targets: ["10.1.1.61:9113"]
-        labels: {node: app-2}
-
-  # Availability as a user sees it: a request from another machine, with the
-  # body checked. A unit reported active is not evidence that it serves.
-  - job_name: healthz
-    metrics_path: /probe
-    params:
-      module: [http_healthz]
-    static_configs:
-      - targets: ["http://10.1.1.60/healthz"]
-        labels: {node: app-1}
-      - targets: ["http://10.1.1.61/healthz"]
-        labels: {node: app-2}
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: target
-      - target_label: __address__
-        replacement: 127.0.0.1:9115
-
-  # The MAPE-K loop on the healer publishes its own state, one series per
-  # managed node. honor_labels keeps the loop's own node label (app-1, app-2)
-  # instead of renaming it to exported_node.
-  - job_name: mapek
-    honor_labels: true
-    static_configs:
-      - targets: ["10.1.1.205:9105"]
-
-  - job_name: infrastructure
-    static_configs:
-      - targets: ["10.1.1.205:9106"]
-
-  - job_name: infrastructure_transaction
-    metrics_path: /probe
-    params:
-      module: [http_infrastructure]
-    static_configs:
-      - targets: ["http://10.1.1.60:8088/healthz"]
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - target_label: __address__
-        replacement: 127.0.0.1:9115
+      - targets: ["10.1.1.205:9100"]
+        labels: {node: healer-ubuntu}
+      - targets: ["10.1.1.50:9100"]
+        labels: {node: monitor}

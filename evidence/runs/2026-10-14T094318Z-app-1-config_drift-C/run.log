@@ -1,5 +1,0 @@
-2026-10-14T09:43:18Z +   0.0s  run config_drift on app-1 (10.1.1.60), loop config C, deliberate restart at +30s
-2026-10-14T09:43:22Z +   3.2s  inject config_drift: confirmed: configuration altered
-2026-10-14T09:43:22Z +   3.2s  waiting 30s for the maintenance window
-2026-10-14T09:43:52Z +  33.3s  deliberate restart: succeeded (log volume 7.4% used): restarted
-2026-10-14T09:44:23Z +  64.4s  measurement ended, 65 samples

@@ -1,10 +1,10 @@
 """Open a lab shell using credentials already held by the user service manager.
 
 python3 tools/lab_shell.py
-python3 tools/lab_shell.py python3 tools/lab.py status
+python3 tools/lab_shell.py python3 tools/jobs.py status
 
 No credential values are printed or written to disk. This must run as the
-same user as the loop. After reboot, use the masked prompts in live-demo.md
+same user as the loop. After reboot, use the masked prompts in docs/jobs-deployment.md
 to provide credentials again; this helper cannot recreate them.
 """
 import os

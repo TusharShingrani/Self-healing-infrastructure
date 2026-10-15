@@ -1,0 +1,44 @@
+'use strict';
+let csrf='', snapshot=null, selected=null, detailVersion='', busy=false, timer=null;
+const $=id=>document.getElementById(id);
+function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(cls)n.className=cls;return n;}
+function message(text){$('message').textContent=text;}
+async function api(path,data){const response=await fetch('/api/'+path,{method:data?'POST':'GET',credentials:'same-origin',headers:data?{'Content-Type':'application/json','X-CSRF-Token':csrf}:{},body:data?JSON.stringify(data):undefined});const value=await response.json();if(!response.ok){if(response.status===401)showLogin();throw Error(value.error||'Request failed');}return value;}
+function showLogin(){$('workspace').hidden=true;$('login').hidden=false;$('logout').hidden=true;clearTimeout(timer);}
+function showWorkspace(){$('workspace').hidden=false;$('login').hidden=true;$('logout').hidden=false;}
+function pretty(value){if(typeof value==='string'){try{return JSON.stringify(JSON.parse(value),null,2);}catch{return value;}}return JSON.stringify(value,null,2);}
+function evidence(parent,title,value){const d=node('details');d.append(node('summary',title),node('pre',pretty(value)));parent.append(d);}
+function card(title,value){const n=node('article');n.append(node('div',title),node('div',value,'value'));return n;}
+function human(key){return key.replaceAll('_',' ');}
+function render(){const r=snapshot.runtime||{},obs=r.observation||{};$('freshness').textContent=snapshot.stale?'Evidence stale / unavailable':'Updated '+new Date(r.time*1000).toLocaleTimeString();$('summary').replaceChildren(card('Business outcome',snapshot.stale?'Unknown':obs.http_ok===true?'Jobs completing':obs.http_ok===false?'Jobs failing':'Unknown'),card('Controller',snapshot.stale?'Unknown':r.paused?'Observe only':'Running'),card('Pending review',snapshot.cases.filter(c=>c.status==='pending').length));$('checks').replaceChildren();for(const [k,v]of Object.entries(obs.infrastructure_checks||{}))$('checks').append(node('div',(v===true?'✓ ':v===false?'✕ ':'? ')+human(k),'check '+(v===true?'good':v===false?'bad':'')));
+$('caseList').replaceChildren();for(const c of snapshot.cases){const b=node('button','#'+c.id+' · '+human(c.cause),'case');b.append(node('small',c.status+' · '+(c.verified?'verified':'unverified')));b.onclick=()=>{selected=c.id;detailVersion='';renderDetail();};$('caseList').append(b);}if(!snapshot.cases.length)$('caseList').append(node('p','No incidents recorded.'));renderDetail();
+$('advice').replaceChildren();for(const a of snapshot.advice||[]){const n=node('article',undefined,'record');n.append(node('h3','Advice #'+a.id+' · '+a.status),node('p',a.explanation||'No model explanation available.'));evidence(n,'Model, uncertainty and suggested checks',a);$('advice').append(n);}if(!snapshot.advice?.length)$('advice').append(node('p','No AI advice recorded. This does not prove a real model call has been configured.'));
+$('procedures').replaceChildren();for(const p of snapshot.procedures){const n=node('article',undefined,'record');n.append(node('h3','#'+p.id+' · '+human(p.cause)+' · '+p.status));evidence(n,'Scope and reviewed actions',p);if(p.status!=='validated'){const b=node('button','Request promotion');b.disabled=snapshot.stale;b.onclick=()=>perform({action:'promote',id:p.id});n.append(b);}$('procedures').append(n);}if(!snapshot.procedures.length)$('procedures').append(node('p','No repair procedures learned yet.'));
+$('audit').replaceChildren();for(const a of snapshot.audit.slice(0,30))$('audit').append(node('p',new Date(a.time*1000).toLocaleString()+' · '+a.operator+' · '+a.event+' · '+a.subject+' · '+a.notes));}
+function renderDetail(){if(busy)return;const c=snapshot.cases.find(c=>c.id===selected);if(!c)return;const version=JSON.stringify([c.id,c.status,c.verified,c.evidence,c.after_evidence]);if(version===detailVersion)return;detailVersion=version;const d=$('detail');d.replaceChildren(node('h3','Incident #'+c.id+' · '+human(c.cause)),node('p','Status: '+c.status+' · Verification: '+(c.verified?'passed':'not established')));evidence(d,'Observed symptoms',c.symptoms);evidence(d,'Evidence, uncertainty and proposed plan',c.evidence);if(c.after_evidence)evidence(d,'Post-repair verification',c.after_evidence);if(!['pending','approved'].includes(c.status))return;
+const label=node('label','Evidence and decision rationale');const notes=node('textarea');notes.id='notes';label.append(notes);d.append(label);
+const recipeLabel=node('label','Reviewed repair procedure');const recipe=node('select');const choose=node('option','Choose a reviewed procedure');choose.value='';choose.disabled=true;choose.selected=true;recipe.append(choose);for(const name of snapshot.recipes){const option=node('option',human(name));option.value=name;recipe.append(option);}recipeLabel.append(recipe);d.append(recipeLabel);
+const causeLabel=node('label','Investigated cause (example: worker_capacity_drift)');const cause=node('input');causeLabel.append(cause);d.append(causeLabel);
+const actions=node('div',undefined,'actions');for(const [action,title]of [['investigate','Bind investigation'],['approve','Approve current plan'],['reject','Reject plan'],['record-human','Verify my manual repair']]){const b=node('button',title,action==='reject'?'secondary':'');b.disabled=snapshot.stale||c.status!=='pending'||(action==='investigate'&&c.cause!=='unknown')||(['approve','record-human'].includes(action)&&c.cause==='unknown');b.onclick=()=>{const payload={action,id:c.id,notes:notes.value};if(['investigate','record-human'].includes(action))payload.recipe=recipe.value;if(action==='investigate')payload.cause=cause.value;perform(payload);};actions.append(b);}d.append(actions,node('p','Approval is single-use and freshness-checked by the engine. Manual repair verification can take several minutes. Notes never become executable commands.','hint'));}
+async function perform(data,confirmed=false){
+if(busy)return;
+if(!confirmed){
+ $('decisionSummary').textContent=human(data.action)+' for #'+data.id+'. This records an operator decision; the backend still enforces current evidence and reviewed capabilities.';
+ $('decisionPayload').textContent=pretty(data);
+ $('decisionReview').hidden=false;
+ $('confirmDecision').onclick=()=>{$('decisionReview').hidden=true;perform(data,true);};
+ $('cancelDecision').onclick=()=>{$('decisionReview').hidden=true;};
+ $('decisionReview').scrollIntoView({behavior:'smooth',block:'center'});
+ return;
+}
+busy=true;message('Checking the operation and recording its outcome…');for(const b of document.querySelectorAll('#detail button'))b.disabled=true;try{const result=await api('action',data);
+if(data.action==='investigate' && Number.isInteger(result.id)){selected=result.id;message('Investigation saved. Review the proposed repair in incident #'+result.id+' before approving it.');}
+else if(data.action==='record-human')message(result.verified?'Manual repair independently verified and recorded.':'Verification did not pass. Inspect the incident evidence before retrying.');
+else if(data.action==='promote')message('Procedure #'+data.id+' promoted. Its scope is checked again before every automatic use.');
+else message(result.saved?'Decision recorded. The engine will check the current evidence before executing an approved repair.':'No change: this incident is no longer pending. Review the current incident.');}catch(e){message(e.message);}finally{busy=false;detailVersion='';await refresh();}}
+async function refresh(){clearTimeout(timer);try{if(!busy){snapshot=await api('snapshot');render();}}catch(e){message(e.message);}if(!$('workspace').hidden)timer=setTimeout(refresh,Number($('refresh').value)*1000);}
+$('loginForm').onsubmit=async e=>{e.preventDefault();try{const result=await api('login',{password:$('password').value});$('password').value='';csrf=result.csrf;message('');showWorkspace();await refresh();}catch(e){message(e.message);}};
+$('logout').onclick=async()=>{try{await api('logout',{});}finally{csrf='';showLogin();}};
+for(const b of document.querySelectorAll('[data-view]'))b.onclick=()=>{for(const v of document.querySelectorAll('.view'))v.hidden=v.id!==b.dataset.view;for(const n of document.querySelectorAll('[data-view]'))n.classList.toggle('selected',n===b);};
+$('refresh').onchange=refresh;document.querySelector('[data-view="overview"]').classList.add('selected');
+(async()=>{try{const s=await api('session');csrf=s.csrf;showWorkspace();await refresh();}catch{showLogin();}})();

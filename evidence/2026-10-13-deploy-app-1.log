@@ -1,6 +1,0 @@
-start 2026-10-13T15:00:47Z
-$ python3 tools/lab.py deploy app-1
-deploying app-1 from healer-baseline-2026-10-13 ...
-ready after 64s
-exit=0
-end 2026-10-13T15:01:51Z wall=64s

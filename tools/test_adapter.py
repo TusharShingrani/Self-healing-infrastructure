@@ -373,6 +373,8 @@ check("disk fault proceeds on a bounded dedicated volume", ok, detail)
 
 world = MountWorld(client, mount_output())
 world.filled = False      # the timer started but nothing actually filled
+# Exercise the production polling path without the live host's 90-second wait.
+world._confirm_filling = lambda: EduCloudWorld._confirm_filling(world, limit=0.02, poll=0.002)
 ok, detail = world.inject("disk_leak")
 check("a started timer alone is not a successful injection",
       not ok and "did not grow" in detail, detail)
@@ -442,83 +444,7 @@ readings, _ = dead.observe("app-1")
 check("an unreachable Prometheus yields no readings, so direct probes take over",
       readings == {} and "unreachable" in dead.last_error, dead.last_error)
 
-print("\nCLI deploy")
-
-import importlib.util                                                     # noqa: E402
-import types                                                              # noqa: E402
-
-spec = importlib.util.spec_from_file_location(
-    "lab_cli", os.path.join(os.path.dirname(os.path.abspath(__file__)), "lab.py"))
-lab_cli = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(lab_cli)
-
-
-class DeployClient:
-    def __init__(self):
-        self.deployed = []
-
-    def instance(self, name):
-        return None
-
-    def deploy(self, name, *args, **kwargs):
-        self.deployed.append(name)
-        self.calls = getattr(self, "calls", []) + [(name, args, kwargs)]
-
-
-for label, name, lab in [
-        ("deploy refuses the healer's name", "healer-ubuntu", LAB),
-        ("deploy refuses a name outside lab_instances", "app-3", LAB),
-        ("deploy refuses when no project id is configured", "app-1",
-         dict(LAB, project_id=None))]:
-    client = DeployClient()
-    try:
-        lab_cli.cmd_deploy(client, dict(lab, template_name="T"),
-                           types.SimpleNamespace(name=name, key=None))
-        check(label, False, "no refusal")
-    except ProtectedTarget:
-        check(label, not client.deployed)
-
-try:
-    lab_cli.assert_deploy_allowed(LAB, "app-1")
-    check("deploy allows a listed lab instance", True)
-except ProtectedTarget as error:
-    check("deploy allows a listed lab instance", False, str(error))
-
-LAB_MON = dict(LAB, monitor_instance="monitor", offering_id="small",
-               monitor_offering_id="bigger", template_name="T",
-               addresses={"app-1": "192.0.2.60", "monitor": "192.0.2.50"})
-
-
-class DeployWorld:
-    def __init__(self, *a, **k):
-        pass
-
-    def wait_until_ready(self):
-        return True
-
-
-real_world_for = lab_cli.world_for
-lab_cli.world_for = lambda *a, **k: DeployWorld()
-try:
-    client = DeployClient()
-    lab_cli.cmd_deploy(client, LAB_MON, types.SimpleNamespace(name="monitor", key=None))
-    name, args, kwargs = client.calls[0]
-    check("the monitor deploys with its own offering", args[2] == "bigger", str(args))
-    check("a deploy uses the fixed address from the config",
-          kwargs.get("ipaddress") == "192.0.2.50", str(kwargs))
-    client = DeployClient()
-    lab_cli.cmd_deploy(client, LAB_MON, types.SimpleNamespace(name="app-1", key=None))
-    check("a lab instance deploys with the normal offering",
-          client.calls[0][1][2] == "small", str(client.calls[0]))
-finally:
-    lab_cli.world_for = real_world_for
-
-world = EduCloudWorld(FakeClient({}), "monitor", LAB_MON)
-try:
-    world._assert_destructive_allowed()
-    check("the monitor can never be a destructive target", False)
-except ProtectedTarget:
-    check("the monitor can never be a destructive target", True)
+# The old VM-deployment CLI was retired; keep transport/ownership tests above.
 
 print("\nAPI client configuration")
 
@@ -581,19 +507,6 @@ world._probe = lambda command: (sent.append(command), (True, "", ""))[1]
 world.restore_config()
 check("restore_config starts nginx if the bad config already stopped it",
       "reload-or-restart" in sent[-1], sent[-1])
-
-print("\nResults generator")
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from summarise_experiment import invalid_reason                            # noqa: E402
-
-row = {"config": "A", "run": "evidence/runs/x"}
-check("a run with the block's loop config is counted",
-      invalid_reason(row, {"loop_config": "A"}) is None)
-check("a run where the loop was not running is not counted",
-      "loop-not-running" in (invalid_reason(row, {"loop_config": "loop-not-running"}) or ""))
-check("a run under another config's loop is not counted",
-      invalid_reason(row, {"loop_config": "C"}) is not None)
-check("a run without a summary is not counted", invalid_reason(row, None) is not None)
 
 print("\nTest isolation")
 from mapek.educloud import HostRegistry as _HR, SSHTarget as _ST           # noqa: E402

@@ -18,3 +18,29 @@ __pycache__/
 *.pyc
 state/
 results/*.csv
+
+# Full live histories are preserved as deterministic gzip archives.
+/evidence/jobs-live-20261015.json
+/evidence/jobs-live-20261015-v2.json
+/evidence/jobs-console-workflow.json
+
+# Live metadata/evidence stays off-platform pending explicit publication approval.
+/config/jobs-image.json
+/config/jobs-reference.json
+/evidence/console-live-validation.json
+/evidence/jobs-console-workflow.json.gz
+/evidence/jobs-evidence-manifest.json
+/evidence/jobs-final-status.json
+/evidence/jobs-linux-validation.txt
+/evidence/jobs-live-20261015-v2.json.gz
+/evidence/jobs-live-20261015.json.gz
+/evidence/jobs-live-protocol-v1.log
+/evidence/jobs-live-protocol-v2.log
+/evidence/jobs-live-source-hashes.txt
+/evidence/jobs-monitoring-query-validation.json
+/evidence/jobs-native-pod-recovery.json
+/evidence/jobs-verification-pilot-failure.log
+/evidence/jobs-workers-learning-verified.json
+/evidence/jobs-workers-learning.json
+
+/evidence/jobs-focus-cleanup-private.json

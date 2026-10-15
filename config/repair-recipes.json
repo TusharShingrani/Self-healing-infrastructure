@@ -1,6 +1,0 @@
-[
-  {"id":"dns_reference","operations":[{"op":"restore_reference","resource":"dns"}],"verify":["dns_record","endpoint"]},
-  {"id":"cache_budget","operations":[{"op":"restore_cache_budget","resource":"cache"}],"verify":["cache_budget","cache_write","endpoint"]},
-  {"id":"checkpoint_permissions","operations":[{"op":"restore_permissions","resource":"checkpoint"}],"verify":["spool_write","endpoint"]},
-  {"id":"cache_dependency","operations":[{"op":"start_service","resource":"cache"}],"verify":["cache_service","cache_write","endpoint"]}
-]

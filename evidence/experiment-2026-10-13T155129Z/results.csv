@@ -1,3 +1,0 @@
-rep,config,occurrence,downtime_s,recovery_s,ended_down,prevented,healed,first_loop_action_s,max_disk_percent,restart_ok,reset_s,provision_s,run
-1,A,first,180,,True,False,False,,100.0,False,67.5,36.3,evidence/runs/2026-10-13T155357Z-app-1-disk_leak-A
-1,A,repeat,20,,True,False,False,,7.4,False,67.5,36.3,evidence/runs/2026-10-13T160143Z-app-2-config_drift-unmanaged-effector-check
