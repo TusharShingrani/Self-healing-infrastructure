@@ -17,12 +17,12 @@ items=[
  ('Application operations','sum by (__name__) ({__name__=~"job_process_submitted_total|job_process_completed_total|job_process_errors_total"})','timeseries'),
  ('Actual container memory (MiB)','job_pod_memory_mib','timeseries'),
  ('Actual container CPU cores','job_pod_cpu_cores','timeseries'),
- ('Host memory use','1-node_memory_MemAvailable_bytes{job="expanded_nodes"}/node_memory_MemTotal_bytes{job="expanded_nodes"}','timeseries'),
- ('Host root disk use','1-node_filesystem_avail_bytes{job="expanded_nodes",mountpoint="/"}/node_filesystem_size_bytes{job="expanded_nodes",mountpoint="/"}','timeseries'),
+ ('Host memory use','1-node_memory_MemAvailable_bytes{job=~"job_nodes|support_nodes"}/node_memory_MemTotal_bytes{job=~"job_nodes|support_nodes"}','timeseries'),
+ ('Host root disk use','1-node_filesystem_avail_bytes{job=~"job_nodes|support_nodes",mountpoint="/"}/node_filesystem_size_bytes{job=~"job_nodes|support_nodes",mountpoint="/"}','timeseries'),
  ('Job-healer errors','job_healer_errors_total','timeseries'),
  ('Job-healer cycle duration (seconds)','job_healer_tick_seconds','timeseries'),
  ('API server requests per second','rate(job_kubernetes_apiserver_request_total[2m])','timeseries'),
- ('Host CPU use','1-avg by (node) (rate(node_cpu_seconds_total{job="expanded_nodes",mode="idle"}[2m]))','timeseries'),
+ ('Host CPU use','1-avg by (node) (rate(node_cpu_seconds_total{job=~"job_nodes|support_nodes",mode="idle"}[2m]))','timeseries'),
 ]
 panels=[]
 for i,(title,query,kind) in enumerate(items):

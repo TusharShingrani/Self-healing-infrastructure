@@ -83,9 +83,9 @@ boundary. Supporting a new service requires its contract, probes, bounded repair
 and tests. Enterprise readiness, universal plug-and-play, multi-tenancy, high
 availability and production security are not established by this lab.
 
-## Scope transition
+## Retired work
 
-The nginx and DNS/Redis experiments remain historical evidence and regression
-fixtures. They are not the main demonstration. Do not destroy their evidence or
-VMs merely to simplify the story. Retire their automatic loops only after backing
-up their state and confirming the job-service loop and monitoring are operational.
+The former nginx and DNS/Redis/checkpoint demonstrations are no longer active
+or supported. Their two VMs are stopped; their dashboards, probes, installers
+and launchers are retired. Evidence and source archives stay on the laptop.
+Only the job-processing application is evaluated and presented in this release.

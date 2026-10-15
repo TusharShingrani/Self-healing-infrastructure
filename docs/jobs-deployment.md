@@ -12,7 +12,7 @@ available quota before deploying. The application uses synthetic data only.
 - `config/lab.json` identifies the project, network, baseline Ubuntu template,
   zone and keypair. `config/jobs-lab.json` identifies the five nodes and offerings.
 - Credentials are in the loop user's service-manager environment. Use the
-  existing masked credential entry workflow; never commit `.env` files or paste
+  masked credential entry below; never commit `.env` files or paste
   keys into the console. `tools/lab_shell.py` inherits the existing credentials.
 - `state/expansion.json` preserves deployed identities. Do not discard it and
   silently adopt machines by name. Repeated deployment refuses disappeared
@@ -84,3 +84,30 @@ incorrectly expected configuration rollout faults to cause an outage. Its
 failed result is retained; the corrected protocol measures configuration
 repair separately from observed job failure. Do not substitute earlier
 cached-verification pilot results.
+
+## Restore credentials after a healer host restart
+
+Run as the loop user in a private SSH terminal. These prompts do not echo keys:
+
+```sh
+read -rp 'CloudStack URL: ' CS_URL
+read -rsp 'CloudStack API key: ' CS_KEY; echo
+read -rsp 'CloudStack secret: ' CS_SECRET; echo
+read -rp 'Private SSH key path: ' LAB_SSH_KEY
+export CS_URL CS_KEY CS_SECRET LAB_SSH_KEY
+systemctl --user import-environment CS_URL CS_KEY CS_SECRET LAB_SSH_KEY
+unset CS_URL CS_KEY CS_SECRET LAB_SSH_KEY
+```
+
+Optional Gemini credentials use the same masked prompt/import pattern. Never
+paste secrets in chat or put them in Git. Private keys and scoped Kubernetes
+credentials must already exist; this procedure does not recreate them.
+
+## Current operational scope
+
+Only seven VMs support job processing. app-1/app-2 are stopped and excluded
+from all active scraping. The monitor helper replaces this project's active
+configuration with job-only targets, archives prior files for rollback, and
+provisions only the job dashboard. Do not run old experiment installers.
+Historical files and detailed results stay in laptop archives. Recheck host
+metrics as well as workload checks after any monitoring change.

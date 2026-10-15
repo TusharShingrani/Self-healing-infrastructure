@@ -9,38 +9,15 @@
   "network_cidr": "10.1.1.0/24",
   "healer_instance": "healer-ubuntu",
   "healer_guest_ip": "10.1.1.205",
-  "lab_instances": [
-    "app-1",
-    "app-2"
-  ],
+  "lab_instances": [],
   "ssh_user": "ubuntu",
   "notes": [
-    "Credentials come from CS_URL, CS_KEY and CS_SECRET. Never put them here.",
-    "Only healer-ubuntu has a port forward. The healer reaches app instances",
-    "over the internal network, so the loop runs on healer-ubuntu, not on the laptop.",
-    "Baseline snapshot 645a5c25-2842-4b68-9152-8395c61466d1 is kept as an",
-    "independent recovery reference and is not used for experiment resets.",
-    "The lab host enforces a startup storage requirement: nginx has an",
-    "ExecStartPre preflight that fails when the bounded log filesystem has too",
-    "little free space. That is a deliberate lab protocol, not stock nginx",
-    "behaviour: nginx rolls back a failed reload and keeps serving.",
-    "Fixed addresses keep Prometheus targets stable across resets.",
-    "monitor runs Prometheus and Grafana. It is not in lab_instances, so the loop",
-    "can never reboot, rebuild or destroy it."
+    "One active use case: Kubernetes background-job processing.",
+    "This file supplies CloudStack identity and management transport settings.",
+    "No VM is allowlisted for generic destructive repairs.",
+    "Application nodes and requirements are in jobs-lab.json. Credentials stay outside Git."
   ],
-  "service": "nginx",
-  "log_mount": "/var/log/nginx",
-  "log_image": "/var/lib/healer/nginx-logs.img",
-  "log_mount_max_mb": 1024,
-  "log_mount_fstype": "ext4",
-  "config_path": "/etc/nginx/conf.d/healer.conf",
-  "reference_dir": "/opt/healer/reference",
-  "health_path": "/healthz",
-  "health_body": "ok",
-  "rotation_policy": "/etc/logrotate.d/nginx-healer",
   "addresses": {
-    "app-1": "10.1.1.60",
-    "app-2": "10.1.1.61",
     "monitor": "10.1.1.50"
   },
   "monitor_instance": "monitor",

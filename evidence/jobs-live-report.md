@@ -1,4 +1,4 @@
-# Live job-service validation — 15 October 2026
+# Live job-service validation â€” 15 October 2026
 
 
 
@@ -162,3 +162,14 @@ the laptop. Neither archive nor credentials are committed. The isolated lab
 
 can still be reclaimed by the platform; source alone does not restore job data.
 
+
+## Subsequent scope cleanup
+
+The counts above record the original validation point. The later cleanup
+stopped the two old demo VMs, removed legacy monitoring and dashboards, and
+retired obsolete source and reports to a local archive. The current setup has
+seven running role VMs, one provisioned dashboard and 14 active scrape targets.
+All 11 health checks, 21 dashboard queries and 166 retained regression checks
+passed after cleanup; all three learned procedures remained eligible. See
+[the cleanup record](scope-cleanup.md). Detailed histories remain local by the
+user's explicit choice, not pending publication approval.

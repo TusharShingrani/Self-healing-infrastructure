@@ -1,1 +1,0 @@
-{"time": "2026-10-13T15:46:18Z", "node": "app-2", "config": "C", "tick": 11, "kind": "healed", "cause": "service_stopped", "level": 0, "source": "rules", "symptoms": ["service_down"], "actions": ["restart_service"], "detail": "restart_service: nginx restarted", "monitor_source": "prometheus+direct"}

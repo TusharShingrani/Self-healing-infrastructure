@@ -10,7 +10,7 @@ Use the existing Python 3 environment and checkout. No frontend build or npm
 dependencies are needed. Run these commands as the same Ubuntu user as the loop:
 
 ```sh
-cd ~/projects/expanded-infrastructure
+cd ~/projects/job-service-console
 python3 tools/console.py --set-password
 bash tools/start_console.sh start
 ```

@@ -430,7 +430,7 @@
       },
       "targets": [
         {
-          "expr": "1-node_memory_MemAvailable_bytes{job=\"expanded_nodes\"}/node_memory_MemTotal_bytes{job=\"expanded_nodes\"}",
+          "expr": "1-node_memory_MemAvailable_bytes{job=~\"job_nodes|support_nodes\"}/node_memory_MemTotal_bytes{job=~\"job_nodes|support_nodes\"}",
           "refId": "A",
           "legendFormat": "{{check}}{{deployment}}{{pod}}{{node}}"
         }
@@ -457,7 +457,7 @@
       },
       "targets": [
         {
-          "expr": "1-node_filesystem_avail_bytes{job=\"expanded_nodes\",mountpoint=\"/\"}/node_filesystem_size_bytes{job=\"expanded_nodes\",mountpoint=\"/\"}",
+          "expr": "1-node_filesystem_avail_bytes{job=~\"job_nodes|support_nodes\",mountpoint=\"/\"}/node_filesystem_size_bytes{job=~\"job_nodes|support_nodes\",mountpoint=\"/\"}",
           "refId": "A",
           "legendFormat": "{{check}}{{deployment}}{{pod}}{{node}}"
         }
@@ -565,7 +565,7 @@
       },
       "targets": [
         {
-          "expr": "1-avg by (node) (rate(node_cpu_seconds_total{job=\"expanded_nodes\",mode=\"idle\"}[2m]))",
+          "expr": "1-avg by (node) (rate(node_cpu_seconds_total{job=~\"job_nodes|support_nodes\",mode=\"idle\"}[2m]))",
           "refId": "A",
           "legendFormat": "{{check}}{{deployment}}{{pod}}{{node}}"
         }

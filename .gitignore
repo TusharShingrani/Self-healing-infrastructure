@@ -42,3 +42,5 @@ results/*.csv
 /evidence/jobs-verification-pilot-failure.log
 /evidence/jobs-workers-learning-verified.json
 /evidence/jobs-workers-learning.json
+
+/evidence/jobs-focus-cleanup-private.json
