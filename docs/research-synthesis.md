@@ -1,5 +1,11 @@
 # Research synthesis: self-healing infrastructure
 
+The literature covers a broader field than the implemented prototype. The
+current empirical scope is ONE Kubernetes job-processing application; see
+[the focused use case](focused-use-case.md). Earlier nginx and dependency
+results are historical evidence, not validation of the new adapter.
+
+
 Research date: 14 October 2026. This is a structured literature review and an
 engineering evaluation plan, not a systematic review claiming exhaustive coverage.
 Live results are recorded separately in `evidence/infrastructure-results.json`.

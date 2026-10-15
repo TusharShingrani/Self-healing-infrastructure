@@ -2,7 +2,6 @@
 """Independent reviewed MAPE-K dependency loop with read-only observability."""
 import json
 import os
-import resource
 import signal
 import threading
 import time
@@ -42,7 +41,7 @@ def main():
                       'advisor_available':int(healer.advisor is not None and healer.advisor.available),
                       'advisor_pending':healer.knowledge.counts()['advice'].get('pending',0),
                       'tick_seconds':snapshot['tick_seconds'], 'last_tick_seconds':snapshot['time'],
-                      'process_cpu_seconds':resource.getrusage(resource.RUSAGE_SELF).ru_utime+resource.getrusage(resource.RUSAGE_SELF).ru_stime,
+                      'process_cpu_seconds':time.process_time(),
                       'transaction_ms':obs.get('transaction',{}).get('latency_ms',0)}
             metrics = [f'healer_infrastructure_{name} {value}' for name,value in values.items()]
             metrics += [f'healer_infrastructure_check{{check="{name}"}} {int(value) if type(value) is bool else -1}' for name,value in obs.get('infrastructure_checks',{}).items()]

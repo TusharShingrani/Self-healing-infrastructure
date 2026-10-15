@@ -373,6 +373,8 @@ check("disk fault proceeds on a bounded dedicated volume", ok, detail)
 
 world = MountWorld(client, mount_output())
 world.filled = False      # the timer started but nothing actually filled
+# Exercise the production polling path without the live host's 90-second wait.
+world._confirm_filling = lambda: EduCloudWorld._confirm_filling(world, limit=0.02, poll=0.002)
 ok, detail = world.inject("disk_leak")
 check("a started timer alone is not a successful injection",
       not ok and "did not grow" in detail, detail)

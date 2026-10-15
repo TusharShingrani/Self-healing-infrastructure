@@ -1,5 +1,10 @@
 # Current lab handover and recovery
 
+> Earlier nginx/dependency lab context. For the current Kubernetes job-service
+> use case and console, start with [the current architecture](architecture.md)
+> and [job deployment](jobs-deployment.md). Preserve the earlier evidence.
+
+
 Read [the architecture](architecture.md) and [repository audit](repository-audit.md)
 before changes. This runbook covers both loops and their persistent incident
 state. An older backup containing only Knowledge is incomplete.

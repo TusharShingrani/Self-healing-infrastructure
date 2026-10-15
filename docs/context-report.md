@@ -1,5 +1,10 @@
 # Project context: investigated and verified self-healing
 
+> Earlier nginx/dependency lab context. For the current Kubernetes job-service
+> use case and console, start with [the current architecture](architecture.md)
+> and [job deployment](jobs-deployment.md). Preserve the earlier evidence.
+
+
 The project evaluates how an infrastructure manager can detect failures,
 localise a failing component, propose a cause-directed repair, obtain human
 review, verify recovery and reuse a validated procedure on recurrence.

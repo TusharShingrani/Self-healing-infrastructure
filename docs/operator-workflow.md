@@ -1,5 +1,10 @@
 # Incident diagnosis, operator review and validated procedures
 
+> Earlier nginx/dependency lab context. For the current Kubernetes job-service
+> use case and console, start with [the current architecture](architecture.md)
+> and [job deployment](jobs-deployment.md). Preserve the earlier evidence.
+
+
 This page describes the nginx adapter on Ubuntu VMs, not containers. The
 [dependency adapter](infrastructure-lab.md) has a separate investigation workflow
 and incident database. See [the complete architecture](architecture.md).

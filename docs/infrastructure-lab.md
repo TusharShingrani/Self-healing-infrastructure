@@ -1,5 +1,10 @@
 # Broader infrastructure and investigated learning
 
+> Earlier nginx/dependency lab context. For the current Kubernetes job-service
+> use case and console, start with [the current architecture](architecture.md)
+> and [job deployment](jobs-deployment.md). Preserve the earlier evidence.
+
+
 Read [the research synthesis](research-synthesis.md) for the four research
 questions, source assessment and experiment limits. This lab adds infrastructure
 dependencies to the earlier nginx experiment. These are Ubuntu VMs running

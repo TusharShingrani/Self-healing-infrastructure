@@ -1,0 +1,300 @@
+Safety tests
+
+  PASS  planner rejects a catalogue missing its plan actions
+  PASS  every high-risk name is a real action
+  PASS  platform repairs are reachable from a plan
+  PASS  cool-down blocks a repeated action
+  PASS  rate limit blocks a fourth action in the window
+  PASS  adapter refuses to rebuild the healer
+  PASS  adapter refuses to reboot the healer
+  PASS  adapter refuses a target outside the allowlist
+  PASS  adapter refuses an instance from another project
+  PASS  high-risk action is not run without approval
+  PASS  the proposal is recorded for a human to approve
+  PASS  an unreachable target reports no measurements, not zeros
+  PASS  an unreachable target is diagnosed, not read as healthy
+  PASS  exactly one sampling observation per tick
+  PASS  restore_config is idempotent
+  PASS  no action during 50 healthy ticks
+  PASS  a repair that does not work is never counted as healed
+  PASS  an effector that raises becomes a recorded outcome, not a crash
+
+18 passed, 0 failed
+Learning and the human-in-the-loop advisor
+
+  PASS  an unmatched failure asks the advisor
+  PASS  advice is stored as pending
+  PASS  pending advice does not run
+  PASS  the request names the symptoms
+  PASS  the prompt carries the symptoms and the reason
+  PASS  the schema pins actions to the catalogue
+  PASS  the same open request is not asked twice
+  PASS  still nothing runs before approval
+  PASS  a person can approve pending advice
+  PASS  approved advice is used as a diagnosis
+  PASS  approved advice runs its catalogue actions
+  PASS  the repair is verified and recorded as healed
+  PASS  decided advice cannot be decided again
+
+  PASS  actions outside the catalogue are dropped from advice
+  PASS  advice naming a high-risk action is marked high risk
+  PASS  approved high-risk advice still waits at the approval gate
+  PASS  rejected advice is never used
+
+  PASS  without an LLM the request is still recorded for a person
+  PASS  a failing advisor call is recorded, not raised
+  PASS  the loop keeps ticking after an advisor failure
+  PASS  config B never uses advice (it has no knowledge stage)
+
+Gemini provider (no network: a fake HTTP layer)
+  PASS  the API key travels in a header, never in the URL
+  PASS  the request asks for JSON that follows the catalogue schema
+  PASS  thought parts are ignored, the answer is parsed
+  PASS  the model version is recorded
+  PASS  a cut-off answer is an error, not advice
+  PASS  a blocked prompt is an error, not advice
+  PASS  an empty answer is an error
+  PASS  a free-tier quota error is reported as such
+  PASS  a retired model names the override
+  PASS  an overloaded model is reported as such
+  PASS  a quota error leaves a failed record for a person, the loop carries on
+
+Prevention learned in Knowledge
+  PASS  a resolved incident becomes a prevention rule
+  PASS  the rule fixes the cause, not the symptom
+  PASS  the repeat fault is prevented with zero downtime
+  PASS  prevention is visible as an event
+
+36 passed, 0 failed
+Adapter tests
+
+  PASS  rebuild refuses the healer
+  PASS  rebuild refuses another project's instance
+  PASS  rebuild refuses an instance with no project metadata
+  PASS  rebuild refuses when no project id is configured
+  PASS  destroy_instance applies the same ownership check
+  PASS  destroy_instance refuses the healer
+  PASS  a fully readable, satisfied observation is healthy
+  PASS  an unreadable required probe is not health
+  PASS  a required probe of None is not health even without an error message
+  PASS  a running unit that does not serve is not health
+  PASS  disk usage alone does not make a serving instance unhealthy
+  PASS  http availability is a required probe
+  PASS  unapproved ticks do not consume escalation levels
+  PASS  the proposal names its target and action
+  PASS  after approval the pending level executes
+  PASS  the instance seen at an address survives a fresh process
+  PASS  a known instance at a known address does not forget its host key
+  PASS  a different instance at the same address forgets the stale record
+  PASS  an unexplained host key change is reported, not accepted
+  PASS  readiness does not wait out an unexplained key change
+  PASS  a 200 at the root is not availability
+  PASS  the probe asks for the configured health endpoint
+  PASS  the health endpoint with the exact expected body is availability
+  PASS  a body merely containing the expected token is not availability
+  PASS  a longer body containing the token is not availability
+  PASS  a non-200 status is not availability
+  PASS  a transport failure is not availability
+  PASS  a timeout is not availability
+  PASS  disk fault refuses a log directory that is not its own mount
+  PASS  disk fault refuses a bind mount backed by the root filesystem
+  PASS  disk fault refuses a mount whose source is the root source
+  PASS  disk fault refuses a volume far larger than the configured bound
+  PASS  disk fault refuses the wrong filesystem type
+  PASS  disk fault refuses a volume backed by an unexpected image
+  PASS  disk fault refuses a volume that is not loop backed
+  PASS  disk fault refuses when the mount cannot be confirmed
+  PASS  disk fault proceeds on a bounded dedicated volume
+  PASS  a started timer alone is not a successful injection
+
+Prometheus as the Monitor's sensor
+  PASS  fresh Prometheus samples become observation fields
+  PASS  samples older than the last action are not used
+  PASS  a windowed rate is not trusted until its window starts after the action
+  PASS  a sample older than max_age is stale, never health
+  PASS  config facts measured too long ago are not trusted
+  PASS  an unreachable Prometheus yields no readings, so direct probes take over
+
+CLI deploy
+  PASS  deploy refuses the healer's name
+  PASS  deploy refuses a name outside lab_instances
+  PASS  deploy refuses when no project id is configured
+  PASS  deploy allows a listed lab instance
+deploying monitor from T ...
+ready after 0s
+  PASS  the monitor deploys with its own offering
+  PASS  a deploy uses the fixed address from the config
+deploying app-1 from T ...
+ready after 0s
+  PASS  a lab instance deploys with the normal offering
+  PASS  the monitor can never be a destructive target
+
+API client configuration
+  PASS  missing credentials are refused with a clear error
+  PASS  the error names the missing variables, not the set ones
+  PASS  a URL pasted with its variable name is refused
+  PASS  a plain http API URL is refused, the key would travel unencrypted
+  PASS  an unreachable API is an error, not an empty instance list
+  PASS  the network error does not leak the signed request
+
+Effectors
+  PASS  restore_config starts nginx if the bad config already stopped it
+
+Results generator
+  PASS  a run with the block's loop config is counted
+  PASS  a run where the loop was not running is not counted
+  PASS  a run under another config's loop is not counted
+  PASS  a run without a summary is not counted
+
+Test isolation
+  PASS  the default host registry is inside the test sandbox
+  PASS  the default known_hosts file is inside the test sandbox
+  PASS  forgetting one host leaves every other host's key in place
+
+66 passed, 0 failed
+........................
+----------------------------------------------------------------------
+Ran 24 tests in 0.021s
+
+OK
+test_changed_evidence_blocks_investigation (__main__.Tests.test_changed_evidence_blocks_investigation) ... ok
+test_composite_never_rebuilds_one_dependency (__main__.Tests.test_composite_never_rebuilds_one_dependency) ... ok
+test_current_advisor_request_keeps_its_lease (__main__.Tests.test_current_advisor_request_keeps_its_lease) ... ok
+test_failed_automatic_recipe_cannot_reuse_old_successes (__main__.Tests.test_failed_automatic_recipe_cannot_reuse_old_successes) ... ok
+test_functional_recovery_cannot_certify_world_writable_checkpoint (__main__.Tests.test_functional_recovery_cannot_certify_world_writable_checkpoint) ... ok
+test_health_requires_every_dependency (__main__.Tests.test_health_requires_every_dependency) ... ok
+test_healthy_http_cannot_mask_wrong_budget (__main__.Tests.test_healthy_http_cannot_mask_wrong_budget) ... ok
+test_http_failure_is_a_symptom (__main__.Tests.test_http_failure_is_a_symptom) ... ok
+test_human_unknown_command_cannot_be_learned (__main__.Tests.test_human_unknown_command_cannot_be_learned) ... ok
+test_investigated_diagnosis_has_procedure (__main__.Tests.test_investigated_diagnosis_has_procedure) ... ok
+test_investigation_rejects_unknown_recipe (__main__.Tests.test_investigation_rejects_unknown_recipe) ... ok
+test_investigation_still_needs_approval (__main__.Tests.test_investigation_still_needs_approval) ... ok
+test_late_advisor_response_cannot_resurrect_expired_request (__main__.Tests.test_late_advisor_response_cannot_resurrect_expired_request) ... ok
+test_lost_advisor_request_expires_and_can_retry (__main__.Tests.test_lost_advisor_request_expires_and_can_retry) ... ok
+test_poisoned_evidence_does_not_grant_execution (__main__.Tests.test_poisoned_evidence_does_not_grant_execution) ... ok
+test_recipe_digest_changes_with_composition (__main__.Tests.test_recipe_digest_changes_with_composition) ... ok
+test_recipe_rejects_duplicates (__main__.Tests.test_recipe_rejects_duplicates) ... ok
+test_recipe_rejects_no_cause_check (__main__.Tests.test_recipe_rejects_no_cause_check) ... ok
+test_recipe_rejects_path (__main__.Tests.test_recipe_rejects_path) ... ok
+test_recipe_rejects_shell (__main__.Tests.test_recipe_rejects_shell) ... ok
+test_reference_change_during_repair_fails_verification (__main__.Tests.test_reference_change_during_repair_fails_verification) ... ok
+test_reference_change_requires_new_investigation (__main__.Tests.test_reference_change_requires_new_investigation) ... ok
+test_two_verified_repairs_then_automatic (__main__.Tests.test_two_verified_repairs_then_automatic) ... ok
+test_unknown_check_is_not_a_false_cause (__main__.Tests.test_unknown_check_is_not_a_false_cause) ... ok
+test_unknown_does_not_repair (__main__.Tests.test_unknown_does_not_repair) ... ok
+test_unproven_composite_never_sends_ssh_command (__main__.Tests.test_unproven_composite_never_sends_ssh_command) ... ok
+test_unrelated_catalogue_action_cannot_be_recorded (__main__.Tests.test_unrelated_catalogue_action_cannot_be_recorded) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.024s
+
+OK
+test_cache_oom_keeps_cause_evidence (__main__.Tests.test_cache_oom_keeps_cause_evidence) ... ok
+test_checkpoint_failure_does_not_blame_cache (__main__.Tests.test_checkpoint_failure_does_not_blame_cache) ... ok
+test_concurrent_readback_survives_slow_truncate (__main__.Tests.test_concurrent_readback_survives_slow_truncate) ... ok
+test_dns_timeout_is_not_healthy (__main__.Tests.test_dns_timeout_is_not_healthy) ... ok
+test_wrong_dns_does_not_connect_to_wrong_cache (__main__.Tests.test_wrong_dns_does_not_connect_to_wrong_cache) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.404s
+
+OK
+test_clear_logs_refuses_before_any_mutation (__main__.Tests.test_clear_logs_refuses_before_any_mutation) ... ok
+test_cloud_error_redacts_signed_url_and_keys (__main__.Tests.test_cloud_error_redacts_signed_url_and_keys) ... ok
+test_corrupt_registry_does_not_reset_identity (__main__.Tests.test_corrupt_registry_does_not_reset_identity) ... ok
+test_dependency_http_responds_during_slow_tick (__main__.Tests.test_dependency_http_responds_during_slow_tick) ... ok
+test_extra_symptom_cannot_reuse_approved_repair (__main__.Tests.test_extra_symptom_cannot_reuse_approved_repair) ... ok
+test_http_200_api_error_is_failure (__main__.Tests.test_http_200_api_error_is_failure) ... ok
+test_infrastructure_advisor_uses_correct_context (__main__.Tests.test_infrastructure_advisor_uses_correct_context) ... ok
+test_malformed_transaction_payload_is_recorded (__main__.Tests.test_malformed_transaction_payload_is_recorded) ... ok
+test_missing_instance_identity_is_refused (__main__.Tests.test_missing_instance_identity_is_refused) ... ok
+test_nginx_metrics_does_not_wait_for_tick_lock (__main__.Tests.test_nginx_metrics_does_not_wait_for_tick_lock) ... ok
+test_normal_empty_list_response_is_valid (__main__.Tests.test_normal_empty_list_response_is_valid) ... ok
+test_stale_registry_writer_preserves_other_process (__main__.Tests.test_stale_registry_writer_preserves_other_process) ... ok
+test_unhealthy_without_named_symptom_requires_investigation (__main__.Tests.test_unhealthy_without_named_symptom_requires_investigation) ... ok
+test_unreadable_independent_budget_enters_investigation (__main__.Tests.test_unreadable_independent_budget_enters_investigation) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.407s
+
+OK
+test_all_required_checks_must_pass (__main__.Tests.test_all_required_checks_must_pass) ... ok
+test_arbitrary_target_refused (__main__.Tests.test_arbitrary_target_refused) ... ok
+test_capacity_or_privilege_change_does_not_pass (__main__.Tests.test_capacity_or_privilege_change_does_not_pass) ... ok
+test_changed_deployment_uid_changes_scope (__main__.Tests.test_changed_deployment_uid_changes_scope) ... ok
+test_changed_namespace_uid_changes_scope (__main__.Tests.test_changed_namespace_uid_changes_scope) ... ok
+test_changed_vm_identity_fails_closed (__main__.Tests.test_changed_vm_identity_fails_closed) ... ok
+test_duplicate_recipe_refused (__main__.Tests.test_duplicate_recipe_refused) ... ok
+test_every_recipe_has_supported_exact_operations (__main__.Tests.test_every_recipe_has_supported_exact_operations) ... ok
+test_missing_cause_check_refused (__main__.Tests.test_missing_cause_check_refused) ... ok
+test_missing_kubernetes_identity_cannot_validate (__main__.Tests.test_missing_kubernetes_identity_cannot_validate) ... ok
+test_namespace_boundary_before_network (__main__.Tests.test_namespace_boundary_before_network) ... ok
+test_probe_error_overrides_healthy_checks (__main__.Tests.test_probe_error_overrides_healthy_checks) ... ok
+test_promotion_selects_exact_scope_not_first_cause_name (__main__.Tests.test_promotion_selects_exact_scope_not_first_cause_name) ... ok
+test_protected_destructive_repairs_never_execute (__main__.Tests.test_protected_destructive_repairs_never_execute) ... ok
+test_shell_recipe_refused (__main__.Tests.test_shell_recipe_refused) ... ok
+test_template_mismatch_does_not_pass (__main__.Tests.test_template_mismatch_does_not_pass) ... ok
+test_traversal_boundary_before_network (__main__.Tests.test_traversal_boundary_before_network) ... ok
+test_unlisted_resource_before_network (__main__.Tests.test_unlisted_resource_before_network) ... ok
+test_wrong_node_before_network (__main__.Tests.test_wrong_node_before_network) ... ok
+test_wrong_project_fails_closed (__main__.Tests.test_wrong_project_fails_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.012s
+
+OK
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 8.708s
+
+OK
+Host script tests
+
+mount guard
+  PASS  accepts the expected bounded loop volume
+  PASS  refuses a path that is not its own mount point
+  PASS  refuses a bind mount sharing root's device
+  PASS  refuses a volume backed by root's source
+  PASS  refuses the wrong filesystem type
+  PASS  refuses a volume above the permitted bound
+  PASS  refuses a volume backed by an unexpected image
+  PASS  refuses a volume that is not loop backed
+
+preflight
+  PASS  passes with ample free space
+  PASS  fails when free space is below the requirement
+  PASS  fails when the mount guard refuses, whatever the free space
+  PASS  passes with exactly 25 MiB free
+  PASS  fails one byte below 25 MiB
+  PASS  fails with 24 MiB free
+  PASS  fails on a nonnumeric free-space reading
+  PASS  a nonnumeric reading is refused by name, not by a test error
+  PASS  fails on empty df output
+  PASS  fails on a header with no reading
+  PASS  fails when df fails, even with a plausible reading
+  PASS  fails on an invalid threshold 'abc'
+  PASS  fails on an invalid threshold '-5'
+  PASS  fails on an invalid threshold '0'
+  PASS  fails on an invalid threshold ''
+  PASS  fails on an invalid threshold '2.5'
+
+fault generator
+  PASS  a successful write exits 0
+  PASS  a full volume is the intended outcome, exits 0
+  PASS  a full volume is reported as intended, with a diagnostic
+  PASS  a permission failure is reported distinctly, exits 5
+  PASS  the permission diagnostic survives to the classifier
+  PASS  an unrelated I/O failure exits 5
+  PASS  the producer stands down while the rotation policy exists
+  PASS  the producer refuses a target the mount guard rejects
+
+installer pre-proof gate
+  PASS  a healthy fresh host passes the whole gate
+  PASS  the expected stand-down opens the gate
+  PASS  the gate check does not write to the audit log
+  PASS  a guard refusal (exit 2) keeps the gate shut
+  PASS  the gate reports the producer's real status
+  PASS  exit 3 without the stand-down diagnostic keeps the gate shut
+  PASS  the stand-down text with a failure status keeps the gate shut
+
+39 passed, 0 failed

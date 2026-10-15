@@ -1,5 +1,10 @@
 # Personally testing the current lab
 
+> Earlier nginx/dependency lab context. For the current Kubernetes job-service
+> use case and console, start with [the current architecture](architecture.md)
+> and [job deployment](jobs-deployment.md). Preserve the earlier evidence.
+
+
 The current lab uses approval and explicitly validated procedures. Follow
 [the dependency demonstration](infrastructure-lab.md) for DNS, cache budget,
 permissions and stopped-cache failures, and [the operator workflow](operator-workflow.md)

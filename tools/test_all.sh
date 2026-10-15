@@ -2,7 +2,7 @@
 # Independent entry points: some historical suites execute checks at import.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-for suite in safety learning adapter operator infrastructure transaction repository; do
+for suite in safety learning adapter operator infrastructure transaction repository jobs console; do
   python3 "tools/test_${suite}.py"
 done
 bash tools/test_lab_host.sh
