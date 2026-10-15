@@ -1,10 +1,17 @@
 """Install job monitoring while preserving existing targets and rollback files."""
-import base64,json,os,shlex,sys
+import argparse,base64,json,os,shlex,sys,subprocess
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from mapek.cloudstack import CloudStack
 from mapek.educloud import EduCloudWorld,load_lab
 ROOT=Path(__file__).resolve().parents[1]
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--retire-legacy',action='store_true',help='Remove only the stopped historical controller scrape jobs; retain host/application probes and backups')
+args=parser.parse_args()
+if args.retire_legacy:
+    for unit in ('healer-loop','healer-infrastructure'):
+        if subprocess.run(['systemctl','--user','is-active','--quiet',unit]).returncode==0:
+            raise RuntimeError('Stop and back up historical controllers before retiring their scrape targets')
 
 lab=load_lab();world=EduCloudWorld(CloudStack(project=lab['project_id']),'monitor',lab,key_path=os.environ['LAB_SSH_KEY'])
 vm=world._refresh()
@@ -18,6 +25,7 @@ from pathlib import Path
 files=FILES
 ca=CA
 config=CONFIG
+retire_legacy=RETIRE
 root=Path('/etc/prometheus');stamp=str(int(time.time()))
 paths={
  'monitoring/rules/healer.yml':root/'rules/healer.yml',
@@ -39,6 +47,7 @@ for name,url,module in [('jobs_readiness',config['api_url']+'/readyz','http_job_
  new.append({'job_name':name,'metrics_path':'/probe','params':{'module':[module]},'static_configs':[{'targets':[url]}],
   'relabel_configs':[{'source_labels':['__address__'],'target_label':'__param_target'},{'source_labels':['__param_target'],'target_label':'target'},{'target_label':'__address__','replacement':'127.0.0.1:9115'}]})
 names={j['job_name'] for j in new};prom['scrape_configs']=[j for j in prom['scrape_configs'] if j['job_name'] not in names]+new
+if retire_legacy:prom['scrape_configs']=[j for j in prom['scrape_configs'] if j['job_name'] not in ('mapek','infrastructure')]
 black['modules'].update({
  'http_job_ready':{'prober':'http','timeout':'5s','http':{'valid_status_codes':[200],'fail_if_body_not_matches_regexp':['"ready": *true']}},
  'http_job_policy':{'prober':'http','timeout':'5s','http':{'valid_status_codes':[200],'fail_if_body_not_matches_regexp':['"database_network_allowed": *true','"monitor_network_denied": *true']}},
@@ -59,7 +68,7 @@ except Exception:
   if data is None:p.unlink(missing_ok=True)
   else:p.write_bytes(data)
  subprocess.run(['systemctl','restart','prometheus-blackbox-exporter','prometheus']);raise
-'''.replace('files=FILES','files='+repr(files)).replace('ca=CA','ca='+repr(ca)).replace('config=CONFIG','config='+repr(config))
+'''.replace('files=FILES','files='+repr(files)).replace('ca=CA','ca='+repr(ca)).replace('config=CONFIG','config='+repr(config)).replace('retire_legacy=RETIRE','retire_legacy='+repr(args.retire_legacy))
 world._ssh.timeout=120
 ok,out,err=world._probe('sudo python3 -c '+shlex.quote(code));print(out,err)
 if not ok:raise RuntimeError('Job monitor update did not verify; inspect current configuration and rollback record')

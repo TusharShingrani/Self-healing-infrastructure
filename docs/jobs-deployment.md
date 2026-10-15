@@ -78,5 +78,9 @@ application's private policy and a fixed unrelated lab endpoint. It is not a
 public scan. Database stop and worker-VM stop remain explicit supporting
 diagnostics, excluded from the default research sequence.
 
-Final live evidence still needs to be collected after EduCloud access is
-restored. Do not substitute earlier cached-verification pilot results.
+Live evidence was collected on 15 October 2026; see
+[the results and limits](../evidence/jobs-live-report.md). The first protocol
+incorrectly expected configuration rollout faults to cause an outage. Its
+failed result is retained; the corrected protocol measures configuration
+repair separately from observed job failure. Do not substitute earlier
+cached-verification pilot results.

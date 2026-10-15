@@ -1,6 +1,6 @@
 """Real job learning workflow: scripted operator roles, independent verification.
 
-Six cause-directed repairs, three distinct occurrences each. First unknown and
+Three core cause-directed repairs, three occurrences each. First reviewed and
 approved, second separately applied and recorded, third promoted automatic.
 Existing Knowledge and incident evidence are preserved. No protected VM stops.
 """
@@ -36,7 +36,7 @@ def main():
         except (OSError,ValueError):pass
         time.sleep(2)
     else:pause.unlink();raise RuntimeError('Observe-only service did not verify before fault injection')
-    w,op,h=build();results={'started':time.time(),'protocol':'scripted investigator/operator; independent job receipts and cause checks; normal cooldowns','runs':[]}
+    w,op,h=build();results={'started':time.time(),'protocol':'scripted investigator/operator; independent job receipts and cause checks; normal cooldowns','initial_cases':op.cases(),'initial_procedures':op.procedures(),'runs':[]}
     active=None
     def save():output.write_text(json.dumps(results,indent=2)+'\n')
     def settle_failure(fault):
@@ -45,8 +45,12 @@ def main():
         while time.monotonic()<deadline:
             obs=w.observe(False);symptoms=Monitor().symptoms(obs)
             signature=(tuple(sorted(symptoms)),obs.get('http_ok'),obs.get('service_running'),obs.get('config_correct'))
-            client_failed=obs.get('http_ok') is False or fault in ('network','compute')
-            if obs['infrastructure_checks'].get(required) is False and (not obs.get('probe_error') or fault=='compute') and client_failed and signature==previous:stable+=1
+            # RollingUpdate may retain healthy old Pods when a new configuration
+            # is bad. That is genuine native availability protection, not a failed
+            # injection. Only scaling all workers to zero must cause a job outage.
+            client_measured=type(obs.get('http_ok')) is bool and obs.get('client',{}).get('time',0)>=started
+            expected_impact=obs.get('http_ok') is False if fault=='workers' else client_measured
+            if obs['infrastructure_checks'].get(required) is False and (not obs.get('probe_error') or fault=='compute') and client_measured and expected_impact and signature==previous:stable+=1
             else:stable=0
             previous=signature
             if stable>=3:return obs
@@ -66,10 +70,15 @@ def main():
                 active=recipe;started=time.time();inject(w,fault);before=settle_failure(fault)
                 h.tick();case=op.cases()[0]
                 if repetition==1:
-                    if case['cause']!='unknown' or case['status']!='pending':raise RuntimeError('Expected unknown investigation case')
-                    case=op.investigate(w,case['id'],cause,[action],'scripted-investigator','Compared controlled fault evidence with approved job contract; '+fault)
+                    if case['status']!='pending':raise RuntimeError('First occurrence must wait for review')
+                    if case['cause']=='unknown':
+                        case=op.investigate(w,case['id'],cause,[action],'scripted-investigator','Compared controlled fault evidence with approved job contract; '+fault)
+                        mode='investigated-approved'
+                    elif case['cause']==cause and json.loads(case['actions'])==[action]:
+                        mode='existing-investigation-approved'
+                    else:raise RuntimeError('Existing diagnosis differs from the reviewed experiment plan')
                     if not op.decide(case['id'],True,'scripted-operator','Reviewed bounded '+recipe+' and independent job/security verification'):raise RuntimeError('Approval not saved')
-                    h.tick();mode='investigated-approved'
+                    h.tick()
                 elif repetition==2:
                     if case['status']!='pending':raise RuntimeError('Separate occurrence must wait for review')
                     ok,detail=w.run_recipe(recipe)
@@ -79,6 +88,7 @@ def main():
                 case=op.cases()[0];after=w.observe(False)
                 if case['status']!='verified' or not w.health(after) or repetition==3 and not case['procedure_id']:raise RuntimeError('Expected verified repair transition failed')
                 run={'fault':fault,'repetition':repetition,'mode':mode,'case_id':case['id'],'automatic_procedure_id':case['procedure_id'],
+                     'business_failure_observed':before.get('http_ok') is False,
                      'injection_time':started,'injection_to_verified_seconds':time.time()-started,'before':before,'after':after,'verified':True}
                 results['runs'].append(run);save();print(json.dumps({k:run[k] for k in ('fault','repetition','mode','verified','injection_to_verified_seconds')}),flush=True)
                 active=None;h.tick()

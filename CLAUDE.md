@@ -6,8 +6,9 @@ Focus ONE application: Kubernetes job processing, correct completion within
 30 seconds. Read `docs/focused-use-case.md`, `docs/architecture.md` and
 `docs/web-console.md` first. The job adapter and console are the main work.
 The four-VM nginx/dependency description below is historical context; nine VMs
-were provisioned, and final live verification/legacy-loop retirement remain
-pending. Do not claim the new console is deployed or universal/enterprise ready.
+are provisioned. The job console and controller are live; legacy controllers
+are stopped and disabled. Read evidence/jobs-live-report.md for verified results.
+Do not claim universal/enterprise readiness.
 Preserve historical evidence and state. Do not broaden the fault catalogue.
 
 Read [the current architecture](docs/architecture.md),

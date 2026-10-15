@@ -54,11 +54,16 @@ not model training or general prevention of unknown faults.
 bash tools/test_all.sh
 ```
 
-Offline tests and live experiments are different evidence. Earlier pilots
-exposed cached verification and wrong-scope promotion selection; their failures
-are retained. Final live trials and console deployment remain pending. On
-15 October, SSH timed out and a local EduCloud HTTPS check reported an expired
-certificate, so current console changes were developed and tested locally.
+Live deployment was verified on 15 October 2026: 263 regression checks passed,
+nine core repair trials verified, browser approval restored network isolation,
+and Kubernetes replaced a worker Pod with the healer observe-only. All 11
+required checks and 19 active monitoring targets passed the final check.
+Three validated procedures survived a controller restart. See the
+[live results and limitations](evidence/jobs-live-report.md).
+
+The two configuration rollout faults preserved job availability; their repair
+times are not downtime measurements. The worker-capacity fault did breach the
+job deadline. These are integration trials, not a statistical benchmark.
 
 Another application needs its own contract, probes, bounded repairs and tests.
 Enterprise identity, multi-tenancy, high availability and universal plug-and-play

@@ -56,9 +56,11 @@ application view; previous dashboards relate to historical experiments.
 
 Five application-supporting VMs were added to the original four-machine lab.
 The two old app VMs remain historical fixtures. Their evidence must be preserved;
-retirement from automatic control still requires a successful live check and
-backup. Allocation does not prove every failure scenario has been demonstrated.
-Current console tests are offline and live deployment remains pending access.
+their controllers are stopped and disabled after backup and live verification.
+Their two inactive controller scrape jobs were retired; host monitoring remains.
+The console approval workflow, nine core repair occurrences and native Pod
+replacement were exercised live. See [the live report](../evidence/jobs-live-report.md).
+Allocation does not prove every possible failure has been demonstrated.
 
 The console is single-operator and loopback only. Generic service onboarding,
 free-form contract edits and enterprise deployment are outside this release.
