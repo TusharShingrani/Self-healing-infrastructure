@@ -1,97 +1,58 @@
-# Current architecture: one job-processing application
+# Architecture: one banking service and its MAPE-K manager
 
-Read [the use case](focused-use-case.md) for the requirement and
-[the console runbook](web-console.md) for operator actions and access.
-
-| Layer | Implementation | Responsibility |
-|---|---|---|
-| Operator | Private console on healer loopback 8085 | Evidence, investigation, approval, manual repair verification, promotion |
-| Control | `mapek/loop.py`, `stages.py`, `jobs.py` | MAPE-K policy, bounded application-aware repairs and verification |
-| Knowledge | Job SQLite stores under `state/jobs` | Cases, investigations, audit, advice and procedures |
-| Cluster | K3s control .80 and workers .81/.82 | API/worker containers, Pod lifecycle and scheduling |
-| Persistence | PostgreSQL on db-1 .83 | Authoritative job state and results |
-| Independent checks | probe-1 .84 | Submit jobs, check deadline and hash, retain receipts |
-| Observability | monitor .50 | Prometheus, blackbox probes and Grafana |
-
-Addresses use private `10.1.1.0/24`. The healer remains `.205`; laptop access
-uses VPN and pinned SSH through `10.53.14.225:22`. The console uses a local SSH
-tunnel. No additional public application or administrative ports are required.
+## Customer request path
 
 ```mermaid
-flowchart TB
-  User[Operator laptop] -->|VPN and pinned SSH tunnel| Console[Web console on healer]
-  Console -->|Typed operator commands| Operator[Investigation and approval]
-  Operator <--> K[(Job Knowledge and audit)]
-  M[Monitor] --> A[Analyse] --> P[Plan] --> E[Execute]
-  K <--> A
-  K <--> P
-  E -->|Scoped API and reviewed repair| Kube[Kubernetes API and workers]
-  Kube --> DB[(PostgreSQL)]
-  Observer[Independent job client] -->|Job and result| Kube
-  Observer -->|Fresh verification| M
-  Kube -->|State and metrics| M
-  E -->|Verified outcome| K
-  Prom[Prometheus and Grafana] -->|Scrape| Observer
-  Prom -->|Scrape controller metrics| M
-  Prom -->|Scrape workload and host metrics| Kube
-  Console -->|Dashboard link| Prom
+flowchart LR
+ C[Customer demonstration in private console] -->|Authenticated request through backend| API[Statement API containers]
+ API -->|Durable idempotent request| DB[(PostgreSQL synthetic ledger and requests)]
+ W[Statement worker containers] -->|Claim pending request and read ledger| DB
+ W -->|Store immutable completed statement| DB
+ API -->|Account-scoped result| C
+ O[Independent checker] -->|Request and exact reconciliation| API
 ```
 
-Kubernetes restarts failed containers and reconciles declared state. The healer
-does not claim those native recoveries as its work. It repairs reviewed
-requirements that the declared state violates: restarting a workload with the
-wrong database endpoint or memory specification would reproduce the problem.
+The API and workers run in Kubernetes. The ledger and requests remain on a separate database VM. The console backend holds the demonstration credential; browser responses do not expose it. API TLS and PostgreSQL TLS validate the private CA and endpoint identity. An internal metrics/readiness listener never serves financial endpoints.
 
-`tools/jobs_service.py` runs the loop and publishes completed-tick snapshots on
-9109. The console reads that snapshot and incident records; it does not run a
-second autonomous loop. Operator actions pass through `tools/jobs.py` and
-`JobsOperator`. Backend ownership, current-evidence, fixed-capability and fresh
-verification guards remain authoritative. AI text and operator notes are data.
+## MAPE-K control path
 
-The independent client on 9107 checks actual work; database metrics use 9108.
-Node exporters show host load, memory and disk. A policy witness checks
-permitted database access and forbidden unrelated service access. Unreadable
-required probes cannot certify health. Dashboard `selfheal-jobs` is the main
-application view and the only provisioned project dashboard.
+```mermaid
+flowchart LR
+ M[Monitor: customer outcome and infrastructure] --> A[Analyse: evidence and cause]
+ A --> P[Plan: reviewed bounded repair]
+ P --> D{Approved or validated in current scope?}
+ D -->|No| H[Operator investigates and decides]
+ H --> P
+ D -->|Yes| E[Execute configuration repair]
+ E --> V[Verify fresh independent statement]
+ V --> K[(Knowledge: incidents procedures outcomes audit)]
+ K --> A
+ K --> P
+ V --> M
+ AI[AI explanation only] --> H
+```
 
-## Scope and evidence
+`tools/jobs_service.py` runs the loop; `mapek/jobs.py` is the banking managed-element adapter. `mapek/loop.py` and `stages.py` implement control stages. `JobsOperator` and the shared investigation store enforce fixed recipes, current scope, approval and learning. The console reads completed-tick snapshots and invokes typed operator actions; it does not run a second loop.
 
-Seven VMs are active for this one use case. The two old application VMs are
-stopped, with their disks preserved outside the active lab. Their metrics,
-alerts, dashboards and runnable project entry points have been retired.
-Historical evidence is archived on the laptop, not presented as current results.
-The shared simulation is an offline test fixture, not another deployed service.
-
-The live report records nine core repair occurrences, one browser-approved
-policy repair and native Pod replacement; it does not establish recovery from
-every possible fault.
-
-The console is single-operator and loopback only. Generic service onboarding,
-free-form contract edits and enterprise deployment are outside this release.
-Private-key preservation, credential renewal, backups and off-platform evidence
-remain operational requirements. Never commit generated credentials.
-
-## Follow one job through the system
-
-1. An independent client submits a synthetic payload to the API container.
-2. The API writes the job to PostgreSQL; a worker container claims it.
-3. The worker calculates SHA-256 and records the result in PostgreSQL.
-4. The client reads the result, checks the hash and the 30-second deadline.
-5. The healer correlates that outcome with Kubernetes settings, worker capacity,
-   memory specifications and the private network policy. It investigates a
-   mismatch, obtains approval for a reviewed repair, and verifies a fresh job.
-
-| Running VM | Why this use case needs it |
+| VM | Responsibility |
 |---|---|
-| healer-ubuntu | Controller, incident/repair memory and operator console |
-| monitor | Prometheus and the single job-service Grafana dashboard |
-| k8s-control | Kubernetes control plane; private API access |
-| k8s-worker-1 and k8s-worker-2 | Run API/worker containers on distinct nodes; demonstrate reconciliation |
-| db-1 | PostgreSQL job queue, job state and results |
-| probe-1 | Independent end-user checks and fresh repair verification |
+| healer-ubuntu | Controller, private console, incident and procedure SQLite stores |
+| monitor | Prometheus, Grafana and blackbox checks |
+| k8s-control | K3s control plane and private statement entry point |
+| k8s-worker-1 / k8s-worker-2 | API and worker containers, native scheduling/reconciliation |
+| db-1 | PostgreSQL synthetic ledger, requests, completed statements and audit |
+| probe-1 | Independent customer request, exact result and deadline checks |
 
-API and worker replicas belong to one application. The policy-witness Pod checks
-its isolation. Kubernetes system Pods (DNS and networking) support the cluster;
-they are not additional applications being researched. VM boundaries provide
-independent observation and isolate state, management and workloads. This is a
-research lab design, not the minimum host count for a production job service.
+These seven VMs support one application. Two old application VMs are stopped and excluded from current monitoring. VMs provide separate trust/failure boundaries for the controller, database and observer; containers provide repeatable application deployment and native Pod recovery. Kubernetes does not know whether an account statement is correct or whether the declared database endpoint is the reviewed one. The manager adds those application requirements.
+
+## What is monitored
+
+The observer measures completion time, authentication/transport failures, exact statement correctness and freshness. The controller correlates those results with API/worker readiness, reviewed endpoint, desired worker capacity, memory contract, database availability, worker nodes and network-policy behaviour. Required unknown or stale evidence cannot certify health. Prometheus also scrapes host CPU, RAM and disk, database queue/completion metrics, controller actions, incidents and observer outcomes. Grafana's single `selfheal-jobs` dashboard is the detailed view.
+
+Knowledge is durable under `state/jobs`. Procedures are tied to service, resource identity, reviewed reference, adapter and recipe scope. Changed scope requires revalidation. A failed reuse loses eligibility. Operators can suspend a procedure without deleting its evidence. Database/network/compute repairs remain approval-only; the banking automatic catalogue contains the three configuration repairs.
+
+The laptop reaches the private console and Grafana through VPN and pinned SSH tunnels. No public administrative or application exposure is required. Cloud credentials, bearer tokens, host keys, generated references, detailed histories and certificate keys are excluded from Git.
+
+## Limits
+
+A single database, controller and Kubernetes control node are not a production high-availability design. The browser console has single-operator password authentication, not enterprise SSO or independently enforced four-eyes approval. Private PKI renewal, credential renewal and backup scheduling are manual. Infrastructure repair does not repair a corrupt ledger. See [banking controls and gaps](dora-control-mapping.md).

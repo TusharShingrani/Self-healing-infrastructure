@@ -3,18 +3,48 @@
   "control_forwarding_source": "10.42.0.0/32",
   "k3s_version": "v1.36.5+k3s1",
   "nodes": {
-    "k8s-control": {"address": "10.1.1.80", "offering": "5e2e56b0-5ce6-4966-9463-7c88a1419a72", "role": "control"},
-    "k8s-worker-1": {"address": "10.1.1.81", "offering": "5e2e56b0-5ce6-4966-9463-7c88a1419a72", "role": "worker"},
-    "k8s-worker-2": {"address": "10.1.1.82", "offering": "5e2e56b0-5ce6-4966-9463-7c88a1419a72", "role": "worker"},
-    "db-1": {"address": "10.1.1.83", "offering": "8b3b96e0-b40e-4dd6-8b43-46ead1d3d552", "role": "database"},
-    "probe-1": {"address": "10.1.1.84", "offering": "d95a4867-f4cf-4c46-9070-ff3af5049c69", "role": "observer"}
+    "k8s-control": {
+      "address": "10.1.1.80",
+      "offering": "5e2e56b0-5ce6-4966-9463-7c88a1419a72",
+      "role": "control"
+    },
+    "k8s-worker-1": {
+      "address": "10.1.1.81",
+      "offering": "5e2e56b0-5ce6-4966-9463-7c88a1419a72",
+      "role": "worker"
+    },
+    "k8s-worker-2": {
+      "address": "10.1.1.82",
+      "offering": "5e2e56b0-5ce6-4966-9463-7c88a1419a72",
+      "role": "worker"
+    },
+    "db-1": {
+      "address": "10.1.1.83",
+      "offering": "8b3b96e0-b40e-4dd6-8b43-46ead1d3d552",
+      "role": "database"
+    },
+    "probe-1": {
+      "address": "10.1.1.84",
+      "offering": "d95a4867-f4cf-4c46-9070-ff3af5049c69",
+      "role": "observer"
+    }
   },
-  "protected_nodes": ["healer-ubuntu", "monitor", "k8s-control", "db-1", "probe-1"],
-  "api_url": "http://10.1.1.80:30080",
+  "protected_nodes": [
+    "healer-ubuntu",
+    "monitor",
+    "k8s-control",
+    "db-1",
+    "probe-1"
+  ],
+  "api_url": "https://10.1.1.80:30080",
   "observer_url": "http://10.1.1.84:9107",
   "database_metrics_url": "http://10.1.1.83:9108",
   "desired_db_host": "10.1.1.83",
   "expected_worker_replicas": 2,
   "max_job_bytes": 1024,
-  "job_deadline_seconds": 30
+  "job_deadline_seconds": 30,
+  "service": "fictional-bank-account-statements",
+  "period": "2026-09",
+  "recovery_objective_seconds": 180,
+  "recovery_point_objective": "No loss of accepted statement requests within controlled configuration-fault tests"
 }

@@ -1,4 +1,4 @@
-# Reproduce the EduCloud job-service lab
+# Reproduce the EduCloud bank-statement lab
 
 This is a lab deployment procedure, not a generic enterprise installer. It
 creates five supporting VMs and requires an existing healer, private network,
@@ -29,8 +29,9 @@ python3 tools/lab_shell.py python3 tools/provision_expansion.py k8s-control
 python3 tools/lab_shell.py python3 tools/provision_expansion.py k8s-worker-1
 python3 tools/lab_shell.py python3 tools/provision_expansion.py k8s-worker-2
 python3 tools/lab_shell.py python3 tools/provision_expansion.py db-1
-python3 tools/lab_shell.py python3 tools/provision_expansion.py probe-1
+python3 tools/lab_shell.py python3 tools/prepare_bank.py
 python3 tools/lab_shell.py python3 tools/deploy_jobs.py
+python3 tools/lab_shell.py python3 tools/provision_expansion.py probe-1
 python3 tools/lab_shell.py python3 tools/jobs.py status
 bash tools/start_jobs.sh start
 python3 tools/lab_shell.py python3 tools/configure_jobs_monitor.py
@@ -58,12 +59,12 @@ each service's actual working directory to avoid running two controllers.
 
 Run all offline tests first. The default live exercise covers only database
 endpoint drift, worker capacity drift and worker memory configuration drift.
-It performs three occurrences per scenario: investigator approval, verified
+It performs ten occurrences per scenario: investigator approval, verified
 manual repair with promotion, then automatic reuse. The operator is scripted
 in this experiment; this does not substitute for a usability test with a person.
 
 ```sh
-python3 tools/lab_shell.py python3 tools/demo_jobs_live.py --output evidence/jobs-final-learning.json
+python3 tools/lab_shell.py python3 tools/demo_jobs_live.py --repetitions 10 --output state/bank-learning.json
 ```
 
 It refuses to overwrite evidence or pretend to learn a procedure that is
@@ -78,12 +79,11 @@ application's private policy and a fixed unrelated lab endpoint. It is not a
 public scan. Database stop and worker-VM stop remain explicit supporting
 diagnostics, excluded from the default research sequence.
 
-Live evidence was collected on 15 October 2026; see
-[the results and limits](../evidence/jobs-live-report.md). The first protocol
-incorrectly expected configuration rollout faults to cause an outage. Its
-failed result is retained; the corrected protocol measures configuration
-repair separately from observed job failure. Do not substitute earlier
-cached-verification pilot results.
+The banking acceptance run on 16 October 2026 passed all 16 checks. Historical hashing-job trials do not validate the statement release. Run from `~/projects/bank-statements`; install Ubuntu's `python3-psycopg2` for database acceptance tests. Generated private client files and certificates must not enter Git.
+
+`prepare_bank.py` must precede `deploy_jobs.py`: it provisions the synthetic schema, restricted roles and private TLS material. Provision the independent checker after the new client trust configuration exists. Deploy the updated database metrics collector too. Private CA lifetime is 365 days; leaf certificates are 90 days. Renewal is manual: plan it before expiry, preserve trust and revalidate deployment scope. Do not rerun preparation blindly over an established lab; back up first and inspect its schema/TLS changes.
+
+The acceptance command `python3 tools/lab_shell.py python3 tools/test_bank_live.py --controlled-experiment` exercises authorisation, idempotency, TLS, immutable records and a restore into a separate scratch database. It never restores over the live ledger. `tools/bank_backup.py --label <fresh-label>` creates a PostgreSQL dump and consistent SQLite copies on the healer; copy this backup, private client configuration and PKI material to a protected laptop location. A dump on the same platform is not an off-platform backup. The initial restore-test cleanup exposed an unclosed connection; this was fixed and the complete run passed, so retain that finding alongside the successful evidence.
 
 ## Restore credentials after a healer host restart
 

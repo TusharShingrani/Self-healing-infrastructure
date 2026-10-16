@@ -1,3 +1,5 @@
+> **Historical release evidence.** This file describes the earlier hashing workload or scope cleanup. It does not validate the bank-statement release. See [the current banking use case](../docs/focused-use-case.md).
+
 # One-use-case cleanup — 15 October 2026
 
 The supported project is Kubernetes background-job processing: a submitted

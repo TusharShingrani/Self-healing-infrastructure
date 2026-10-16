@@ -1,0 +1,11 @@
+{
+  "schema": "statement-v1", "account_id": "DEMO-NL-001", "period": "2026-09", "currency": "EUR",
+  "opening_balance_cents": 250000, "credits_cents": 327499, "debits_cents": 135293, "closing_balance_cents": 442206,
+  "transactions": [
+    {"id":"T001","date":"2026-09-01","description":"Fictional salary","amount_cents":325000},
+    {"id":"T002","date":"2026-09-02","description":"Fictional rent","amount_cents":-120000},
+    {"id":"T003","date":"2026-09-03","description":"Fictional groceries","amount_cents":-6543},
+    {"id":"T004","date":"2026-09-06","description":"Fictional refund","amount_cents":2499},
+    {"id":"T005","date":"2026-09-08","description":"Fictional utilities","amount_cents":-8750}
+  ]
+}

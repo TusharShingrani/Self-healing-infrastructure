@@ -117,6 +117,13 @@ class ConsoleTests(unittest.TestCase):
                 backend.action({'action': 'approve', 'id': 1, 'notes': 'Reviewed evidence'})
             run.assert_not_called()
 
+    def test_statement_submit_requires_csrf(self):
+        self.login();self.csrf='wrong'
+        self.assertEqual(self.request('/api/statements',{'idempotency_key':'00000000-0000-0000-0000-000000000001'})[0],403)
+
+    def test_statement_read_requires_authentication(self):
+        self.assertEqual(self.request('/api/statements')[0],401)
+
     def test_static_assets_and_csp(self):
         status, body, headers = self.request('/')
         self.assertEqual(status, 200)

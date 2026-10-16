@@ -1,6 +1,6 @@
 {
   "uid": "selfheal-jobs",
-  "title": "Job workflow, Kubernetes and reviewed recovery",
+  "title": "Bank statements: customer outcome and MAPE-K recovery",
   "schemaVersion": 39,
   "version": 1,
   "refresh": "10s",
@@ -12,7 +12,7 @@
     {
       "id": 1,
       "type": "stat",
-      "title": "Do submitted jobs complete correctly?",
+      "title": "Are customer statements correct and timely?",
       "gridPos": {
         "x": 0,
         "y": 0,
@@ -93,7 +93,7 @@
     {
       "id": 4,
       "type": "timeseries",
-      "title": "Job completion time (seconds)",
+      "title": "Statement completion time (seconds)",
       "gridPos": {
         "x": 12,
         "y": 8,
@@ -147,7 +147,7 @@
     {
       "id": 6,
       "type": "timeseries",
-      "title": "Waiting jobs and completed jobs",
+      "title": "Pending and completed statements",
       "gridPos": {
         "x": 12,
         "y": 16,
@@ -174,7 +174,7 @@
     {
       "id": 7,
       "type": "timeseries",
-      "title": "Oldest waiting job (seconds)",
+      "title": "Oldest pending statement (seconds)",
       "gridPos": {
         "x": 0,
         "y": 24,
@@ -255,7 +255,7 @@
     {
       "id": 10,
       "type": "stat",
-      "title": "Validated job repair procedures",
+      "title": "Validated statement-service repairs",
       "gridPos": {
         "x": 12,
         "y": 32,
@@ -471,7 +471,7 @@
     {
       "id": 18,
       "type": "timeseries",
-      "title": "Job-healer errors",
+      "title": "Statement-healer errors",
       "gridPos": {
         "x": 12,
         "y": 64,
@@ -498,7 +498,7 @@
     {
       "id": 19,
       "type": "timeseries",
-      "title": "Job-healer cycle duration (seconds)",
+      "title": "Statement-healer cycle duration (seconds)",
       "gridPos": {
         "x": 0,
         "y": 72,
@@ -579,7 +579,7 @@
   ],
   "tags": [
     "MAPE-K",
-    "jobs",
+    "bank-statements",
     "security"
   ]
 }

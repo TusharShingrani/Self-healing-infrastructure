@@ -128,6 +128,7 @@ else
   test -s /etc/healer-jobs/client.json || { echo 'Missing restricted API client credential'; exit 1; }
   chown root:job-probe /etc/healer-jobs/client.json;chmod 640 /etc/healer-jobs/client.json
   install -m 755 "$HERE/job-host/probe.py" /opt/healer-jobs/probe.py
+  install -m 644 "$HERE/job-host/bank-oracle.json" /opt/healer-jobs/bank-oracle.json
   install -d -o job-probe -g job-probe -m 750 /var/lib/job-probe
   cat > /etc/systemd/system/job-client.service <<'EOF'
 [Unit]

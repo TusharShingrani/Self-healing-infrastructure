@@ -1,14 +1,14 @@
 # Research synthesis: self-healing infrastructure
 
 The literature covers a broader field than the implemented prototype. The
-current empirical scope is ONE Kubernetes job-processing application; see
+current empirical scope is ONE fictional bank statement-generation application; see
 [the focused use case](focused-use-case.md). Earlier nginx and dependency
 results are historical evidence, not validation of the new adapter.
 
 
-Research date: 14 October 2026. This is a structured literature review and an
+Research updated: 16 October 2026. This is a structured literature review and an
 engineering evaluation plan, not a systematic review claiming exhaustive coverage.
-Current live findings are in [the job-service report](../evidence/jobs-live-report.md).
+Current live findings are in [the banking control mapping](dora-control-mapping.md).
 Historical experiments are archived locally and excluded from current claims.
 
 ## Method and evidence quality
@@ -66,7 +66,7 @@ automatic catalogue. Unknown incidents require investigation.
 ## 2. Which methods are most effective for detection and repair?
 
 No universal winner follows from the literature. This lab combines independent
-job submission/result checks with Kubernetes state and approved invariants.
+statement submission/reconciliation checks with Kubernetes state and approved invariants.
 A Pod being alive does not establish correct work. Kubernetes reconciles the
 configured state; a wrong configured database address or memory limit persists
 across restarts. A bounded cause-directed configuration repair is therefore
@@ -74,44 +74,37 @@ needed. Fresh independent work plus cause-specific checks establish success.
 See the source catalogue above for probes, gray failures, contextual diagnosis
 and verification research; their reported numbers do not transfer to this lab.
 
-Nine controlled occurrences verified first approved repair, recorded human
-repair and promoted automatic reuse. Settings and memory faults stalled new
-rollouts but healthy old Pods preserved job availability. Desired workers zero
-did breach the deadline. These observations establish integration behavior,
-not that our approach is statistically superior. Three repetitions per fault
-are insufficient for the planned ten-run statistical comparison.
+The earlier nine-occurrence hashing workload demonstrated the control integration but is historical evidence. The banking release uses its own exact statement oracle, live acceptance tests and new repeat trials. Report those results separately; neither a successful configuration command nor an old workload result proves banking recovery.
 
 ## 3. How can a system learn from past failures to prevent them?
 
 The system stores investigated causes, reviewed actions and independently
 verified outcomes. Two distinct verified occurrences and explicit promotion
 permit matching automatic reuse. Resource identity, approved references,
-adapter and recipe scope must match; failed reuse revokes eligibility. Three
-procedures were reused live and remained eligible after controller restart.
+adapter and recipe scope must match; failed reuse revokes eligibility. Historical hashing procedures were reused across a restart; banking procedures require their own scope and fresh validation.
 This is procedural learning, not LLM training or general repair synthesis.
 
 Recovery from a repeated fault is not proof of prevention. No current experiment
-establishes prediction of a novel failure before its onset. Real Gemini advice
-included inappropriate suggestions; it remained advisory. Human notes cannot
+establishes prediction of a novel failure before its onset. Earlier Gemini advice included inappropriate suggestions; it remained advisory and is not evidence of a correct banking diagnosis. Human notes cannot
 be executed, and a genuinely new capability requires code review and validation.
 The source catalogue discusses production learning systems and research
 alternatives; this prototype makes no novelty claim over those systems.
 
 ## 4. How does self-healing affect reliability, security, performance and scalability?
 
-Reliability: cause-specific repairs and fresh job verification avoid treating a
+Reliability: cause-specific repairs and fresh statement verification avoid treating a
 successful command as recovery. Unknown/stale probes fail closed. Measure missed
 deadlines, correct results, verified repair time and collateral effects. A shared
 control plane, database and healer remain single points of failure in this lab.
 
 Security: scoped Kubernetes access, positive VM identity, pinned SSH, typed
-capabilities, approval and a policy witness constrain effects. The private
-network-policy repair was demonstrated once and is not promoted for autonomous
+capabilities, approval and a policy witness constrain effects. The historical private
+network-policy repair was demonstrated once for the earlier workload and is not promoted for autonomous
 reuse. Powerful management credentials remain a risk; no production security or
 intrusion-remediation claim is established. Never treat telemetry as instructions.
 
 Performance: synthetic probes and cloud/API calls consume work. Prometheus and
-Grafana measure job latency, queue state, host and Pod resources and loop duration.
+Grafana measure statement latency, queue state, host and Pod resources and loop duration.
 Current repair times include guardrails and fresh verification; they are not
 all outage duration. No new controlled overhead comparison has been completed
 for the focused application.
@@ -123,8 +116,20 @@ capacity scaling or high availability follows from seven supporting VMs.
 
 ## Reporting boundary
 
-Only Kubernetes job processing is active. Old nginx/DNS/Redis/checkpoint source
+Only the Kubernetes bank statement service is active. Old nginx/DNS/Redis/checkpoint source
 and results are archived on the laptop. Detailed current histories also remain
 local by user choice; the repository publishes numeric results and limitations.
 Preserve failed protocols and distinguish native recovery, configuration repair,
 job outage and security correction in every report.
+
+
+## Banking-specific answers and evaluation (16 October 2026)
+
+1. **Which failures?** Reviewed endpoint drift, absent worker capacity and unsuitable worker memory are recoverable without modifying financial records. Unknown causes, ledger inconsistency, privileged compromise and database disaster are not automatically repairable in this PoC.
+2. **Which methods are effective?** Combine independent correct-result/deadline checks with infrastructure evidence, then repair the cause from a reviewed reference. Compare native Kubernetes recovery separately. The lab cannot establish a universally best method; compare success, latency, outage and safety costs per fault.
+3. **How does it learn?** Persist distinct verified incidents, human investigation and recipe outcomes; explicitly promote a scoped procedure. Scope change, suspension or failed verification prevents blind reuse. This is case-based procedural reuse, not reinforcement learning or guaranteed fault prevention.
+4. **What are the trade-offs?** Measure customer reliability and correctness, authorisation/TLS/integrity refusals, observer/controller overhead and queue latency. Scoped permissions and audit improve control but do not eliminate a privileged attacker. Seven VMs and small synthetic fixtures do not demonstrate enterprise scale.
+
+[DNB](https://www.dnb.nl/voor-de-sector/open-boek-toezicht/wet-regelgeving/dora/) and [AFM](https://www.afm.nl/nl-nl/sector/themas/belangrijke-europese-wet--en-regelgeving/dora/digitale-operationele-weerbaarheid) provide Dutch regulatory context. The [DORA regulation](https://eur-lex.europa.eu/eli/reg/2022/2554/oj), especially recovery, reconciliation and learning provisions, informs the explicit control/gap mapping. These sources do not prescribe MAPE-K or our lab time targets. [PostgreSQL 16 TLS documentation](https://www.postgresql.org/docs/16/libpq-ssl.html) supports verify-full endpoint validation. [ISO 20022 definitions](https://www.iso20022.org/iso-20022-message-definitions) identify a real statement-message domain; our JSON/CSV is explicitly not a conforming implementation.
+
+The live acceptance run verifies 16 properties against real PostgreSQL and the deployed API, including a separate scratch restore. Repeat repair trials use one approved, one recorded-human/promoted and eight automatic occurrences per core fault. Roles are scripted, order is fixed and samples are small: do not infer a causal human-versus-automation speed advantage or general bank reliability. Historical hashing/nginx measurements remain historical.

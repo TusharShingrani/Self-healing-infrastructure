@@ -5,38 +5,38 @@ groups:
         expr: job_client_healthy == 0
         for: 20s
         labels: {severity: critical}
-        annotations: {summary: "Independent submit/process/readback job contract failed"}
+        annotations: {summary: "Independent statement completion or reconciliation failed"}
       - alert: JobClientStale
         expr: time() - job_client_last_sample_seconds > 60
         labels: {severity: warning}
-        annotations: {summary: "Independent job-client sample is stale"}
+        annotations: {summary: "Independent statement-client sample is stale"}
       - alert: JobInfrastructureDrift
         expr: job_healer_check == 0
         for: 20s
         labels: {severity: warning}
-        annotations: {summary: "Job infrastructure check {{ $labels.check }} failed"}
+        annotations: {summary: "Statement infrastructure check {{ $labels.check }} failed"}
       - alert: JobProbeUnmeasured
         expr: job_healer_check == -1
         for: 60s
         labels: {severity: warning}
-        annotations: {summary: "Job check {{ $labels.check }} unmeasured; inspect dependency evidence"}
+        annotations: {summary: "Statement check {{ $labels.check }} unmeasured; inspect dependency evidence"}
       - alert: JobDatabaseUnavailable
         expr: job_database_up == 0
         labels: {severity: critical}
-        annotations: {summary: "Authoritative job database cannot be queried"}
+        annotations: {summary: "Statement database cannot be queried"}
       - alert: JobDeadlineExceeded
         expr: job_database_oldest_pending_seconds > 30
         labels: {severity: critical}
-        annotations: {summary: "An accepted job has waited beyond the 30-second deadline"}
+        annotations: {summary: "An accepted statement request has waited beyond the 30-second deadline"}
       - alert: JobHealerStale
         expr: time() - job_healer_last_tick_seconds > 300
         labels: {severity: warning}
         annotations: {summary: "No completed job-healer tick for five minutes"}
       - alert: JobExporterDown
-        expr: up{job=~"jobs_healer|jobs_client|jobs_database|expanded_nodes|jobs_api_server"} == 0
+        expr: up{job=~"jobs_healer|jobs_client|jobs_database|job_nodes|support_nodes|jobs_api_server"} == 0
         for: 20s
         labels: {severity: warning}
-        annotations: {summary: "Job lab telemetry target {{ $labels.instance }} cannot be scraped"}
+        annotations: {summary: "Bank lab telemetry target {{ $labels.instance }} cannot be scraped"}
       - alert: JobPodMetricsMissing
         expr: job_pod_metrics_unreadable == 1 or job_kubernetes_metrics_available == 0
         for: 30s
@@ -47,3 +47,7 @@ groups:
         for: 30s
         labels: {severity: warning}
         annotations: {summary: "{{ $labels.deployment }} has fewer ready replicas than configured"}
+      - alert: BankCertificateExpiring
+        expr: probe_ssl_earliest_cert_expiry{job="jobs_readiness"} - time() < 1209600
+        labels: {severity: warning}
+        annotations: {summary: "Statement API certificate expires within 14 days; renew through reviewed PKI workflow"}

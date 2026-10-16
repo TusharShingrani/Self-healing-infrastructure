@@ -182,4 +182,16 @@ class Tests(unittest.TestCase):
             self.assertEqual(case['notes'], '[REDACTED]')
 
 
+class SuspensionTests(unittest.TestCase):
+    def test_suspended_procedure_cannot_authorize_automatic_repair(self):
+        from mapek.stages import Monitor
+        world=World();world.inject('config_drift');world.service_running=True
+        op=Operator(':memory:');obs=world.observe(False);symptoms=Monitor().symptoms(obs)
+        case=op.capture(world,symptoms,'manual_configuration_change',['restore_config'],obs)
+        op.db.execute("INSERT INTO procedures(scope,cause,symptoms,actions,status,created) VALUES(?,?,?,?,'validated',0)",(case['scope'],case['cause'],case['symptoms'],case['actions']));op.db.commit()
+        ident=op.procedures()[0]['id'];op.suspend(ident,'reviewer','Return future incidents to manual approval')
+        self.assertEqual(op.procedures()[0]['status'],'suspended')
+        self.assertFalse(op.authorize(world,symptoms,case['cause'],['restore_config'],obs)[0])
+        self.assertEqual(op.case(case['id'])['status'],'pending')
+
 if __name__ == '__main__': unittest.main()

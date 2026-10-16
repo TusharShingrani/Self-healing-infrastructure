@@ -49,7 +49,7 @@ class JobRecipeBook:
 class JobsWorld:
     def __init__(self):
         self.lab=load_lab().copy();self.lab['lab_instances']=['jobs-lab'];self.name='jobs-lab'
-        self.service='job-processing';self.config_path='jobs-lab/job-settings';self.reference_dir='config/jobs-reference.json'
+        self.service='bank-statement-generation';self.config_path='jobs-lab/job-settings';self.reference_dir='config/jobs-reference.json'
         self.log_mount=self.log_image=None;self.cs=CloudStack(project=self.lab['project_id']);self.kube=Kubernetes()
         self.recipes=JobRecipeBook();self.references=json.loads((ROOT/'config/jobs-reference.json').read_text())
         self.ids=json.loads((ROOT/'state/expansion.json').read_text());self._vm=None
@@ -121,12 +121,12 @@ class JobsWorld:
         if not self.latest.get('namespace_uid') or len(self.latest.get('deployments',{}))!=2 or len(self.latest.get('node_uids',{}))!=2:
             return {'references':None,'live_config':None}
         identities={'vms':{n:r.get('id') for n,r in self.ids.items()},'deployments':{n:d['uid'] for n,d in self.latest.get('deployments',{}).items()},'namespace':self.latest.get('namespace_uid'),'nodes':self.latest.get('node_uids')}
-        references=[hashlib.sha256(encode(self.references).encode()).hexdigest(),self.recipes.digest,ADAPTER_DIGEST,'fresh-independent-job-v2',encode(identities)]
+        references=[hashlib.sha256(encode(self.references).encode()).hexdigest(),self.recipes.digest,ADAPTER_DIGEST,'fresh-independent-bank-statement-v1',encode(identities)]
         stable={k:v for k,v in self.latest.get('infrastructure_checks',{}).items() if k not in ('integrity','api_ready','worker_processing','policy_effective')}
         return {'references':references,'live_config':hashlib.sha256(encode(stable).encode()).hexdigest()}
 
     def diagnostic_evidence(self):
-        return {'observation':self.latest,'service_requirement':'Accepted job completes with correct durable SHA-256 result within 30 seconds; policy remains restrictive',
+        return {'observation':self.latest,'service_requirement':'Accepted statement completes within 30 seconds with exact approved transactions and balances; acknowledged statements remain intact; policy remains restrictive',
                 'locations':{'settings':'jobs-lab/configmap/job-settings','workers':'jobs-lab/deployment/job-worker','database':'db-1 PostgreSQL jobs_lab','network':'jobs-lab NetworkPolicy'},
                 'references':self.repair_identity()['references']}
 
@@ -135,7 +135,10 @@ class JobsWorld:
             self.kube.resource('deployments',name,{'spec':{'template':{'metadata':{'annotations':{'selfheal/restarted-at':str(time.time())}}}}})
 
     def run_recipe(self,name):
-        self.ownership();spec=self.recipes.recipes[name];self.last_action_at=time.time()
+        self.ownership()
+        if self.latest.get('infrastructure_checks',{}).get('integrity') is False:
+            return False,'Statement integrity incident: preserve evidence and investigate; never rewrite ledger or acknowledged statements'
+        spec=self.recipes.recipes[name];self.last_action_at=time.time()
         for step in spec['operations']:
             op=step['op']
             if op=='restore_settings':
@@ -206,6 +209,15 @@ class JobsWorld:
     rebuild_instance=reboot_instance
 
 class JobsOperator(InvestigationOperator):
+    AUTO_ACTIONS={'recipe_job_config','recipe_job_workers','recipe_job_template'}
+
+    def promote(self,procedure_id,who):
+        row=self.db.execute('SELECT actions FROM procedures WHERE id=?',(procedure_id,)).fetchone()
+        if not row or not set(json.loads(row['actions'])) <= self.AUTO_ACTIONS:
+            raise ValueError('Bank policy keeps database, node and network repairs under operator approval')
+        return super().promote(procedure_id,who)
+
+
     def verify(self,world,actions):
         checks={}
         for action in actions:

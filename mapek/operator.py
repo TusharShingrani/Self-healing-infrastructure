@@ -206,6 +206,14 @@ class Operator:
             self.db.execute("INSERT OR IGNORE INTO procedures(scope,cause,symptoms,actions,status,created) VALUES(?,?,?,?,'candidate',?)", (case['scope'], case['cause'], case['symptoms'], case['actions'], self.clock()))
         self.db.commit()
 
+    def suspend(self, procedure_id, who, notes):
+        if not who.strip() or len(notes.strip())<8:
+            raise ValueError('Reviewer and meaningful suspension reason required')
+        cur=self.db.execute("UPDATE procedures SET status='suspended' WHERE id=? AND status='validated'",(procedure_id,))
+        if cur.rowcount!=1:
+            self.db.rollback();raise ValueError('Only a validated procedure can be suspended')
+        self.db.commit();self.audit(f'procedure:{procedure_id}',who,'suspend',notes)
+
     def promote(self, procedure_id, who):
         proc = self.db.execute('SELECT * FROM procedures WHERE id=?', (procedure_id,)).fetchone()
         if not proc or not who.strip():

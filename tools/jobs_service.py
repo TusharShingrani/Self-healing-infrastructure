@@ -23,6 +23,7 @@ def main():
             snapshot={'time':time.time(),'paused':h.config=='A','observation':obs,'tick_seconds':time.monotonic()-start,
                       'cases':[{k:c[k] for k in ('id','cause','status','procedure_id')} for c in cases[:20]],'procedures':procedures,'events':[e.__dict__ for e in h.events[-1:]]}
             _,current_scope=op.context(world,[], 'unknown',[],obs)
+            snapshot['scope']=current_scope
             values={'healthy':int(world.health(obs)),'paused':int(h.config=='A'),'business_healthy':int(obs.get('http_ok') is True),'ticks_total':ticks,'errors_total':errors,
                     'last_tick_seconds':snapshot['time'],'tick_seconds':snapshot['tick_seconds'],'pending':sum(c['status']=='pending' for c in cases),
                     'validated':sum(p['status']=='validated' and p['scope']==current_scope for p in procedures),'advisor_available':int(h.advisor is not None and h.advisor.available),
@@ -53,7 +54,7 @@ def main():
             for pod in obs.get('pods',[]):
                 if pod['phase']!='Running' or pod['name'].startswith('job-policy-witness'):continue
                 try:
-                    text=world.kube.request('/api/v1/namespaces/jobs-lab/pods/'+pod['name']+':8080/proxy/metrics')
+                    text=world.kube.request('/api/v1/namespaces/jobs-lab/pods/'+pod['name']+':8081/proxy/metrics')
                     for line in text.splitlines():
                         parts=line.split()
                         if len(parts)==2 and parts[0].startswith('job_process_'):

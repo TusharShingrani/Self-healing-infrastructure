@@ -1,6 +1,6 @@
 """Real job learning workflow: scripted operator roles, independent verification.
 
-Three core cause-directed repairs, three occurrences each. First reviewed and
+Three core cause-directed repairs, ten occurrences each by default. First reviewed and
 approved, second separately applied and recorded, third promoted automatic.
 Existing Knowledge and incident evidence are preserved. No protected VM stops.
 """
@@ -20,7 +20,7 @@ def matching_procedure(procedures,case):
     return matches[0]
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--fault',choices=[s[0] for s in SCENARIOS]);parser.add_argument('--output',default='evidence/jobs-learning.json');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--fault',choices=[s[0] for s in SCENARIOS]);parser.add_argument('--repetitions',type=int,choices=range(3,11),default=10);parser.add_argument('--output',default='state/bank-learning.json');args=parser.parse_args()
     output=Path(args.output)
     if output.exists():raise RuntimeError('Preserve existing evidence; use a fresh output path')
     output.parent.mkdir(exist_ok=True)
@@ -63,7 +63,7 @@ def main():
             if not args.fault and fault not in ('settings','workers','limits'):continue
             _,current_scope=op.context(w,[],'unknown',[],w.latest)
             if any(p['cause']==cause and p['status']=='validated' and p['scope']==current_scope for p in op.procedures()):raise RuntimeError('Already validated in this scope; select fresh experimental state rather than pretend to learn again')
-            for repetition in (1,2,3):
+            for repetition in range(1,args.repetitions+1):
                 action='recipe_'+recipe
                 while not h.guardrails.check([action],w.tick_count+1)[0]:h.tick();time.sleep(10)
                 if not w.health(w.observe(False)):raise RuntimeError('Healthy interval failed')
@@ -86,7 +86,7 @@ def main():
                     proc=matching_procedure(op.procedures(),op.case(case['id']));op.promote(proc['id'],'scripted-reviewer');mode='recorded-human-and-promoted'
                 else:mode='promoted-automatic'
                 case=op.cases()[0];after=w.observe(False)
-                if case['status']!='verified' or not w.health(after) or repetition==3 and not case['procedure_id']:raise RuntimeError('Expected verified repair transition failed')
+                if case['status']!='verified' or not w.health(after) or repetition>=3 and not case['procedure_id']:raise RuntimeError('Expected verified repair transition failed')
                 run={'fault':fault,'repetition':repetition,'mode':mode,'case_id':case['id'],'automatic_procedure_id':case['procedure_id'],
                      'business_failure_observed':before.get('http_ok') is False,
                      'injection_time':started,'injection_to_verified_seconds':time.time()-started,'before':before,'after':after,'verified':True}

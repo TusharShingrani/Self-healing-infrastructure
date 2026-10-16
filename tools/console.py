@@ -4,6 +4,9 @@ No shell endpoint: mutations use the existing reviewed operator CLI. Passwords
 are set interactively and only a salted scrypt hash is stored outside the repo.
 """
 import argparse
+import base64
+import ssl
+import uuid
 import getpass
 import hashlib
 import hmac
@@ -32,7 +35,7 @@ def password_hash(password, salt):
 def validate_action(data):
     """Produce an argv list, never executable operator-supplied commands."""
     action = data.get('action')
-    if action not in {'investigate', 'approve', 'reject', 'record-human', 'promote'}:
+    if action not in {'investigate', 'approve', 'reject', 'record-human', 'promote', 'suspend'}:
         raise ValueError('Unsupported operation')
     identifier = data.get('id')
     if type(identifier) is not int or not 1 <= identifier <= 2**31-1:
@@ -42,7 +45,7 @@ def validate_action(data):
     if action != 'promote':
         notes = data.get('notes')
         if not isinstance(notes, str) or not 8 <= len(notes.strip()) <= 2000:
-            raise ValueError('Explain the evidence and decision in 8–2000 characters')
+            raise ValueError('Explain the evidence and decision in 8Ã¢â‚¬â€œ2000 characters')
         args += ['--notes', notes.strip()]
     if action in {'investigate', 'record-human'}:
         permitted.add('recipe')
@@ -65,7 +68,7 @@ class Backend:
         self.lock = threading.Lock()
 
     def snapshot(self):
-        result = {'application': 'Kubernetes job-processing service', 'deadline_seconds': 30,
+        result = {'application': 'Fictional bank account statements', 'deadline_seconds': 30,
                   'recipes': sorted(RECIPES), 'cases': [], 'procedures': [], 'audit': []}
         try:
             with urllib.request.urlopen('http://10.1.1.205:9109/status', timeout=3) as response:
@@ -87,7 +90,39 @@ class Backend:
             with sqlite3.connect(knowledge_path.as_uri() + '?mode=ro', uri=True, timeout=3) as db:
                 db.row_factory = sqlite3.Row
                 result['advice'] = [dict(row) for row in db.execute('SELECT * FROM advice ORDER BY id DESC LIMIT 20')]
+        def current(record):
+            try:return json.loads(record['scope']).get('service') == 'bank-statement-generation'
+            except (KeyError,TypeError,ValueError):return False
+        result['cases']=[c for c in result['cases'] if current(c)]
+        result['procedures']=[p for p in result['procedures'] if current(p)]
+        subjects={f'incident:{c["id"]}' for c in result['cases']} | {f'procedure:{p["id"]}' for p in result['procedures']}
+        result['audit']=[a for a in result['audit'] if a['subject'] in subjects]
+        marker=ROOT/'state/bank-deployed-at'
+        since=float(marker.read_text()) if marker.exists() else time.time()
+        result['advice']=[a for a in result['advice'] if a['created_at']>=since]
         return result
+
+    def statement_request(self, path='/statements', data=None):
+        config=json.loads((Path.home()/'.config/healer-jobs/client.json').read_text())
+        context=ssl.create_default_context(cadata=base64.b64decode(config['ca']).decode())
+        req=urllib.request.Request(config['url']+path, data=None if data is None else json.dumps(data).encode(),
+            headers={'Authorization':'Bearer '+config['token'],'Content-Type':'application/json'})
+        with urllib.request.urlopen(req,context=context,timeout=6) as response:return json.load(response)
+
+    def statements(self, identifier=None):
+        if identifier is None:return self.statement_request()
+        identifier=str(uuid.UUID(identifier))
+        result=self.statement_request('/statements/'+identifier)
+        if result['status']=='done':
+            expected=json.loads((ROOT/'tools/job-host/bank-oracle.json').read_text())
+            expected_hash=hashlib.sha256(json.dumps(expected,sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()).hexdigest()
+            result['independently_checked']=result.get('document')==expected and result.get('document_hash')==expected_hash
+        return result
+
+    def submit_statement(self,data):
+        if set(data)!={'idempotency_key'}:raise ValueError('Unexpected fields')
+        key=str(uuid.UUID(data['idempotency_key']))
+        return self.statement_request(data={'period':'2026-09','idempotency_key':key})
 
     def action(self, data):
         args = validate_action(data)
@@ -166,8 +201,8 @@ def make_handler(auth, backend, port):
             if self.headers.get('Host') != expected_host:
                 return self.reply(403, {'error': 'Use the documented loopback address'})
             assets = {'/': ('index.html', 'text/html; charset=utf-8'),
-                      '/console.js': ('console.js', 'application/javascript'),
-                      '/console.css': ('console.css', 'text/css')}
+                      '/console.js': ('console.js', 'application/javascript; charset=utf-8'),
+                      '/console.css': ('console.css', 'text/css; charset=utf-8')}
             if self.path in assets:
                 filename, kind = assets[self.path]
                 return self.reply(200, (ROOT/'web'/filename).read_bytes(), kind)
@@ -176,6 +211,9 @@ def make_handler(auth, backend, port):
                 return self.reply(401, {'error': 'Sign in to view the lab'})
             if self.path == '/api/session':
                 return self.reply(200, {'csrf': session['csrf'], 'operator': 'console-operator'})
+            if self.path == '/api/statements' or self.path.startswith('/api/statements/'):
+                try:return self.reply(200, backend.statements(None if self.path=='/api/statements' else self.path.split('/')[-1]))
+                except (OSError,ValueError,KeyError):return self.reply(503, {'error':'Statement service unavailable. Your accepted request remains stored; do not create another request to retry.'})
             if self.path == '/api/snapshot':
                 try:
                     return self.reply(200, backend.snapshot())
@@ -214,6 +252,8 @@ def make_handler(auth, backend, port):
                     with lock:
                         sessions.clear()
                     return self.reply(200, {'signed_out': True}, cookie='healer_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0')
+                if self.path == '/api/statements':
+                    return self.reply(200, backend.submit_statement(data))
                 if self.path == '/api/action':
                     return self.reply(200, backend.action(data))
                 return self.reply(404, {'error': 'Not found'})

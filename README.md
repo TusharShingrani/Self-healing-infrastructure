@@ -1,91 +1,34 @@
-# Self-healing Kubernetes job processing with MAPE-K
+# MAPE-K self-healing for a fictional bank statement service
 
-One use case: **a submitted job must finish correctly within 30 seconds**.
-This research prototype investigates failures that prevent useful work,
-asks an operator to approve a bounded repair, verifies a fresh job from another
-machine, and remembers reviewed procedures for recurring incidents.
+**A customer requests their monthly account statement. The system must deliver the correct statement, without losing an accepted request or exposing another account.** This is the single use case.
 
-**The thing being self-healed is the job-processing service.** Think of a
-company submitting background work such as report generation: accepting the
-request is insufficient; a worker must finish it and return the right result.
-This lab uses synthetic SHA-256 jobs so correctness can be checked exactly.
+The application runs as API and worker containers in Kubernetes, with PostgreSQL holding a synthetic ledger and durable statement requests. The healer repairs reviewed infrastructure configuration: the database connection endpoint, missing worker capacity and unsuitable worker memory settings. It never edits ledger entries or “fixes” a balance. There are no payments, real customers or real financial data.
 
-The application is an API and worker service running in Kubernetes, backed by
-PostgreSQL. Synthetic SHA-256 jobs provide independently checkable results.
-The main faults are a wrong database endpoint, missing worker capacity and
-unsuitable worker memory settings. Network-policy drift tests security within
-the same application. Kubernetes handles ordinary Pod restarts; the healer
-handles reviewed application requirements that a restart alone cannot fix.
+## Understand the system
 
-## Start here
+- [Business use case and exact service requirements](docs/focused-use-case.md)
+- [Architecture, diagrams and MAPE-K responsibilities](docs/architecture.md)
+- [Banking practices, DORA mapping and production gaps](docs/dora-control-mapping.md)
+- [Research questions and literature](docs/research-synthesis.md)
+- [Operator console](docs/web-console.md) and [demo-video walkthrough](docs/demo-video.md)
+- [Deployment and recovery](docs/jobs-deployment.md)
 
-- [Use case, assessor scope and evaluation](docs/focused-use-case.md)
-- [Architecture and responsibilities](docs/architecture.md)
-- [Operator web console and access](docs/web-console.md)
-- [Ordered lab deployment and evaluation](docs/jobs-deployment.md)
-- [Literature, research questions and limitations](docs/research-synthesis.md)
-- [Verified live results and limits](evidence/jobs-live-report.md)
-- [Scope cleanup and current checks](evidence/scope-cleanup.md)
+## What you see
 
-## Operator interface
+The private console has three views: **Request a statement**, **Follow the self-healer**, and **Inspect learned memory**. Requesting a statement exercises the real API, database and worker. The operations view explains failing checks, evidence, investigation, approval and verification. The memory view shows reviewed procedures and lets the operator suspend automatic reuse. Grafana provides the detailed monitoring timeline.
 
-The private console provides an application overview, required health checks,
-incident evidence and AI advice, investigate/approve/reject controls, verified
-manual repair recording, procedure promotion and an audit trail. It links to
-the job-service Grafana dashboard. Stale evidence is never shown as healthy.
+MAPE-K means: monitor customer outcomes and infrastructure; analyse the evidence; plan a bounded cause-directed repair; execute an approved or previously validated procedure; retain its evidence and outcome in Knowledge. Unknown failures require investigation. AI advice cannot execute commands. Two distinct verified incidents and explicit promotion are required before scoped automatic reuse. This is procedural learning, not retraining a model or learning arbitrary shell commands.
 
-```sh
-python3 tools/console.py --set-password
-bash tools/start_console.sh start
-```
+## Banking safeguards
 
-Use an SSH tunnel and open `http://127.0.0.1:8085`; see the
-[console runbook](docs/web-console.md). It is loopback only and has a separate
-password. Cloud credentials never enter a browser form. The first release
-selects approved configuration repairs; contract changes remain reviewed
-repository changes rather than arbitrary browser edits.
+Amounts use integer cents. Each request has account-scoped idempotency. Account identity comes from its credential. A separately pinned fixture checks exact ledger entries, balances and statement hash. API and database connections validate TLS identities. Separate database roles cannot rewrite the ledger; completed statements and audit records are protected from application mutation. Repairs must pass fresh independent end-to-end checks. A known integrity failure blocks automatic repairs.
 
-## What learns
+These are **DORA-informed prototype controls**, not a claim of DORA compliance or production banking readiness. The lab has single points of failure, a single operator, manual credential renewal and limited backup frequency. See the explicit [control gaps](docs/dora-control-mapping.md).
 
-Knowledge stores investigated causes, reviewed actions and verified outcomes.
-Two distinct verified occurrences and explicit promotion allow reuse only
-within the matching resource, reference, adapter and recipe scope. Changed
-scope requires revalidation; failed reuse revokes eligibility. The LLM offers
-advice but cannot invent executable capabilities. This is procedural learning,
-not model training or general prevention of unknown faults.
+## Verification
 
-## Verification status
+Run `bash tools/test_all.sh` on the healer. The live acceptance suite is `python3 tools/lab_shell.py python3 tools/test_bank_live.py --controlled-experiment`; it creates synthetic requests and restores a backup into a separate scratch database. Never use a production database for this exercise.
 
-```sh
-bash tools/test_all.sh
-```
+On 16 October 2026 all 16 live banking acceptance checks passed. Repeated repair experiments are documented separately when completed. Earlier hashing/nginx results do not validate this banking release. Detailed histories, credentials and private deployment references stay off GitHub.
 
-Live deployment was verified on 15 October 2026: 263 regression checks passed
-before retirement; the focused suite now passes all 166 retained checks.
-Nine core repair trials verified, browser approval restored network isolation,
-and Kubernetes replaced a worker Pod with the healer observe-only. After scope cleanup all 11 required checks and 14 active monitoring targets
-pass; the earlier 19-target count included the retired demos.
-Three validated procedures survived a controller restart. See the
-[live results and limitations](evidence/jobs-live-report.md).
-
-The two configuration rollout faults preserved job availability; their repair
-times are not downtime measurements. The worker-capacity fault did breach the
-job deadline. These are integration trials, not a statistical benchmark.
-
-Another application needs its own contract, probes, bounded repairs and tests.
-Enterprise identity, multi-tenancy, high availability and universal plug-and-play
-are future work; this lab does not establish enterprise readiness.
-
-## Only this use case is active
-
-The old nginx, DNS/Redis and checkpoint demonstrations have been retired.
-Their two VMs are stopped, their dashboards and probes are removed from active
-monitoring, and their scripts, reports and historical data are archived on the
-operator laptop. They are not part of this project's supported deployment.
-
-Seven running VMs support one application: healer, monitoring, Kubernetes
-control, two Kubernetes workers, PostgreSQL and the independent checker.
-Multiple Pods are replicas or supporting checks, not separate project use cases.
-The repository retains shared engine, transport and isolated simulation safety
-tests because they protect the job-service controller; no legacy demo launcher
-or legacy application installer remains.
+Seven VMs support this one service: healer, monitoring, Kubernetes control, two Kubernetes workers, PostgreSQL and an independent checker. The old application VMs remain stopped. Stable internal names such as `jobs-lab`, `job-api` and `state/jobs` are implementation identifiers, not additional applications.

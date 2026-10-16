@@ -46,3 +46,10 @@ Do not compare the 59.32% AIOpsLab result with the 96.67% SEAMS abstract result
 as if they shared a dataset, task definition or success criterion. Do not
 transfer Narya's production improvement to this lab. The lab measurements are
 stored separately and only support claims about this controlled environment.
+
+
+## Banking extension — 16 October 2026
+
+Focused questions: how to preserve and reconcile a customer statement through infrastructure repair; which operational-resilience controls can a small MAPE-K PoC demonstrate? Sources: [DNB DORA overview](https://www.dnb.nl/voor-de-sector/open-boek-toezicht/wet-regelgeving/dora/), [AFM resilience testing](https://www.afm.nl/nl-nl/sector/themas/belangrijke-europese-wet--en-regelgeving/dora/digitale-operationele-weerbaarheid), [DORA 2022/2554](https://eur-lex.europa.eu/eli/reg/2022/2554/oj), [RTS 2024/1774](https://eur-lex.europa.eu/eli/reg_del/2024/1774/oj), [PostgreSQL 16 TLS](https://www.postgresql.org/docs/16/libpq-ssl.html), [ISO 20022 definitions](https://www.iso20022.org/iso-20022-message-definitions), [Narya primary publication](https://www.usenix.org/conference/osdi20/presentation/levy), [IBM autonomic knowledge](https://research.ibm.com/publications/towards-knowledge-management-in-autonomic-systems).
+
+DNB/AFM and PostgreSQL pages were retrieved; EUR-Lex full-text retrieval was blocked, so indexed passages for Articles 11–13 and change control were consulted rather than claiming a full legal-text review. Narya and IBM publication abstracts support framing only; their production results are not transferred to this lab. The BIS d509 URL redirected to a 2020 consultation page and was not used as evidence of the final 2021 principles. No claim of exhaustive systematic review or legal compliance is made. Design decisions and gaps are in dora-control-mapping.md.

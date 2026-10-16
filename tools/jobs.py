@@ -1,5 +1,5 @@
 """Operator CLI for the job lab; submit work, inspect evidence and approve recipes."""
-import argparse,json,os,sys,time,urllib.request
+import argparse,base64,json,os,sys,time,ssl,urllib.request,uuid
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from mapek.jobs import JobsWorld,JobsOperator,ROOT,CONFIG
@@ -19,22 +19,22 @@ def build(state='state/jobs'):
 def request(path,data=None):
     config=json.loads((Path.home()/'.config/healer-jobs/client.json').read_text())
     req=urllib.request.Request(config['url']+path,data=None if data is None else json.dumps(data).encode(),headers={'Authorization':'Bearer '+config['token'],'Content-Type':'application/json'})
-    with urllib.request.urlopen(req,timeout=5) as response:return json.load(response)
+    with urllib.request.urlopen(req,context=ssl.create_default_context(cadata=base64.b64decode(config['ca']).decode()),timeout=5) as response:return json.load(response)
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--state',default='state/jobs');sub=p.add_subparsers(dest='command',required=True)
     for name in ('status','list','procedures','tick','export'):sub.add_parser(name)
-    submit=sub.add_parser('submit');submit.add_argument('payload')
-    result=sub.add_parser('result');result.add_argument('id',type=int)
+    submit=sub.add_parser('submit');submit.add_argument('--idempotency-key')
+    result=sub.add_parser('result');result.add_argument('id',type=lambda value:str(uuid.UUID(value)))
     show=sub.add_parser('show');show.add_argument('id',type=int)
-    for name in ('investigate','approve','reject','record-human','promote'):
+    for name in ('investigate','approve','reject','record-human','promote','suspend'):
         c=sub.add_parser(name);c.add_argument('id',type=int);c.add_argument('--who',required=True)
         if name!='promote':c.add_argument('--notes',required=True)
         if name in ('investigate','record-human'):c.add_argument('--recipe',required=True)
         if name=='investigate':c.add_argument('--cause',required=True)
     a=p.parse_args()
     if a.command in ('submit','result'):
-        print(json.dumps(request('/jobs',{'payload':a.payload}) if a.command=='submit' else request('/jobs/'+str(a.id)),indent=2));return
+        print(json.dumps(request('/statements',{'period':'2026-09','idempotency_key':a.idempotency_key or str(uuid.uuid4())}) if a.command=='submit' else request('/statements/'+str(a.id)),indent=2));return
     world,op,h=build(a.state)
     if a.command=='status':data=world.observe(False)
     elif a.command=='list':data=op.cases()
@@ -43,6 +43,7 @@ def main():
     elif a.command=='export':data={'cases':op.cases(),'procedures':op.procedures(),'audit':[dict(r) for r in op.db.execute('SELECT * FROM operator_audit ORDER BY id')]}
     elif a.command=='investigate':data=op.investigate(world,a.id,a.cause,['recipe_'+a.recipe],a.who,a.notes)
     elif a.command in ('approve','reject'):data={'saved':op.decide(a.id,a.command=='approve',a.who,a.notes)}
+    elif a.command=='suspend':op.suspend(a.id,a.who,a.notes);data={'suspended':a.id}
     elif a.command=='promote':op.promote(a.id,a.who);data={'promoted':a.id}
     elif a.command=='record-human':world.observe(False);data={'verified':op.record_human(world,a.id,['recipe_'+a.recipe],a.who,a.notes)}
     else:h.tick();data=[e.__dict__ for e in h.events[-1:]]

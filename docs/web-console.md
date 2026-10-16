@@ -1,8 +1,8 @@
 # Operator web console
 
-The console is an interface to the existing job-service operator workflow.
+The console is an interface to the bank statement operator workflow.
 It does not grant the model new repair capabilities or bypass verification.
-Its first supported application is `jobs-lab`; see [the use case](focused-use-case.md).
+Its business service is bank statement generation; its Kubernetes namespace is `jobs-lab`; see [the use case](focused-use-case.md).
 
 ## Install on the healer
 
@@ -10,7 +10,7 @@ Use the existing Python 3 environment and checkout. No frontend build or npm
 dependencies are needed. Run these commands as the same Ubuntu user as the loop:
 
 ```sh
-cd ~/projects/job-service-console
+cd ~/projects/bank-statements
 python3 tools/console.py --set-password
 bash tools/start_console.sh start
 ```
@@ -34,7 +34,9 @@ SSH. This implementation is not intended to be published directly to a network.
 
 ## Demonstrate the story
 
-1. Overview: show independent job completion, controller mode and every required
+First open **Request a statement** to submit and download an actual synthetic monthly statement. **Follow the self-healer** contains the checks and incident workflow below. **Inspect learned memory** contains procedure evidence, promotion and suspension. See [the video walkthrough](demo-video.md).
+
+1. Service overview: show independent statement completion, controller mode and every required
    cause/security check. Stale or absent evidence displays Unknown, never healthy.
 2. Incidents: inspect symptoms, evidence, uncertainty and bounded proposed plan.
    Investigate an unknown cause and select an already reviewed recipe. Model
@@ -43,14 +45,14 @@ SSH. This implementation is not intended to be published directly to a network.
    and the engine checks that resource identity and evidence are still current.
 4. Alternatively repair through your normal trusted administration path, then
    choose Verify my manual repair with the corresponding reviewed recipe. A
-   fresh independent job and cause-specific checks must pass before it counts.
+   fresh independent statement and cause-specific checks must pass before it counts.
 5. Repair memory: inspect cases, scopes and audit entries. After two distinct
    verified occurrences, request promotion. Promotion itself is guarded by the
    existing operator code. A label saying validated is historical state, not
    proof of eligibility in today's scope; current eligible counts are exported
    by the job loop and dashboard.
 6. Repeat the same controlled failure and verify actual automatic repair and a
-   fresh job outcome. Keep timestamps and raw evidence; do not infer success
+   fresh statement outcome. Keep timestamps and raw evidence; do not infer success
    from a green button or cached observation.
 
 Application contract lists the approved configuration and repair boundaries.

@@ -80,4 +80,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(matching_procedure([old,new],case)['id'],2)
         with self.assertRaises(RuntimeError):matching_procedure([old],case)
 
+class BankPolicyTests(unittest.TestCase):
+    def test_database_node_and_network_procedures_cannot_be_promoted(self):
+        from mapek.jobs import JobsOperator
+        for action in ('recipe_job_database','recipe_job_compute','recipe_job_network'):
+            op=JobsOperator(':memory:')
+            op.db.execute("INSERT INTO procedures(id,scope,cause,symptoms,actions,status,created) VALUES(1,'{}','known','[]',?,'candidate',0)",(json.dumps([action]),));op.db.commit()
+            with self.assertRaises(ValueError):op.promote(1,'reviewer')
+
 if __name__=='__main__':unittest.main(verbosity=2)

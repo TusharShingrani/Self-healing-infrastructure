@@ -1,3 +1,5 @@
+> **Historical release evidence.** This file describes the earlier hashing workload or scope cleanup. It does not validate the bank-statement release. See [the current banking use case](../docs/focused-use-case.md).
+
 # Preliminary job pilots retained separately
 
 `jobs-workers-learning.json` recorded three capacity restorations using the

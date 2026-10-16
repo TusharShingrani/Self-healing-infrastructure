@@ -196,6 +196,10 @@ class Advisor:
     def _prompt(self, target, reason, symptoms, observation, cause, recent):
         safe_obs = {k: v for k, v in observation.items() if k != "probe_error"}
         safe_obs["probe_error"] = str(observation.get("probe_error", ""))[:300]
+        if observation.get('monitor_source')=='independent-job-client-and-kubernetes':
+            safe_obs={k:observation.get(k) for k in ('monitor_source','infrastructure_checks','reachable','service_running','config_correct','http_ok')}
+            safe_obs['client']={k:observation.get('client',{}).get(k) for k in ('healthy','integrity_check','correct_result','seconds')}
+            recent=[]  # No statements, account ids, receipt ids, VM identities or raw diagnostics leave the lab.
         return (
             f"Instance: {target}\n"
             f"Why the loop is asking: {reason}\n"
@@ -221,14 +225,14 @@ class Advisor:
                           "Never suggest platform reboot or rebuild for this composite. Available typed recipes: "
                           + ', '.join(sorted(a for a in CATALOGUE if a.startswith('recipe_'))))
             elif observation.get('monitor_source') == 'independent-job-client-and-kubernetes':
-                system=("You advise a human investigating a private Kubernetes job-processing lab. "
-                        "API and worker Pods process bounded jobs into SHA-256 results stored in PostgreSQL on db-1. "
+                system=("You advise a human investigating a private fictional-bank statement lab. "
+                        "API and worker Pods generate monthly EUR statements from an immutable fictional ledger in PostgreSQL. Exact entries, integer-cent balances and receipt durability are independently verified. A hash alone is insufficient. "
                         "An external client retains receipts and verifies completion and durable result integrity. "
                         "A policy witness verifies permitted DB access and forbidden monitor access. "
                         "Distinguish Kubernetes native restarts from a cause repair. Use exact checks, deployment names "
                         "and evidence, never infer a process crash from readiness alone. Unknown incidents require human "
                         "investigation binding and approval. You cannot execute, grant privileges, restore arbitrary data, "
-                        "or authorize destructive actions. Choose only a matching reviewed recipe or return no actions. "
+                        "or authorize destructive actions. Never rewrite ledger entries or completed statements. Choose only a matching reviewed recipe or return no actions. "
                         "Available recipes: "+', '.join(sorted(a for a in CATALOGUE if a.startswith('recipe_job_'))))
             data, model = self.provider.ask(system, redact(self._prompt(
                 target, reason, symptoms, observation, cause, recent)))

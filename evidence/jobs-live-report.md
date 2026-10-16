@@ -1,3 +1,5 @@
+> **Historical release evidence.** This file describes the earlier hashing workload or scope cleanup. It does not validate the bank-statement release. See [the current banking use case](../docs/focused-use-case.md).
+
 # Live job-service validation â€” 15 October 2026
 
 

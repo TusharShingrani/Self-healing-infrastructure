@@ -6,9 +6,9 @@ import psycopg2
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            with psycopg2.connect(dbname='jobs_lab',user='postgres',connect_timeout=3) as db:
+            with psycopg2.connect(dbname='jobs_lab',user='postgres',connect_timeout=3,options='-c default_transaction_read_only=on') as db:
                 with db.cursor() as cursor:
-                    cursor.execute("SELECT count(*) FILTER(WHERE status='pending'),count(*) FILTER(WHERE status='done'),COALESCE(extract(epoch FROM now()-min(created_at) FILTER(WHERE status='pending')),0),count(*) FILTER(WHERE status='done' AND result IS NULL) FROM jobs")
+                    cursor.execute("SELECT count(*) FILTER(WHERE status='pending'),count(*) FILTER(WHERE status='done'),COALESCE(extract(epoch FROM now()-min(created_at) FILTER(WHERE status='pending')),0),count(*) FILTER(WHERE status='done' AND (document IS NULL OR document_hash IS NULL)) FROM statement_requests")
                     pending,done,age,invalid=cursor.fetchone()
             data={'up':1,'pending':pending,'done':done,'oldest_pending_seconds':float(age),'invalid_results':invalid}
         except psycopg2.Error:data={'up':0}

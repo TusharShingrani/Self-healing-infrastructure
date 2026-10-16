@@ -1,38 +1,9 @@
-# Project working brief
+# Current project brief
 
-ONE use case: keep a Kubernetes background-job service completing correct
-results within 30 seconds. Read README.md, docs/focused-use-case.md,
-docs/architecture.md, docs/jobs-deployment.md and docs/web-console.md.
+ONE use case: fictional bank monthly account-statement generation. Read README.md, docs/focused-use-case.md, docs/architecture.md, docs/dora-control-mapping.md and docs/demo-video.md.
 
-Seven VMs are active: healer, monitor, Kubernetes control, two workers,
-PostgreSQL, independent checker. Old app-1/app-2 are stopped with disks retained;
-old nginx/DNS/Redis/checkpoint experiments are archived on the laptop. Do not
-restart or reintroduce them. Do not expand the fault catalogue without a scoped
-research reason. Never delete detailed experiment histories or upload them;
-the user explicitly chose to keep them on the laptop.
+The live release is ~/projects/bank-statements. Seven VMs support API/worker containers in Kubernetes, PostgreSQL, an independent checker, monitoring and the healer. Old app VMs stay stopped. Stable jobs-lab/job-api/state/jobs names are internal identifiers, not separate business services.
 
-The job controller and console run from ~/projects/job-service-console.
-Core scenarios: database endpoint, worker desired replicas, worker memory
-settings. Network-policy drift is a supporting security misuse case within
-this same application. Kubernetes owns Pod lifecycle. The healer owns reviewed
-configuration correction, evidence, operator decisions, verification and memory.
+Never change ledger facts, delete accepted requests or rewrite completed statements to restore health. Unknown/integrity failures require investigation. AI is advisory and receives a restricted observation projection. Fixed reviewed configuration recipes alone may be promoted after two distinct verified occurrences; database/network/compute remain approval-only. Preserve Knowledge and procedure scope. Changing mapek/jobs.py, mapek/kubernetes.py or tools/job-host/probe.py invalidates scope and requires deliberate revalidation.
 
-Unknowns require investigation. AI advice is non-executable. Two independently
-verified occurrences plus promotion allow scoped recurring repair. Preserve
-state/jobs and state/expansion.json, pinned host keys and private credentials.
-Changes to mapek/jobs.py, mapek/kubernetes.py or tools/job-host/probe.py affect
-procedure scope; revalidate deliberately. Do not change these just to rename
-shared modules. mapek/infrastructure.py now contains shared investigation only.
-mapek/educloud.py supplies pinned transport; its generic destructive allowlist
-in config/lab.json is empty. No healer/database destruction is authorized.
-
-Run bash tools/test_all.sh and verify fresh independent jobs, all 11 checks,
-active monitor targets and the single provisioned Grafana dashboard after
-changes. Historical 263-check total predates retirement; report current counts
-separately. Nine live core occurrences are integration trials, not a statistical
-benchmark. Endpoint/memory rolling updates preserved availability; only worker
-capacity zero breached the deadline. See evidence/jobs-live-report.md.
-
-Credentials stay outside Git. User service-manager credentials need restoring
-privately after host reboot; Kubernetes token renewal is not automated. Console
-is single-operator loopback-only; enterprise readiness is not established.
+Credentials, generated deployment references, PKI keys, raw histories and detailed evidence remain private. The user explicitly declined publication of histories. Do not destroy protected VMs or restart retired services. Run tools/test_all.sh and verify independent banking checks after changes. DORA-informed PoC does not mean DORA compliant or production ready. Consult current evidence rather than historical nginx/hashing test counts.

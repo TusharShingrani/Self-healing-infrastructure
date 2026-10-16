@@ -11,7 +11,7 @@ def put(world,path,data,private=False):
 
 def run(name):
     world=transport(name)
-    for relative in ('tools/install_expansion_host.sh','tools/job-host/db_metrics.py','tools/job-host/probe.py','tools/job-host/app.py','tools/job-host/policy_witness.py','tools/job-host/Dockerfile'):
+    for relative in ('tools/install_expansion_host.sh','tools/job-host/db_metrics.py','tools/job-host/probe.py','tools/job-host/app.py','tools/job-host/banking.py','tools/job-host/bank-oracle.json','tools/job-host/policy_witness.py','tools/job-host/Dockerfile'):
         put(world,'/home/ubuntu/job-lab/'+relative,(ROOT/relative).read_bytes())
     role=CONFIG['nodes'][name]['role']
     if role=='worker':
@@ -24,7 +24,9 @@ def run(name):
     if role=='observer':
         db=transport('db-1');ok,raw,_=db._probe('sudo cat /etc/healer-jobs/secrets.json')
         if not ok:raise RuntimeError('Restricted client token unavailable')
-        cfg={'url':CONFIG['api_url'],'token':json.loads(raw)['api_token']}
+        ok,bank_ca,_=db._probe('sudo cat /etc/healer-bank/pki/ca.crt')
+        if not ok:raise RuntimeError('Prepare bank TLS before provisioning the observer')
+        cfg={'url':CONFIG['api_url'],'token':json.loads(raw)['api_token'],'ca':base64.b64encode(bank_ca.encode()).decode()}
         put(world,'/etc/healer-jobs/client.json',json.dumps(cfg).encode(),True)
     world._ssh.timeout=1200  # Provisioning is separate from short repair/probe timeouts.
     ok,out,err=world._probe('sudo bash /home/ubuntu/job-lab/tools/install_expansion_host.sh '+shlex.quote(role)+' '+shlex.quote(CONFIG['k3s_version']))
