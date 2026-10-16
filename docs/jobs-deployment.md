@@ -79,7 +79,7 @@ application's private policy and a fixed unrelated lab endpoint. It is not a
 public scan. Database stop and worker-VM stop remain explicit supporting
 diagnostics, excluded from the default research sequence.
 
-The banking acceptance run on 16 October 2026 passed all 16 checks. Historical hashing-job trials do not validate the statement release. Run from `~/projects/bank-statements`; install Ubuntu's `python3-psycopg2` for database acceptance tests. Generated private client files and certificates must not enter Git.
+The banking acceptance run on 16 October 2026 passed all 18 checks. Historical hashing-job trials do not validate the statement release. Run from `~/projects/bank-statements`; install Ubuntu's `python3-psycopg2` for database acceptance tests. Generated private client files and certificates must not enter Git.
 
 `prepare_bank.py` must precede `deploy_jobs.py`: it provisions the synthetic schema, restricted roles and private TLS material. Provision the independent checker after the new client trust configuration exists. Deploy the updated database metrics collector too. Private CA lifetime is 365 days; leaf certificates are 90 days. Renewal is manual: plan it before expiry, preserve trust and revalidate deployment scope. Do not rerun preparation blindly over an established lab; back up first and inspect its schema/TLS changes.
 
@@ -125,3 +125,5 @@ For a controller-only recovery, stop the controller and console, preserve the cu
 For a database incident, stop automatic changes and preserve the live database/evidence. Restore the dump into a separately named test database first and reconcile a previously acknowledged statement and the ledger. Do not overwrite the live database or replay an old backup over newly accepted requests through a healer recipe. Choosing a production restore point, handling newer accepted requests and any data-loss acceptance is an administrator-led recovery decision outside the automatic catalogue. The acceptance test proves a scratch restore; a complete replacement of every VM and private key has not been rehearsed.
 
 Private API/database leaf certificates expire after 90 days. The dashboard alerts within 14 days of API certificate expiry; certificate renewal and trust redistribution remain an operator task. Keep the CA key in the private backup, restrict its access, renew before expiry and verify both endpoint identity and customer correctness afterward. Never use an insecure TLS fallback.
+
+The read-only `check_bank_continuity.py` evaluates a consistent database snapshot. It compares completed statements with the exact oracle, verifies acceptance/completion audit counts and missing accepted records, and distinguishes newly pending work from requests older than the 30-second deadline. An in-flight request is not an incorrect completed statement.

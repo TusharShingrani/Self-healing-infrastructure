@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-16",
+  "service": "bank-statement-generation",
+  "regression_checks_passed": 187,
+  "live_acceptance_checks": {
+    "eight_concurrent_retries_one_request": true,
+    "authentication_refused": true,
+    "cross_account_read_refused": true,
+    "caller_account_override_refused": true,
+    "legacy_hash_endpoint_removed": true,
+    "untrusted_api_certificate_refused": true,
+    "wrong_api_identity_refused": true,
+    "exact_entries_and_balances": true,
+    "document_integrity_hash": true,
+    "api_cannot_change_ledger": true,
+    "worker_cannot_delete_requests": true,
+    "api_cannot_complete_requests": true,
+    "completed_statement_immutable": true,
+    "one_acceptance_audit_event": true,
+    "backup_restores_acknowledged_statement": true,
+    "restored_ledger_reconciles": true,
+    "empty_database_schema_seed_reconciles": true,
+    "empty_database_roles_restricted": true
+  },
+  "core_trials": {
+    "settings": {
+      "runs": 10,
+      "verified": 10,
+      "customer_failure_occurrences": 0,
+      "median_seconds": 17.53,
+      "minimum_seconds": 16.49,
+      "maximum_seconds": 21.08,
+      "automatic_occurrences": 8
+    },
+    "workers": {
+      "runs": 10,
+      "verified": 10,
+      "customer_failure_occurrences": 10,
+      "median_seconds": 91.79,
+      "minimum_seconds": 83.43,
+      "maximum_seconds": 96.74,
+      "automatic_occurrences": 8
+    },
+    "limits": {
+      "runs": 10,
+      "verified": 10,
+      "customer_failure_occurrences": 0,
+      "median_seconds": 17.74,
+      "minimum_seconds": 16.89,
+      "maximum_seconds": 24.84,
+      "automatic_occurrences": 8
+    }
+  },
+  "total_core_trials": 30,
+  "automatic_core_trials": 24,
+  "supporting_browser_policy_repair_verified": true,
+  "real_advisor_model_observed": "gemini-3.5-flash-lite",
+  "promoted_core_procedures_after_restart": 3,
+  "monitoring_targets_up": 14,
+  "monitoring_targets_total": 14,
+  "dashboard_queries_with_data": 21,
+  "healthy_baseline_samples": 12,
+  "baseline_new_incidents": 0,
+  "baseline_completion_median_seconds": 0.102,
+  "post_core_reconciled_statements": 7808,
+  "post_core_missing_accepted_records": 0,
+  "raw_evidence_location": "private laptop archive; not published"
+}

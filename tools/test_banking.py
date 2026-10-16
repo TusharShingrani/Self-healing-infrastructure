@@ -83,6 +83,19 @@ class HttpTests(unittest.TestCase):
             self.assertEqual(connect.call_args.kwargs['user'],'bank_api')
 
 class AdvisorPrivacyTests(unittest.TestCase):
+    def test_advice_deduplication_is_scoped_to_bank_and_resource_reference(self):
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+        from mapek.advisor import Advisor
+        from mapek.knowledge import Knowledge
+        knowledge=Knowledge(':memory:')
+        knowledge.open_advice('jobs-lab','no diagnosis matched',['service_down'])
+        advisor=Advisor(knowledge,provider=None,run_async=False)
+        obs={'monitor_source':'independent-job-client-and-kubernetes','incident_evidence':{'plan':{'scope':{'reference':'one'}}}}
+        self.assertIsNotNone(advisor.request('jobs-lab','no diagnosis matched',['service_down'],obs))
+        self.assertIsNone(advisor.request('jobs-lab','no diagnosis matched',['service_down'],obs))
+        obs['incident_evidence']['plan']['scope']['reference']='replacement'
+        self.assertIsNotNone(advisor.request('jobs-lab','no diagnosis matched',['service_down'],obs))
+
     def test_banking_prompt_excludes_statement_and_identity_details(self):
         sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
         from mapek.advisor import Advisor

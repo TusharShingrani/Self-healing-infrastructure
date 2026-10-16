@@ -3,9 +3,10 @@
 When the loop is stuck (no rule matches, a repair did not verify, or every
 escalation level is used up) it asks for advice. The advisor asks an LLM for a
 diagnosis and a plan, and stores the answer in Knowledge as *pending*. Nothing
-runs. A person reviews the advice with tools/knowledge.py and approves or
-rejects it. Approved advice becomes a diagnosis the loop may use next time the
-same symptoms appear.
+runs. For the banking service a person reviews advice in the console, records an
+investigation binding to a reviewed recipe, and separately approves the repair.
+Advice is never itself executable. The offline simulation also retains its
+older approved-advice diagnosis fixture.
 
 What keeps this safe:
 
@@ -27,6 +28,7 @@ credentials.
 """
 
 import json
+import hashlib
 import copy
 import os
 import threading
@@ -172,7 +174,12 @@ class Advisor:
         return self.provider is not None
 
     def request(self, target, reason, symptoms, observation, cause="", recent=()):
-        advice_id = self.knowledge.open_advice(target, reason, symptoms)
+        request_reason=reason
+        if observation.get('monitor_source')=='independent-job-client-and-kubernetes':
+            scope=observation.get('incident_evidence',{}).get('plan',{}).get('scope',{'service':'bank-statement-generation'})
+            digest=hashlib.sha256(json.dumps(scope,sort_keys=True,default=str).encode()).hexdigest()[:16]
+            request_reason=reason+' [bank-statement-generation:'+digest+']'
+        advice_id = self.knowledge.open_advice(target, request_reason, symptoms)
         if advice_id is None:
             return None                               # already asked, still open
         if self.provider is None:

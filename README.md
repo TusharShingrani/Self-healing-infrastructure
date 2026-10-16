@@ -12,6 +12,7 @@ The application runs as API and worker containers in Kubernetes, with PostgreSQL
 - [Research questions and literature](docs/research-synthesis.md)
 - [Operator console](docs/web-console.md) and [demo-video walkthrough](docs/demo-video.md)
 - [Deployment and recovery](docs/jobs-deployment.md)
+- [Verified banking experiments and findings](evidence/banking-validation.md)
 
 ## What you see
 
@@ -29,6 +30,6 @@ These are **DORA-informed prototype controls**, not a claim of DORA compliance o
 
 Run `bash tools/test_all.sh` on the healer. The live acceptance suite is `python3 tools/lab_shell.py python3 tools/test_bank_live.py --controlled-experiment`; it creates synthetic requests and restores a backup into a separate scratch database. Never use a production database for this exercise.
 
-On 16 October 2026 all 16 live banking acceptance checks passed. Repeated repair experiments are documented separately when completed. Earlier hashing/nginx results do not validate this banking release. Detailed histories, credentials and private deployment references stay off GitHub.
+On 16 October 2026 all 187 retained regression checks, 18 live banking acceptance checks and 30 core repair occurrences passed. Twenty-four occurrences used promoted automatic repair. All 14 monitoring targets and 21 dashboard queries were verified. See the [results and limits](evidence/banking-validation.md). Earlier hashing/nginx results do not validate this banking release. Detailed histories, credentials and private deployment references stay off GitHub.
 
 Seven VMs support this one service: healer, monitoring, Kubernetes control, two Kubernetes workers, PostgreSQL and an independent checker. The old application VMs remain stopped. Stable internal names such as `jobs-lab`, `job-api` and `state/jobs` are implementation identifiers, not additional applications.
