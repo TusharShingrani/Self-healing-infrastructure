@@ -1,4 +1,4 @@
-"""Install only monitoring for the Kubernetes job-processing use case; keep rollback files."""
+"""Install only monitoring for the bank statement use case; keep rollback files."""
 import argparse,base64,json,os,shlex,sys,subprocess
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
@@ -6,7 +6,7 @@ from mapek.cloudstack import CloudStack
 from mapek.educloud import EduCloudWorld,load_lab
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--retire-legacy',action='store_true',help='Deprecated compatibility flag; job-only monitoring is always installed')
+parser.add_argument('--retire-legacy',action='store_true',help='Deprecated compatibility flag; bank-statement monitoring is always installed')
 args=parser.parse_args()
 for unit in ('healer-loop','healer-infrastructure'):
     if subprocess.run(['systemctl','--user','is-active','--quiet',unit]).returncode==0:
@@ -81,7 +81,7 @@ try:
  import pwd,grp
  for p in paths.values():
   if 'grafana' in str(p):os.chown(p,pwd.getpwnam('grafana').pw_uid,grp.getgrnam('grafana').gr_gid)
- print('Only job-processing monitoring is active; old dashboards and rules archived for rollback')
+ print('Only bank-statement monitoring is active; old dashboards and rules archived for rollback')
 except Exception:
  for p,data in retired.items():p.write_bytes(data)
  for p,data in paths_before.items():

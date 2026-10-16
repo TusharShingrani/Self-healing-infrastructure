@@ -48,10 +48,18 @@ BEGIN INSERT INTO public.bank_audit(event,request_id,actor) VALUES(
  CASE WHEN TG_OP='INSERT' THEN 'statement_accepted' ELSE 'statement_completed' END,NEW.id,session_user); RETURN NEW; END $$;
 DROP TRIGGER IF EXISTS statement_audit ON statement_requests;
 CREATE TRIGGER statement_audit AFTER INSERT OR UPDATE ON statement_requests FOR EACH ROW EXECUTE FUNCTION bank_record_event();
-REVOKE ALL ON bank_accounts,bank_ledger,statement_requests,bank_audit FROM PUBLIC,jobs_app,bank_api,bank_worker;
+REVOKE ALL ON bank_accounts,bank_ledger,statement_requests,bank_audit FROM PUBLIC,bank_api,bank_worker;
 GRANT SELECT ON bank_accounts,statement_requests TO bank_api;
 GRANT INSERT(id,account_id,period,idempotency_key) ON statement_requests TO bank_api;
 GRANT SELECT ON bank_accounts,bank_ledger,statement_requests TO bank_worker;
 GRANT UPDATE(status,document,document_hash,completed_at) ON statement_requests TO bank_worker;
 ALTER ROLE bank_api SET statement_timeout='5s';
 ALTER ROLE bank_worker SET statement_timeout='5s';
+
+-- The retired hashing role is optional on a fresh deployment.
+DO $$ BEGIN
+ IF EXISTS(SELECT 1 FROM pg_roles WHERE rolname='jobs_app') THEN
+  REVOKE ALL ON bank_accounts,bank_ledger,statement_requests,bank_audit FROM jobs_app;
+  ALTER ROLE jobs_app NOLOGIN;
+ END IF;
+END $$;

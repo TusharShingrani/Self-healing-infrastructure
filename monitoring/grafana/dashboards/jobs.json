@@ -106,7 +106,7 @@
       },
       "targets": [
         {
-          "expr": "job_client_completion_seconds",
+          "expr": "job_client_completion_seconds and on() (job_client_healthy == 1)",
           "refId": "A",
           "legendFormat": "{{check}}{{deployment}}{{pod}}{{node}}"
         }

@@ -29,7 +29,8 @@ flowchart LR
  K --> A
  K --> P
  V --> M
- AI[AI explanation only] --> H
+ M -.->|Sanitised operational checks| AI[Optional AI explanation]
+ AI -.->|Hypotheses without execution authority| H
 ```
 
 `tools/jobs_service.py` runs the loop; `mapek/jobs.py` is the banking managed-element adapter. `mapek/loop.py` and `stages.py` implement control stages. `JobsOperator` and the shared investigation store enforce fixed recipes, current scope, approval and learning. The console reads completed-tick snapshots and invokes typed operator actions; it does not run a second loop.

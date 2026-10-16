@@ -24,6 +24,7 @@ def main():
                       'cases':[{k:c[k] for k in ('id','cause','status','procedure_id')} for c in cases[:20]],'procedures':procedures,'events':[e.__dict__ for e in h.events[-1:]]}
             _,current_scope=op.context(world,[], 'unknown',[],obs)
             snapshot['scope']=current_scope
+            snapshot['advisor_available']=h.advisor is not None and h.advisor.available
             values={'healthy':int(world.health(obs)),'paused':int(h.config=='A'),'business_healthy':int(obs.get('http_ok') is True),'ticks_total':ticks,'errors_total':errors,
                     'last_tick_seconds':snapshot['time'],'tick_seconds':snapshot['tick_seconds'],'pending':sum(c['status']=='pending' for c in cases),
                     'validated':sum(p['status']=='validated' and p['scope']==current_scope for p in procedures),'advisor_available':int(h.advisor is not None and h.advisor.available),

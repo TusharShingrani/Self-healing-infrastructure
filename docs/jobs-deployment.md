@@ -111,3 +111,17 @@ configuration with job-only targets, archives prior files for rollback, and
 provisions only the job dashboard. Do not run old experiment installers.
 Historical files and detailed results stay in laptop archives. Recheck host
 metrics as well as workload checks after any monitoring change.
+
+## Fresh-deployment boundary
+
+Base database provisioning creates PostgreSQL and the private database, then checks `pg_isready`. Statement schema/roles/TLS are created by the separate bank preparation phase; the contract exporter can report unready until that phase completes. The retired hashing role is optional and disabled when present; no hashing queue or deletion cron is created on a fresh host. Existing historical tables are preserved. The banking cutover was live tested on the existing seven-VM lab; a complete empty-project redeployment of all VMs has not been rehearsed.
+
+## Recovery and key preservation
+
+`bank_backup.py` includes the database dump, consistent controller SQLite copies, generated resource references, private database PKI/credentials and private healer clients/host pins. Its directory is mode 0700. Copy the complete directory to the protected laptop backup location and check archive readability; it contains private keys and must never be uploaded to GitHub. Cloud/model credentials held only in the service manager still need private re-entry after a host restart.
+
+For a controller-only recovery, stop the controller and console, preserve the current state, restore matching `operator.db` and `knowledge.db` copies under `state/jobs`, and restore the private clients and reviewed references. Check resource identities against EduCloud before reconnecting. A replacement VM or changed reference requires revalidation; do not change host pins just to suppress an unexplained warning. Restart one controller only and verify fresh statements and every required check.
+
+For a database incident, stop automatic changes and preserve the live database/evidence. Restore the dump into a separately named test database first and reconcile a previously acknowledged statement and the ledger. Do not overwrite the live database or replay an old backup over newly accepted requests through a healer recipe. Choosing a production restore point, handling newer accepted requests and any data-loss acceptance is an administrator-led recovery decision outside the automatic catalogue. The acceptance test proves a scratch restore; a complete replacement of every VM and private key has not been rehearsed.
+
+Private API/database leaf certificates expire after 90 days. The dashboard alerts within 14 days of API certificate expiry; certificate renewal and trust redistribution remain an operator task. Keep the CA key in the private backup, restrict its access, renew before expiry and verify both endpoint identity and customer correctness afterward. Never use an insecure TLS fallback.

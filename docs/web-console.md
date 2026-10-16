@@ -81,3 +81,9 @@ Only one console process is supported. The loop's own freshness/ownership guards
 still apply to every executed repair. Long-running manual verification is a
 synchronous request; inspect the incident before retrying after a disconnection.
 Do not deploy a second controller against the same state and resources.
+
+## AI availability
+
+The advice panel explicitly distinguishes provider availability from recorded advice. A model is optional: the MAPE-K controller, human investigation and validated procedures work without it. Provider credentials are configured privately in the healer user's service-manager environment, never through the console or Git. A working model call is separate evidence from a correct diagnosis; absence or failure must remain visible and must never authorise execution.
+
+Each procedure also lists recent verified incident occurrences. Open one to inspect its before/after evidence and distinguish an operator-reviewed occurrence from automatic reuse. These history links explain the learning evidence; backend promotion and execution guards remain authoritative.

@@ -5,7 +5,7 @@ items=[
  ('Are customer statements correct and timely?','job_client_healthy','stat'),
  ('Managed infrastructure contract','job_healer_healthy','stat'),
  ('Last independent sample age (seconds)','time()-job_client_last_sample_seconds','stat'),
- ('Statement completion time (seconds)','job_client_completion_seconds','timeseries'),
+ ('Statement completion time (seconds)','job_client_completion_seconds and on() (job_client_healthy == 1)','timeseries'),
  ('Database available','job_database_up','stat'),
  ('Pending and completed statements','{__name__=~"job_database_pending|job_database_done"}','timeseries'),
  ('Oldest pending statement (seconds)','job_database_oldest_pending_seconds','timeseries'),

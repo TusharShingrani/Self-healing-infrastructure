@@ -80,15 +80,31 @@ try:
  with dump.open('rb') as f:subprocess.run(['pg_restore','--no-owner','--no-acl','--exit-on-error','-d',scratch],stdin=f,check=True,stdout=subprocess.DEVNULL)
  with psycopg2.connect(dbname=scratch,user='postgres') as restored:
   with restored.cursor() as c:
-   c.execute('SELECT document,document_hash FROM statement_requests WHERE id=%s',(ident,));row=c.fetchone();checks['backup_restores_acknowledged_statement']=row is not None and row[1]==EXPECTED_HASH
+   c.execute('SELECT document,document_hash FROM statement_requests WHERE id=%s',(ident,));row=c.fetchone();checks['backup_restores_acknowledged_statement']=row is not None and row[0]==EXPECTED_DOCUMENT and row[1]==EXPECTED_HASH
    c.execute("SELECT count(*),sum(amount_cents) FROM bank_ledger WHERE account_id='DEMO-NL-001'");row=c.fetchone();checks['restored_ledger_reconciles']=row==(5,192206)
 finally:
  if 'restored' in locals():restored.close()
  # Only the unique test copy is removed; the private dump is retained.
  assert scratch.startswith('bank_restore_') and scratch!='jobs_lab'
  subprocess.run(['dropdb',scratch],check=True)
+# Also exercise the current schema against an empty disposable database.
+fresh='bank_bootstrap_'+uuid.uuid4().hex
+subprocess.run(['createdb',fresh],check=True)
+try:
+ subprocess.run(['psql','-d',fresh,'-v','ON_ERROR_STOP=1'],input=EXPECTED_SCHEMA,text=True,check=True,stdout=subprocess.DEVNULL)
+ bootstrap=psycopg2.connect(dbname=fresh,user='postgres')
+ try:
+  with bootstrap.cursor() as c:
+   c.execute("SELECT count(*),sum(amount_cents) FROM bank_ledger WHERE account_id='DEMO-NL-001'")
+   checks['empty_database_schema_seed_reconciles']=c.fetchone()==(5,192206)
+   c.execute("SELECT has_table_privilege('bank_api','bank_ledger','UPDATE'),has_table_privilege('bank_worker','statement_requests','DELETE')")
+   checks['empty_database_roles_restricted']=c.fetchone()==(False,False)
+ finally:bootstrap.close()
+finally:
+ assert fresh.startswith('bank_bootstrap_') and fresh!='jobs_lab'
+ subprocess.run(['dropdb',fresh],check=True)
 print(json.dumps(checks))
-'''.replace('IDENT',repr(ident)).replace('EXPECTED_HASH',repr(expected))
+'''.replace('IDENT',repr(ident)).replace('EXPECTED_HASH',repr(expected)).replace('EXPECTED_DOCUMENT',repr(oracle)).replace('EXPECTED_SCHEMA',repr((ROOT/'tools/job-host/bank_schema.sql').read_text()))
     # Run as postgres, with its own home rather than any production credentials.
     code=code.replace("dump=Path('/home/ubuntu')", "dump=Path('/var/lib/postgresql')")
     db._ssh.timeout=180;ok,raw,err=db._probe('sudo -u postgres python3 -c '+shlex.quote(code))

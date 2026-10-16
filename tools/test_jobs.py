@@ -81,6 +81,15 @@ class Tests(unittest.TestCase):
         with self.assertRaises(RuntimeError):matching_procedure([old],case)
 
 class BankPolicyTests(unittest.TestCase):
+    def test_integrity_incident_refuses_configuration_actions_before_mutation(self):
+        from unittest.mock import Mock
+        for recipe in ('job_config','job_workers','job_template'):
+            world=SimpleNamespace(ownership=Mock(return_value={}),latest={'infrastructure_checks':{'integrity':False}},kube=Mock())
+            ok,detail=JobsWorld.run_recipe(world,recipe)
+            self.assertFalse(ok)
+            self.assertIn('integrity incident',detail)
+            world.kube.resource.assert_not_called()
+
     def test_database_node_and_network_procedures_cannot_be_promoted(self):
         from mapek.jobs import JobsOperator
         for action in ('recipe_job_database','recipe_job_compute','recipe_job_network'):

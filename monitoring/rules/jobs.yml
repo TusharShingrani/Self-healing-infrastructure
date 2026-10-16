@@ -51,3 +51,7 @@ groups:
         expr: probe_ssl_earliest_cert_expiry{job="jobs_readiness"} - time() < 1209600
         labels: {severity: warning}
         annotations: {summary: "Statement API certificate expires within 14 days; renew through reviewed PKI workflow"}
+      - alert: BankStatementIntegrityFailed
+        expr: job_healer_check{check="integrity"} == 0
+        labels: {severity: critical}
+        annotations: {summary: "Statement or retained receipt failed reconciliation; preserve evidence and investigate, never rewrite ledger data"}

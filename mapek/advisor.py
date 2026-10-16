@@ -214,17 +214,7 @@ class Advisor:
         model = getattr(self.provider, "model", "unknown")
         try:
             system = SYSTEM
-            if observation.get('monitor_source') == 'direct-dependency-transaction':
-                system = ("You advise a human investigating a synthetic infrastructure transaction on Ubuntu VMs. "
-                          "app-1 runs HTTP :8088 and /var/lib/healer-stack/checkpoint; app-2 runs dedicated DNS :1053 "
-                          "and authenticated Redis :6380 with a 64 MiB budget. These are not nginx checks. "
-                          "Use the supplied independent probes and incident evidence, distinguish failed measurements "
-                          "from failed dependencies, and name precise checks and locations. You cannot execute. "
-                          "Only a human investigation binding and subsequent approval can select a typed recipe. "
-                          "If no reviewed recipe matches, return no actions and specify investigation checks. "
-                          "Never suggest platform reboot or rebuild for this composite. Available typed recipes: "
-                          + ', '.join(sorted(a for a in CATALOGUE if a.startswith('recipe_'))))
-            elif observation.get('monitor_source') == 'independent-job-client-and-kubernetes':
+            if observation.get('monitor_source') == 'independent-job-client-and-kubernetes':
                 system=("You advise a human investigating a private fictional-bank statement lab. "
                         "API and worker Pods generate monthly EUR statements from an immutable fictional ledger in PostgreSQL. Exact entries, integer-cent balances and receipt durability are independently verified. A hash alone is insufficient. "
                         "An external client retains receipts and verifies completion and durable result integrity. "

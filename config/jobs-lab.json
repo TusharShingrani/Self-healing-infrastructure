@@ -41,9 +41,8 @@
   "database_metrics_url": "http://10.1.1.83:9108",
   "desired_db_host": "10.1.1.83",
   "expected_worker_replicas": 2,
-  "max_job_bytes": 1024,
   "job_deadline_seconds": 30,
-  "service": "fictional-bank-account-statements",
+  "service": "bank-statement-generation",
   "period": "2026-09",
   "recovery_objective_seconds": 180,
   "recovery_point_objective": "No loss of accepted statement requests within controlled configuration-fault tests"

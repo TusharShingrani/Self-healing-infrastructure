@@ -82,4 +82,19 @@ class HttpTests(unittest.TestCase):
             app.connect();self.assertEqual(connect.call_args.kwargs['sslmode'],'verify-full')
             self.assertEqual(connect.call_args.kwargs['user'],'bank_api')
 
+class AdvisorPrivacyTests(unittest.TestCase):
+    def test_banking_prompt_excludes_statement_and_identity_details(self):
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+        from mapek.advisor import Advisor
+        advisor=Advisor.__new__(Advisor)
+        marker='PRIVATE-ACCOUNT-AND-RECEIPT-CANARY'
+        observation={'monitor_source':'independent-job-client-and-kubernetes',
+            'infrastructure_checks':{'worker_capacity':False},'http_ok':False,
+            'client':{'healthy':False,'seconds':30,'job_id':marker,'document':marker},
+            'probe_error':marker,'vm_id':marker,'document':marker}
+        prompt=advisor._prompt('jobs-lab','unknown failure',['service_down'],observation,'',[{'details':marker}])
+        self.assertNotIn(marker,prompt)
+        self.assertIn('worker_capacity',prompt)
+        self.assertIn('30',prompt)
+
 if __name__=='__main__':unittest.main()

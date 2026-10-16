@@ -57,27 +57,10 @@ elif [ "$ROLE" = database ]; then
 import json,secrets,os,subprocess
 from pathlib import Path
 p=Path('/etc/healer-jobs/secrets.json')
-if not p.exists():p.write_text(json.dumps({'db_password':secrets.token_hex(32),'api_token':secrets.token_hex(32)}));os.chmod(p,0o600)
-secret=json.loads(p.read_text())
-sql="""DO $$ BEGIN IF NOT EXISTS(SELECT FROM pg_roles WHERE rolname='jobs_app') THEN CREATE ROLE jobs_app LOGIN; END IF; END $$;
-ALTER ROLE jobs_app PASSWORD '__PASSWORD__';
-""".replace('__PASSWORD__',secret['db_password'])
-# SQL goes through stdin, never through argv or output.
-subprocess.run(['sudo','-u','postgres','psql','-v','ON_ERROR_STOP=1'],input=sql,text=True,check=True,stdout=subprocess.DEVNULL)
+if not p.exists():p.write_text(json.dumps({'api_token':secrets.token_hex(32)}));os.chmod(p,0o600)
 existing=subprocess.check_output(['sudo','-u','postgres','psql','-Atc',"SELECT 1 FROM pg_database WHERE datname='jobs_lab'"],text=True)
 if existing.strip()!='1':subprocess.run(['sudo','-u','postgres','createdb','jobs_lab'],check=True)
-schema="""
-CREATE TABLE IF NOT EXISTS jobs(id bigserial PRIMARY KEY,payload varchar(1024) NOT NULL,
- status text NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','done')),result char(64),
- created_at timestamptz NOT NULL DEFAULT now(),completed_at timestamptz,
- CHECK((status='pending' AND result IS NULL) OR (status='done' AND result IS NOT NULL)));
-GRANT CONNECT ON DATABASE jobs_lab TO jobs_app;
-GRANT USAGE ON SCHEMA public TO jobs_app;
-GRANT SELECT,INSERT,UPDATE ON jobs TO jobs_app;
-GRANT USAGE,SELECT ON SEQUENCE jobs_id_seq TO jobs_app;
-ALTER ROLE jobs_app SET statement_timeout='5s';
-"""
-subprocess.run(['sudo','-u','postgres','psql','-d','jobs_lab','-v','ON_ERROR_STOP=1'],input=schema,text=True,check=True,stdout=subprocess.DEVNULL)
+
 PY
   PGVERSION=$(pg_lsclusters --no-header | awk 'NR==1 {print $1}')
   CONF="/etc/postgresql/$PGVERSION/main"
@@ -87,15 +70,11 @@ max_connections = 40
 shared_buffers = '128MB'
 password_encryption = 'scram-sha-256'
 EOF
-  for IP in 10.1.1.81 10.1.1.82; do
-    LINE="host jobs_lab jobs_app $IP/32 scram-sha-256"
-    grep -qxF "$LINE" "$CONF/pg_hba.conf" || echo "$LINE" >> "$CONF/pg_hba.conf"
-  done
   systemctl restart "postgresql@$PGVERSION-main"
   install -m 755 "$HERE/job-host/db_metrics.py" /opt/healer-jobs/db_metrics.py
   cat > /etc/systemd/system/job-db-metrics.service <<'EOF'
 [Unit]
-Description=Read-only job database contract metrics
+Description=Read-only statement database contract metrics
 After=postgresql.service
 [Service]
 User=postgres
@@ -109,19 +88,19 @@ CPUQuota=20%
 [Install]
 WantedBy=multi-user.target
 EOF
-  cat > /etc/cron.daily/healer-job-retention <<'EOF'
-#!/usr/bin/env bash
-set -euo pipefail
-sudo -u postgres psql -d jobs_lab -v ON_ERROR_STOP=1 -c "DELETE FROM jobs WHERE status='done' AND completed_at < now()-interval '1 day';" >/dev/null
-EOF
-  chmod 755 /etc/cron.daily/healer-job-retention
+  # Banking records have no synthetic-job deletion schedule. Preserve any old
+  # hashing cleanup as a disabled rollback artifact, never run it for statements.
+  if [ -f /etc/cron.daily/healer-job-retention ]; then
+    install -d -m 700 /var/lib/healer-archive
+    mv /etc/cron.daily/healer-job-retention /var/lib/healer-archive/healer-job-retention.disabled
+  fi
   systemctl daemon-reload;systemctl enable job-db-metrics;systemctl restart job-db-metrics
   READY=0
   for _ in $(seq 1 30); do
-    if curl -fsS --max-time 3 http://10.1.1.83:9108/status | grep -q '"up": 1'; then READY=1;break;fi
+    if sudo -u postgres pg_isready -q -d jobs_lab; then READY=1;break;fi
     sleep 1
   done
-  test "$READY" = 1 || { echo 'Database contract exporter did not become healthy'; exit 1; }
+  test "$READY" = 1 || { echo 'PostgreSQL did not become ready; banking schema is prepared in the next phase'; exit 1; }
 else
   id job-probe >/dev/null 2>&1 || useradd --system --no-create-home --shell /usr/sbin/nologin job-probe
   chown root:job-probe /etc/healer-jobs;chmod 750 /etc/healer-jobs
@@ -132,7 +111,7 @@ else
   install -d -o job-probe -g job-probe -m 750 /var/lib/job-probe
   cat > /etc/systemd/system/job-client.service <<'EOF'
 [Unit]
-Description=Independent submit-process-readback job observer
+Description=Independent statement reconciliation observer
 After=network-online.target
 [Service]
 User=job-probe
