@@ -3,6 +3,7 @@
 set -euo pipefail
 [ "$(id -u)" = 0 ]
 [ "$(hostname)" = k8s-worker-2 ] || { echo 'Refusing non-canary host'; exit 1; }
+[ ! -e /etc/platform-gateway/gateway.cfg ] || { echo 'Regression bootstrap refused: gateway installed. Use an isolated regression host; never replace its live policy.'; exit 1; }
 [ -f /opt/platform-healer/src/platform_healer/broker.py ]
 command -v ip >/dev/null
 install -d -m 700 /etc/platform-healer /var/lib/platform-healer

@@ -1,43 +1,34 @@
-# Demonstrate the platform healer
+# Demo: one real gateway, one bounded repair
 
-## The story to explain
+## Explain the service
 
-“A bank's gateway platform needs to open many outgoing connections during a retail peak. Even correct application code can fail when Linux resource limits prevent those operations. This experiment reproduces the resource failure inside an isolated infrastructure fixture and verifies a bounded runtime repair without restarting its process.”
+“This real HAProxy gateway forwards HTTP requests. During a peak, outgoing connections exhaust a deliberately small source-port pool in its isolated namespace. A separate host sees actual transaction failures. The healer increases only that approved pool, verifies fresh transactions under continuing load, and later restores baseline without restarting HAProxy.”
 
-This is not a payment application and not a claim of 50,000 requests/second. Network failure here is **outbound local-port allocation**, not inbound connection handling or a cyberattack.
+The banking peak is motivation; the upstream is a bounded test instrument. No payments, customer data, attack emulation or 50,000-RPS claim is involved.
 
 ## Screens
 
-1. Console: live resource observations, incident evidence, approvals, verification, procedure qualification and audit trail.
-2. Grafana dashboard **Kernel & platform tuning — MAPE-K**, UID `platform-mapek`, using a recent relative time range.
-3. Private experiment output, retained on the laptop. Publish only reviewed numeric summaries.
+Open the SSH-tunnelled console at localhost:8085 and sign in with the private operator token file. Use Grafana dashboard **HAProxy gateway - MAPE-K recovery**, UID platform-mapek, in a recent relative time window. Show independent client success, backend errors, allocation errno, pool occupancy/range, incidents, verification, modes and lease state.
 
-## Automated rehearsal
+## Reproducible comparison
 
-On the management VM in this checkout run `python3 experiments/native_workflow.py`. This is an explicit laboratory operator script: it deliberately generates bounded fixture pressure and supplies approvals through the same deployed API as the browser. The script's automatic approval steps are **not** the healer approving itself.
+On the management host in the checkout run `python3 experiments/gateway_study.py`. It creates two reviewed qualification incidents, explicitly promotes their procedure, then runs a seeded ordering of three observe-only, three reviewed and three automatic trials. Each uses the same bounded 24-second/64-connection background load from probe-1. Scripted approval after two seconds is a declared laboratory protocol, not real operator response-time measurement. Separate nonce transactions measure useful client recovery; cancelled background holds are not business transaction failures.
 
-It runs two distinct descriptor failures with named operator approvals, explicitly promotes the qualified procedure and runs a third occurrence without a new approval. It then tests outbound-port exhaustion with approval. It checks same identity, useful allocations/connections, the untouched host port range and baseline restoration. It saves detailed JSON privately under `~/.local/state/platform-healer/evidence/`.
+The script proves no new approval on the automatic recurrence, no gateway identity restart, no host port-range change, rollback between trials, and no tuning when the upstream alone is unavailable. Detailed evidence remains private under ~/.local/state/platform-healer/evidence and must be copied off-platform.
 
-For a repeat rehearsal, it explicitly suspends existing automatic permissions for these two signatures before starting, retaining the old evidence. It then demonstrates two new approvals and re-promotion. This is a deliberate operator rehearsal action, not the healer forgetting its history.
+## Manual video
 
-## Manual video protocol
+Do not run a manual demonstration concurrently with the automated study. Begin at idle with range 40000-40031 and zero active backend connections. An administrator on probe-1 starts the bounded load, using the same systemd-run invocation shown in experiments/gateway_study.py. The console cannot execute arbitrary shell commands.
 
-Have an administrator start demand only on the owned canary fixture; the web UI intentionally cannot send arbitrary host commands or change resource policy. Stop the rehearsal first to avoid competing operators.
+1. Set **Require approval**, supply your name and a reason. Show the independent client's failing transactions and two correlated diagnostic observations.
+2. Inspect the incident: healthy upstream, actual namespace EADDRNOTAVAIL, new HAProxy backend/5xx failures, exact namespace identity and approved range. Show the unchanged range before approval.
+3. Approve. Show range size 256, three distinct independent successful checks and a **verified** outcome while background connections remain active. HAProxy's identity stays the same.
+4. Let bounded load finish. Show zero active connections and baseline rollback after the lease expires. Wait out cooldown before another run.
+5. Demonstrate two verified reviewed occurrences followed by explicit promotion, then **Use validated procedures**. A matching recurrence repairs without another approval. Use **Suspend automatic reuse** to revoke that permission.
+6. Stop only the owned upstream service as an administrator. Show dependency diagnosis and no executable repair/range change, then restore it. Unknown failures need investigation, not a blind restart or blind tuning.
 
-1. Begin at idle: demand zero, descriptor soft limit 64, isolated range size 32. Explain that these are deliberately low lab bounds.
-2. On worker-2 set the root-owned `/run/platform-healer/fixtures/descriptors/desired` file to `128`. Show the measured `EMFILE` counter increasing and useful allocations stuck below demand.
-3. Show the pending incident: exact target, evidence and proposed bounded action. Before approval no limit should change.
-4. Enter a reviewer name and meaningful reason, then approve. Show the soft ceiling becoming 256, held allocations reaching 128 and the incident becoming **verified**, not merely “executed”. The process identity remains unchanged.
-5. Set demand back to `0`. Wait for lease expiry and baseline restoration before the next occurrence. The lab lease is 30 seconds; busy rollback is deferred rather than forced.
-6. Repeat once. Promote the procedure after the second verified occurrence, with a named reviewer. Run a third matching occurrence: it should repair automatically. Show the audit trail and absence of a third approval. Use **Suspend automatic reuse** to revoke that permission.
-7. For networking, use `/run/platform-healer/fixtures/ports/desired` = `96`. Show actual allocation failure, approve range expansion from 32 to 256 available port numbers, then show 96 established connections plus the independent fresh echo verification. Drain and observe rollback. Allow TIME_WAIT to clear before repeating; never change TCP reuse rules to make the demo convenient.
+Observe mode executes nothing, including already approved proposals. Changing mode never cancels safe reconciliation of an existing lease. Automatic mode never manufactures a new repair or bypasses root policy. A new process/configuration/namespace scope needs fresh qualification.
 
-Load is loopback-only and capped; every burst expires after 120 seconds. A failed condition is a finding to investigate, not permission to suppress validation or enlarge safety bounds.
+## Honest interpretation
 
-## What to say about learning
-
-“The system remembers a reviewed, verified procedure and its precise applicability scope. It does not invent arbitrary fixes, train an LLM or guarantee prediction. An unknown failure needs investigation and a reviewed adapter/policy addition. Replacement process identity or failed verification prevents blindly reusing an old procedure.”
-
-## Storage finding
-
-The discovered K3s server uses SQLite. The bounded benchmark compares a separate temporary-file durability operation under a best-effort versus idle competitor. It does not stress the control plane. In the initial run, priority change did **not** provide consistent benefit; therefore automatic I/O repair is disabled. This refusal is part of the safety demonstration.
+This demonstrates scoped procedural learning and closed-loop verification. It does not train an LLM, prevent every recurrence, fix a leak's source, or prove enterprise high availability. Failure to recover or a refused change is evidence to preserve, not a reason to suppress a safety check. Earlier fixture and I/O results are historical/regression evidence, not gateway comparison results.

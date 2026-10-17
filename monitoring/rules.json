@@ -1,11 +1,11 @@
 {
   "groups": [
     {
-      "name": "platform",
+      "name": "gateway",
       "rules": [
         {
           "alert": "PlatformTelemetryUnavailable",
-          "expr": "up{job=~\"platform_agent|platform_controller|platform_nodes\"} == 0",
+          "expr": "up{job=~\"platform_.*\"} == 0",
           "for": "20s",
           "labels": {
             "severity": "warning"
@@ -16,13 +16,13 @@
         },
         {
           "alert": "PlatformSampleStale",
-          "expr": "platform_sample_fresh == 0",
+          "expr": "platform_sample_fresh{target=\"gateway-ports\"} == 0",
           "for": "15s",
           "labels": {
             "severity": "warning"
           },
           "annotations": {
-            "summary": "Canary telemetry is stale: investigate, never assume healthy"
+            "summary": "Gateway evidence stale; do not infer health"
           }
         },
         {
@@ -30,10 +30,10 @@
           "expr": "platform_agent_broker_up == 0",
           "for": "10s",
           "labels": {
-            "severity": "critical"
+            "severity": "warning"
           },
           "annotations": {
-            "summary": "Native mutation/rollback broker is unreachable"
+            "summary": "Native broker unreachable"
           }
         },
         {
@@ -41,54 +41,65 @@
           "expr": "platform_controller_loop_fresh == 0",
           "for": "10s",
           "labels": {
-            "severity": "critical"
+            "severity": "warning"
           },
           "annotations": {
-            "summary": "MAPE-K controller has stopped completing ticks"
+            "summary": "MAPE-K controller not completing ticks"
           }
         },
         {
-          "alert": "PlatformRollbackNeedsReview",
+          "alert": "GatewayClientTransactionFailed",
+          "expr": "platform_gateway_transaction_success == 0",
+          "for": "10s",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "Independent HTTP transaction through HAProxy is failing"
+          }
+        },
+        {
+          "alert": "GatewayUpstreamUnavailable",
+          "expr": "platform_resource_upstream_healthy{target=\"gateway-ports\"} == 0",
+          "for": "10s",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "Upstream unavailable; increasing ports is not an eligible repair"
+          }
+        },
+        {
+          "alert": "GatewayRollbackNeedsReview",
           "expr": "platform_broker_operations{status=~\"rollback_deferred|conflict|identity_changed\"} > 0",
           "for": "20s",
           "labels": {
             "severity": "warning"
           },
           "annotations": {
-            "summary": "Inspect broker journal: a historical or active lease needs review"
+            "summary": "Inspect lease reconciliation history"
           }
         },
         {
-          "alert": "PlatformApprovalPending",
+          "alert": "GatewayApprovalPending",
           "expr": "platform_incidents{status=\"pending\"} > 0",
           "for": "30s",
-          "labels": {
-            "severity": "info"
-          },
-          "annotations": {
-            "summary": "An incident is awaiting investigation or operator approval"
-          }
-        },
-        {
-          "alert": "PlatformApiUnready",
-          "expr": "probe_success{job=\"platform_api_ready\"} == 0",
-          "for": "20s",
           "labels": {
             "severity": "warning"
           },
           "annotations": {
-            "summary": "Kubernetes API readiness probe failed"
+            "summary": "Gateway incident awaits investigation or approval"
           }
         },
         {
           "alert": "PlatformHostMemoryPressure",
-          "expr": "node_memory_MemAvailable_bytes{job=\"platform_nodes\"}/node_memory_MemTotal_bytes{job=\"platform_nodes\"}<0.1",
+          "expr": "node_memory_MemAvailable_bytes{job=\"platform_nodes\"}/node_memory_MemTotal_bytes{job=\"platform_nodes\"}<0.15",
           "for": "1m",
           "labels": {
             "severity": "warning"
           },
           "annotations": {
-            "summary": "Node memory headroom below ten percent; runtime tuning may be unsafe"
+            "summary": "Host memory headroom below the gateway admission threshold"
           }
         }
       ]

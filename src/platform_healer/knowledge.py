@@ -18,6 +18,12 @@ class Knowledge:
             if json.loads(row['before']).get('target')==target:
                 self.db.execute("UPDATE incidents SET status='resolved',reason='Fresh interpretable telemetry restored' WHERE id=?",(row['id'],))
                 self.audit('telemetry_restored',row['id'],'monitor','Investigation resolved by fresh interpretable observation')
+    def resolve_idle(self,target):
+        rows=self.db.execute("SELECT id,before FROM incidents WHERE status IN ('pending','approved')").fetchall()
+        for row in rows:
+            if json.loads(row['before']).get('target')==target:
+                self.db.execute("UPDATE incidents SET status='resolved',reason='Useful transactions restored with no active backend load; unused approval revoked' WHERE id=?",(row['id'],))
+                self.audit('symptoms_cleared',row['id'],'monitor','No execution: useful transactions and idle backend verified')
     def capture(self,sample,diagnosis):
         scope=digest({'identity':sample.identity,'kind':sample.kind,'target':sample.target,'protocol':1})
         row=self.db.execute("SELECT * FROM incidents WHERE scope=? AND cause=? AND action IS ? AND status IN ('pending','approved','executing') ORDER BY id DESC LIMIT 1",(scope,diagnosis.cause,diagnosis.action)).fetchone()

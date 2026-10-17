@@ -2,7 +2,7 @@
 import json,sys
 
 
-def objects(image):
+def objects(image,regression=False):
     agent_ns='platform-healer-system';controller_ns='platform-healer'
     result=[]
     for namespace,level in ((agent_ns,'privileged'),(controller_ns,'restricted')):
@@ -14,16 +14,16 @@ def objects(image):
     container={'name':'agent','image':image,'imagePullPolicy':'Never','command':['python','-m','platform_healer.agent'],
         'securityContext':security,'ports':[{'containerPort':9119}],
         'resources':{'requests':{'cpu':'25m','memory':'32Mi'},'limits':{'cpu':'250m','memory':'96Mi'}},
-        'volumeMounts':[{'name':'broker','mountPath':'/run/platform-healer','readOnly':True}],
-        'readinessProbe':{'httpGet':{'path':'/healthz','port':9119},'periodSeconds':5},
-        'livenessProbe':{'httpGet':{'path':'/healthz','port':9119},'initialDelaySeconds':10,'periodSeconds':15}}
+        'volumeMounts':[{'name':'broker','mountPath':'/run/platform-healer','readOnly':True},{'name':'tls','mountPath':'/run/tls','readOnly':True}],
+        'readinessProbe':{'httpGet':{'path':'/healthz','port':9120},'periodSeconds':5},
+        'livenessProbe':{'httpGet':{'path':'/healthz','port':9120},'initialDelaySeconds':10,'periodSeconds':15}}
     pod_security={'runAsNonRoot':True,'runAsUser':10001,'runAsGroup':10001,'seccompProfile':{'type':'RuntimeDefault'}}
     result.append({'apiVersion':'apps/v1','kind':'DaemonSet','metadata':{'name':'platform-agent','namespace':agent_ns},
         'spec':{'selector':{'matchLabels':{'app':'platform-agent'}},'template':{'metadata':{'labels':{'app':'platform-agent'}},'spec':{
         'serviceAccountName':'platform-healer','automountServiceAccountToken':False,
         'nodeSelector':{'kubernetes.io/hostname':'k8s-worker-2'},
-        'securityContext':dict(pod_security,supplementalGroups=[64532]),
-        'containers':[container],'volumes':[{'name':'broker','hostPath':{'path':'/run/platform-healer','type':'Directory'}}]}}}})
+        'securityContext':dict(pod_security,supplementalGroups=[64532],fsGroup=10001),
+        'containers':[container],'volumes':[{'name':'broker','hostPath':{'path':'/run/platform-healer','type':'Directory'}},{'name':'tls','secret':{'secretName':'agent-tls','defaultMode':0o440}}]}}}})
     result.append({'apiVersion':'v1','kind':'PersistentVolumeClaim','metadata':{'name':'knowledge','namespace':controller_ns},'spec':{
         'accessModes':['ReadWriteOnce'],'resources':{'requests':{'storage':'1Gi'}}}})
     controller=dict(container,name='controller',command=['python','-m','platform_healer.controller'],ports=[{'containerPort':8085}],
@@ -56,12 +56,16 @@ def objects(image):
                    'ports':[{'protocol':'TCP','port':9119}]},
                   {'to':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'kube-system'}},'podSelector':{'matchLabels':{'k8s-app':'kube-dns'}}}],
                    'ports':[{'protocol':'UDP','port':53},{'protocol':'TCP','port':53}]}]}})
-    targets=[{'id':'ports-canary','baseline':[40000,40031],'expanded':[40000,40255]},
-             {'id':'descriptors-canary','baseline':64,'expanded':256}]
-    for target in targets:target.update(url='http://platform-agent.platform-healer-system.svc:9119',key_file='/run/keys/node.key',lease=30,node='k8s-worker-2')
-    config={'database':'/state/knowledge.db','token_file':'/run/keys/operator.token','allow_plaintext_lab':True,
+    targets=[{'id':'gateway-ports','baseline':[40000,40031],'expanded':[40000,40255],
+              'lease':30,'cooldown_seconds':5,'consecutive':2,'verification_samples':3,
+              'verification_seconds':2,'verification_timeout':20,'mode':'reviewed'}]
+    if regression:
+        targets += [{'id':'ports-canary','baseline':[40000,40031],'expanded':[40000,40255],'lease':30},
+                    {'id':'descriptors-canary','baseline':64,'expanded':256,'lease':30}]
+    for target in targets:target.update(url='https://platform-agent.platform-healer-system.svc:9119',key_file='/run/keys/node.key',tls_directory='/run/keys',node='k8s-worker-2')
+    config={'database':'/state/knowledge.db','token_file':'/run/keys/operator.token','allow_plaintext_lab':False,'operator_http_over_ssh':True,
             'allowed_origins':['http://127.0.0.1:8085','http://localhost:8085'],'targets':targets}
     result.append({'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':'controller-settings','namespace':controller_ns},'data':{'controller.json':json.dumps(config)}})
     return result
 
-if __name__=='__main__':print(json.dumps({'apiVersion':'v1','kind':'List','items':objects(sys.argv[1])},indent=2))
+if __name__=='__main__':print(json.dumps({'apiVersion':'v1','kind':'List','items':objects(sys.argv[1],regression='--regression-fixtures' in sys.argv)},indent=2))
