@@ -56,6 +56,18 @@ class BrokerTests(unittest.TestCase):
         m=self.message(lease=5);self.b.execute(m);self.p.safe=False;self.clock=106;self.b.reconcile();self.assertEqual(self.p.current,256);self.assertEqual(self.b.operation(m['payload']['id'])['status'],'rollback_deferred');self.p.safe=True;self.b.reconcile();self.assertEqual(self.p.current,64)
     def test_restart_recovers_lease_without_repeating_mutation(self):
         m=self.message();self.b.execute(m);self.b.db.close();self.b=Broker(str(Path(self.temp.name)/'journal.db'),self.key,{'target':self.p},clock=lambda:101);self.b.reconcile(recover=True);self.assertEqual(self.p.current,64)
+    def test_root_cooldown_is_enforced_after_rollback(self):
+        self.p.cooldown_seconds=10
+        self.p.sample=lambda:Sample('target','descriptors','same-process',self.clock,{})
+        self.b.execute(self.message(lease=5));self.clock=106;self.b.reconcile();self.clock=107
+        refused=self.message()
+        with self.assertRaises(ValueError):self.b.execute(refused)
+        self.assertEqual(self.p.current,64)
+        self.clock=116
+        with self.assertRaises(ValueError):self.b.execute(refused)
+        self.assertEqual(self.p.current,64)
+        self.assertEqual(self.b.db.execute('SELECT count(*) FROM refusals').fetchone()[0],1)
+        self.b.execute(self.message());self.assertEqual(self.p.current,256)
 
 class AnalysisTests(unittest.TestCase):
     def sample(self,errors=2,time_=100):return Sample('p','ports','ns',time_,{'used_ports':30,'range_size':32,'allocation_errors':errors,'successful_connections':30,'desired_connections':96})

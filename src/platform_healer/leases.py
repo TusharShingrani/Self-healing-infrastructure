@@ -8,9 +8,11 @@ class Broker:
         self.db=sqlite3.connect(path,check_same_thread=False,timeout=10);self.db.row_factory=sqlite3.Row
         self.db.execute('PRAGMA journal_mode=WAL');self.db.execute('PRAGMA synchronous=FULL')
         self.db.execute("CREATE TABLE IF NOT EXISTS operations(id TEXT PRIMARY KEY,target TEXT,identity TEXT,action TEXT,intent_hash TEXT,before TEXT,after TEXT,expires REAL,status TEXT,detail TEXT)");self.db.commit()
+        self.db.execute('CREATE TABLE IF NOT EXISTS refusals(id TEXT PRIMARY KEY,target TEXT,action TEXT,reason TEXT,at REAL)');self.db.commit()
     def execute(self,envelope):
         with self.lock:
             p=authenticate(envelope,self.key,self.clock())
+            if self.db.execute('SELECT 1 FROM refusals WHERE id=?',(p['id'],)).fetchone():raise ValueError('This operation was refused; a fresh reviewed intent is required')
             row=self.db.execute('SELECT * FROM operations WHERE id=?',(p['id'],)).fetchone()
             if row:
                 if row['intent_hash']!=digest(p):raise ValueError('Operation id reused with changed intent')
@@ -21,8 +23,15 @@ class Broker:
             if p['action']!=plugin.action:raise ValueError('Action not permitted for this target')
             if plugin.value()!=p['expected']:raise ValueError('Compare-and-set precondition failed')
             if set(p['parameters'])!={'value'}:raise ValueError('Unsupported action parameters')
-            value=plugin.validate(p['parameters']['value'])
+            try:value=plugin.validate(p['parameters']['value'])
+            except ValueError as exc:
+                self._refuse(p,str(exc));raise
             if any(x['target']==p['target'] for x in self.active()):raise ValueError('Target already has an active lease')
+            cooldown=getattr(plugin,'cooldown_seconds',0)
+            if cooldown:
+                latest=self.db.execute('SELECT expires FROM operations WHERE target=? ORDER BY expires DESC LIMIT 1',(p['target'],)).fetchone()
+                if latest and self.clock()<latest['expires']+cooldown:
+                    self._refuse(p,'Target cooldown has not elapsed');raise ValueError('Target cooldown has not elapsed')
             before=plugin.value()
             self.db.execute('INSERT INTO operations VALUES(?,?,?,?,?,?,?,?,?,?)',(p['id'],p['target'],p['identity'],p['action'],digest(p),canonical(before),canonical(value),self.clock()+p['lease'],'applying','Intent persisted before mutation'));self.db.commit()
             try:
@@ -38,6 +47,8 @@ class Broker:
             row=self.db.execute('SELECT * FROM operations WHERE id=?',(ident,)).fetchone()
             if not row:raise ValueError('Unknown operation')
             return dict(row)
+    def _refuse(self,p,reason):
+        self.db.execute('INSERT OR IGNORE INTO refusals VALUES(?,?,?,?,?)',(p['id'],p['target'],p['action'],reason[:240],self.clock()));self.db.commit()
     def active(self):
         return [dict(r) for r in self.db.execute("SELECT * FROM operations WHERE status IN ('applying','applied','rollback_pending','rollback_deferred')")]
     def _status(self,ident,status,detail):

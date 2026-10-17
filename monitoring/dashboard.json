@@ -1,8 +1,8 @@
 {
   "uid": "platform-mapek",
-  "title": "Kernel & platform tuning - MAPE-K",
+  "title": "HAProxy gateway - MAPE-K recovery",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "editable": false,
   "refresh": "5s",
   "time": {
@@ -10,13 +10,13 @@
     "to": "now"
   },
   "tags": [
-    "platform",
+    "gateway",
     "mapek"
   ],
   "panels": [
     {
       "id": 1,
-      "title": "Monitoring endpoints available",
+      "title": "Does the independent client receive the correct HTTP response?",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -31,14 +31,14 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "up{job=~\"platform_.*\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "expr": "platform_gateway_transaction_success",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
       "id": 2,
-      "title": "Fresh observations and controller loop",
+      "title": "Independent client transaction latency (seconds)",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -53,14 +53,14 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "{__name__=~\"platform_sample_fresh|platform_controller_loop_fresh\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "expr": "platform_gateway_transaction_latency_seconds",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
       "id": 3,
-      "title": "Descriptor use and soft ceiling",
+      "title": "Gateway port capacity, occupancy and active backend connections",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -75,14 +75,14 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "{__name__=~\"platform_resource_(open_fds|soft_limit|held_fds)\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "expr": "{__name__=~\"platform_resource_(used_ports|range_size|active_connections)\",target=\"gateway-ports\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
       "id": 4,
-      "title": "Outbound port occupancy and connection recovery",
+      "title": "Gateway, upstream and independent client health",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -97,14 +97,14 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "{__name__=~\"platform_resource_(used_ports|range_size|active_connections)\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "expr": "{__name__=~\"platform_resource_(upstream_healthy|gateway_transaction_ok|client_transaction_ok)\",target=\"gateway-ports\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
       "id": 5,
-      "title": "Actual allocation failures (cumulative)",
+      "title": "HAProxy HTTP 5xx and backend-connect errors (cumulative)",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -119,14 +119,14 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "platform_resource_allocation_errors",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "expr": "{__name__=~\"platform_resource_(gateway_5xx|backend_connect_errors)\",target=\"gateway-ports\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
       "id": 6,
-      "title": "Incident lifecycle",
+      "title": "Allocation probe errno: 99 means no local port available",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -135,6 +135,50 @@
       "gridPos": {
         "x": 12,
         "y": 18,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "platform_resource_allocation_probe_errno{target=\"gateway-ports\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Measured host memory headroom",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 27,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "platform_resource_memory_available_ratio{target=\"gateway-ports\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Gateway incidents and verification",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 27,
         "w": 12,
         "h": 9
       },
@@ -142,13 +186,13 @@
         {
           "refId": "A",
           "expr": "platform_incidents",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
-      "id": 7,
-      "title": "Procedure qualification and automatic reuse eligibility",
+      "id": 9,
+      "title": "Gateway learned procedure eligibility",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -156,7 +200,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 27,
+        "y": 36,
         "w": 12,
         "h": 9
       },
@@ -164,13 +208,13 @@
         {
           "refId": "A",
           "expr": "platform_procedures",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
-      "id": 8,
-      "title": "Broker application and rollback journal",
+      "id": 10,
+      "title": "Broker lease and rollback journal",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -178,7 +222,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 27,
+        "y": 36,
         "w": 12,
         "h": 9
       },
@@ -186,13 +230,13 @@
         {
           "refId": "A",
           "expr": "platform_broker_operations",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
-      "id": 9,
-      "title": "Host I/O stall seconds per second",
+      "id": 11,
+      "title": "Fresh gateway evidence and controller loop",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -200,21 +244,21 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 36,
+        "y": 45,
         "w": 12,
         "h": 9
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "rate(node_pressure_io_waiting_seconds_total{job=\"platform_nodes\"}[1m])",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "expr": "{__name__=~\"platform_sample_fresh|platform_controller_loop_fresh|platform_agent_broker_up\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     },
     {
-      "id": 10,
-      "title": "Host memory available",
+      "id": 12,
+      "title": "Infrastructure monitoring endpoints",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -222,15 +266,15 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 36,
+        "y": 45,
         "w": 12,
         "h": 9
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "node_memory_MemAvailable_bytes{job=\"platform_nodes\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+          "expr": "up{job=~\"platform_.*\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
         }
       ]
     }

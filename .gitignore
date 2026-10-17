@@ -2,6 +2,11 @@ state/
 __pycache__/
 *.pyc
 *.key
+*.token
+*.pem
+*.crt
+*.csr
+*.srl
 .env
 *.sqlite*
 *.db*

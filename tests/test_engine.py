@@ -51,7 +51,7 @@ class EngineTests(unittest.TestCase):
         self.remote.request=request;self.e.tick();self.assertEqual(self.e.snapshot()['observations']['target']['cause'],'unknown');self.assertEqual(self.remote.calls,0)
     def test_operator_policy_projection_never_exports_transport_or_signing_key(self):
         snapshot=self.e.snapshot()
-        self.assertEqual(set(snapshot['policies']['target']),{'baseline','expanded','node'})
+        self.assertEqual(set(snapshot['policies']['target']),{'baseline','expanded','node','mode'})
         import json
         encoded=json.dumps(snapshot)
         self.assertNotIn('kkkkkkkk',encoded)

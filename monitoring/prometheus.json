@@ -72,10 +72,32 @@
     },
     {
       "job_name": "platform_agent",
+      "scheme": "https",
+      "tls_config": {
+        "ca_file": "/etc/prometheus/platform-tls/ca.crt",
+        "cert_file": "/etc/prometheus/platform-tls/client.crt",
+        "key_file": "/etc/prometheus/platform-tls/client.key"
+      },
       "static_configs": [
         {
           "targets": [
             "10.1.1.80:30919"
+          ]
+        }
+      ]
+    },
+    {
+      "job_name": "platform_gateway_client",
+      "scheme": "https",
+      "tls_config": {
+        "ca_file": "/etc/prometheus/platform-tls/ca.crt",
+        "cert_file": "/etc/prometheus/platform-tls/client.crt",
+        "key_file": "/etc/prometheus/platform-tls/client.key"
+      },
+      "static_configs": [
+        {
+          "targets": [
+            "10.1.1.84:9106"
           ]
         }
       ]
