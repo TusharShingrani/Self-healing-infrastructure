@@ -21,6 +21,8 @@ The root broker/engine mechanism protocol passed separately. The native Kubernet
 
 Each occurrence included actual allocation failures before repair. The resource/process identities did not change. The networking change was confined to the dedicated loopback namespace; the host ephemeral range stayed unchanged. The descriptor hard ceiling stayed 512. All eight leases across the separate mechanism and native protocols were subsequently observed `rolled_back`, with demand zero, descriptor soft ceiling 64 and isolated range size 32. Controller Knowledge survived the final source rollout, preserving four verified native incidents and one explicitly validated procedure; no pending/executing/failed native incident remained.
 
+The final runtime passed a second native rehearsal after the UI corrections. Its recovery intervals were 3.402 s, 3.425 s, 2.305 s (promoted automatic descriptor reuse) and 4.393 s (outbound ports). Existing automatic permission was explicitly suspended by the rehearsal operator before the two new reviewed occurrences; history was retained. The resulting state contains **eight verified native incidents, one validated procedure, no pending/executing/failed incident and twelve rolled-back broker leases** across the mechanism test and both native rehearsals. The final acceptance check again passed with both canaries idle at baseline.
+
 These are acceptance tests, not a statistically powered comparison. The recorded durations include the scripted operator decision and polling protocol; they do not estimate real human response time. Do not claim a 37% performance improvement, prediction, 50,000 RPS, zero drops or production availability from these four observations.
 
 ## I/O capability finding
@@ -34,6 +36,7 @@ Three paired temporary-file durability comparisons on the dedicated benchmark VM
 - Final acceptance checked ten populated dashboard queries, unsigned-action refusal, unauthenticated incident-access refusal, three Ready Kubernetes nodes and two non-root runtime Pods.
 - Ten Prometheus scrape targets up: six retained node exporters, agent, controller, Kubernetes-readiness exporter and Prometheus itself. Prometheus validated eight rules.
 - Platform-only Grafana dashboard deployed and private localhost console endpoint reachable through SSH tunnels.
+- Browser inspection verified the platform sign-in page and dashboard panels. An attempted token-file browser sign-in did not execute because automatic approval review hit a service usage limit. The authenticated API workflow and UI JavaScript checks passed, but a signed-in browser visual check remains unverified.
 - Old banking namespace, controller/console and observer retired. Obsolete database and two former nginx VMs destroyed with exact ownership/address/template checks; protected platform nodes retained.
 - Fresh old-workload recovery data and new journal/Knowledge/private-key recovery files copied to the laptop. Archive readability and SQLite integrity checked. A full infrastructure disaster restore has not been proven by these checks.
 
