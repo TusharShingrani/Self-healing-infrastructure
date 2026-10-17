@@ -24,6 +24,12 @@ def main():
     root=Path('/var/lib/platform-healer/experiment-'+str(int(time.time())))
     root.mkdir(mode=0o700)
     client=UnixClient('/run/platform-healer/broker.sock')
+    def ready():
+        try:
+            return all(client.request('/sample/'+target).get('identity')
+                       for target in ('ports-canary','descriptors-canary'))
+        except (OSError,RuntimeError,json.JSONDecodeError):return False
+    wait(ready,seconds=10)
     key=Path('/etc/platform-healer/node.key').read_bytes()
     policy=json.loads(Path('/etc/platform-healer/policy.json').read_text())
     targets={p['id']:dict(p,client=client,key=key,lease=15) for p in policy['targets']}

@@ -33,6 +33,16 @@ Run `python3 monitoring/build.py` and `python3 scripts/configure_monitor.py` on 
 
 The controller listens on a private Kubernetes NodePort. Reach it through the management SSH tunnel; no public web port is required. The bastion's `platform-console-tunnel` user service forwards its localhost port 8085 to the private controller. From your VPN-connected laptop, forward local 8085 to the bastion's localhost 8085, and local 3000/9090 to the monitor's Grafana/Prometheus.
 
+Install that lab tunnel on the bastion once:
+
+```sh
+install -D -m 644 host/platform-console-tunnel.service ~/.config/systemd/user/platform-console-tunnel.service
+systemctl --user daemon-reload
+systemctl --user enable --now platform-console-tunnel
+```
+
+The supplied unit is specifically for the Ubuntu EduCloud inventory. Review its user, private address and key paths when adapting the lab.
+
 Open `http://127.0.0.1:8085`. Obtain the private operator token from the administrator's `~/.config/platform-healer/operator.token` file or its private laptop backup. Do not paste it into chat, a URL or Git. Browser origins are explicitly limited to localhost/127.0.0.1:8085. Corporate deployment needs HTTPS/mTLS and enterprise identity integration before use outside this lab.
 
 ## Recovery and upgrade
