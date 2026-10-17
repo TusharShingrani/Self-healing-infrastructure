@@ -36,6 +36,9 @@ class Engine:
     def snapshot(self):
         with self.lock:
             return dict(self.knowledge.export(), observations=dict(self.observations),
+                        policies={target:{'baseline':config['baseline'],'expanded':config['expanded'],
+                                          'node':config.get('node','administrator-configured canary')}
+                                  for target,config in self.targets.items()},
                         executions=[dict(r) for r in self.knowledge.db.execute(
                             'SELECT incident,target,status,deadline,error FROM executions')])
 

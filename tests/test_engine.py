@@ -49,5 +49,12 @@ class EngineTests(unittest.TestCase):
             if path.startswith('/sample/'):value['target']='other'
             return value
         self.remote.request=request;self.e.tick();self.assertEqual(self.e.snapshot()['observations']['target']['cause'],'unknown');self.assertEqual(self.remote.calls,0)
+    def test_operator_policy_projection_never_exports_transport_or_signing_key(self):
+        snapshot=self.e.snapshot()
+        self.assertEqual(set(snapshot['policies']['target']),{'baseline','expanded','node'})
+        import json
+        encoded=json.dumps(snapshot)
+        self.assertNotIn('kkkkkkkk',encoded)
+        self.assertNotIn('client',encoded)
 
 if __name__=='__main__':unittest.main()

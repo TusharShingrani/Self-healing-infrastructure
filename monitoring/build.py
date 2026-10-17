@@ -34,7 +34,7 @@ for title,expression in [
  ('Host memory available','node_memory_MemAvailable_bytes{job="platform_nodes"}')]:
     n=len(panels);panels.append({'id':n+1,'title':title,'type':'timeseries','datasource':{'type':'prometheus','uid':'prometheus'},
         'gridPos':{'x':(n%2)*12,'y':(n//2)*9,'w':12,'h':9},'targets':[{'refId':'A','expr':expression,'legendFormat':'{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}'}]})
-dashboard={'uid':'platform-mapek','title':'Kernel & platform tuning â€” MAPE-K','schemaVersion':39,'version':1,'editable':False,'refresh':'5s',
+dashboard={'uid':'platform-mapek','title':'Kernel & platform tuning - MAPE-K','schemaVersion':39,'version':1,'editable':False,'refresh':'5s',
  'time':{'from':'now-15m','to':'now'},'tags':['platform','mapek'],'panels':panels}
 for name,value in [('prometheus.json',prometheus),('rules.json',rules),('dashboard.json',dashboard),
                    ('blackbox.json',{'modules':{'k3s_ready':{'prober':'http','timeout':'5s','http':{'valid_status_codes':[200],'tls_config':{'ca_file':'/etc/prometheus/healer-k3s-ca.pem'}}}}})]:

@@ -15,10 +15,10 @@ from .transport import RemoteClient
 
 PAGE = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
 <title>Platform healer</title><style>body{font:16px system-ui;max-width:1050px;margin:40px auto;padding:20px;background:#f4f6f8;color:#17273b}section{background:white;padding:20px;margin:16px 0;border-radius:10px}button,input{font:inherit;padding:9px;margin:5px}pre{white-space:pre-wrap;overflow-wrap:anywhere}small{color:#43566d}</style>
-<h1>Kernel & platform healer</h1><p>Patient: Linux infrastructure resources on the isolated canary worker.</p>
-<section id="login"><label>Operator access token <input id="token" type="password" autocomplete="current-password"></label><button id="sign">Sign in</button></section>
+<h1>Kernel & platform healer</h1><p><a href="http://localhost:3000/d/platform-mapek?from=now-15m&amp;to=now">Open the platform monitoring dashboard</a></p><p>Patient: Linux infrastructure resources on the isolated canary worker. The test harness creates real Linux allocation failures; it is not a banking application.</p>
+<section id="login"><label>Operator access token <input id="token" type="password" autocomplete="current-password"></label><button id="sign">Sign in</button><p>Or select your private local token file: <label>Operator token file <input id="tokenfile" type="file" accept=".token,text/plain"></label></p></section>
 <p id="message" role="status"></p><main id="content" hidden>
-<section><h2>How this works</h2><p>Monitor actual resource pressure â†’ analyse correlated allocation failures â†’ plan a bounded repair â†’ approve and execute â†’ verify useful work â†’ record Knowledge.</p><p>First occurrences need approval. Two verified occurrences allow an operator to promote a procedure for automatic reuse within the same scope. No arbitrary AI commands, node restarts or cloud deletion.</p></section>
+<section><h2>How this works</h2><p>Monitor actual resource pressure &rarr; analyse correlated allocation failures &rarr; plan a bounded repair &rarr; approve and execute &rarr; verify useful work &rarr; record Knowledge.</p><p>First occurrences need approval. Two verified occurrences allow an operator to promote a procedure for automatic reuse within the same scope. No arbitrary AI commands, node restarts or cloud deletion.</p></section>
 <section><h2>Live observations</h2><div id="observations"></div></section>
 <section><h2>Incidents and operator decisions</h2><div id="incidents"></div></section>
 <section><h2>Learned procedures</h2><div id="procedures"></div></section>
@@ -26,11 +26,60 @@ PAGE = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewp
 <section><h2>Audit trail</h2><pre id="audit"></pre></section></main>
 <script>
 const msg=document.getElementById('message');
-async function api(path,data){let r=await fetch(path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});let v=await r.json();if(!r.ok)throw Error(v.error||'Request refused');return v}
-function text(parent,tag,value){let e=document.createElement(tag);e.textContent=value;parent.append(e);return e}
-async function decision(path,data){try{await api(path,data);await refresh()}catch(e){msg.textContent=e.message}}
-document.getElementById('sign').onclick=async()=>{try{await api('/login',{token:document.getElementById('token').value});document.getElementById('token').value='';await refresh()}catch(e){msg.textContent=e.message}};
-async function refresh(){try{let s=await api('/api/status');document.getElementById('login').hidden=true;document.getElementById('content').hidden=false;msg.textContent='Updated '+new Date().toLocaleTimeString();let o=document.getElementById('observations');o.replaceChildren();for(let [target,v] of Object.entries(s.observations)){text(o,'h3',target+' â€” '+v.cause);text(o,'p',v.detail);text(o,'pre',JSON.stringify(v.sample?.metrics||{},null,2))}let i=document.getElementById('incidents');i.replaceChildren();for(let c of [...s.incidents].reverse()){let a=text(i,'section','');text(a,'h3','#'+c.id+' '+c.cause+' â€” '+c.status);text(a,'p','Proposed action: '+(c.action||'Investigation required; no executable repair'));if(c.status==='pending'&&c.action){let actor=document.createElement('input');actor.placeholder='Reviewer name';let reason=document.createElement('input');reason.placeholder='Why is this repair appropriate?';a.append(actor,reason);let b=text(a,'button','Approve bounded repair');b.onclick=()=>decision('/api/approve',{incident:c.id,actor:actor.value,reason:reason.value})}}let p=document.getElementById('procedures');p.replaceChildren();for(let c of s.procedures){let a=text(p,'section','');text(a,'p',c.cause+' â†’ '+c.action+' â€” '+c.status);if(c.status==='validated'){let actor=document.createElement('input');actor.placeholder='Reviewer name';a.append(actor);let b=text(a,'button','Suspend automatic reuse');b.onclick=()=>decision('/api/suspend',{scope:c.scope,cause:c.cause,action:c.action,actor:actor.value})}if(c.status!=='validated'){let actor=document.createElement('input');actor.placeholder='Reviewer name';a.append(actor);let b=text(a,'button','Promote after two verified occurrences');b.onclick=()=>decision('/api/promote',{scope:c.scope,cause:c.cause,action:c.action,actor:actor.value})}}document.getElementById('executions').textContent=JSON.stringify(s.executions,null,2);document.getElementById('audit').textContent=JSON.stringify(s.audit.slice(-20),null,2)}catch(e){msg.textContent=e.message}}
+const drafts={};
+const names={ports:'Outbound connection capacity',descriptors:'Process file-descriptor capacity',healthy:'Healthy',unknown:'Needs investigation',outbound_port_exhaustion:'Outgoing connections cannot obtain a local port',process_descriptor_exhaustion:'The process cannot open more files or sockets'};
+const metrics={open_fds:'Open descriptors',soft_limit:'Current soft ceiling',hard_limit:'Fixed hard ceiling',held_fds:'Successful test allocations',desired_fds:'Required allocations',active_connections:'Established outgoing connections',desired_connections:'Required connections',range_size:'Available port numbers in the range',used_ports:'Occupied local port numbers',allocation_errors:'Allocation failures since fixture start (cumulative)',time_wait:'Sockets in TIME_WAIT'};
+async function api(path,data){const r=await fetch(path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});const value=await r.json();if(!r.ok)throw Error(value.error||'Request refused');return value}
+function text(parent,tag,value){const e=document.createElement(tag);e.textContent=value;parent.append(e);return e}
+function input(parent,label,key){const wrapper=text(parent,'label',label+' ');const e=document.createElement('input');e.placeholder=label;e.value=drafts[key]||'';e.oninput=()=>{drafts[key]=e.value};wrapper.append(e);return e}
+async function decision(path,data){try{await api(path,data);await refresh()}catch(error){msg.textContent=error.message}}
+async function signIn(token){try{await api('/login',{token:token});document.getElementById('token').value='';await refresh()}catch(error){msg.textContent=error.message}}
+document.getElementById('sign').onclick=()=>signIn(document.getElementById('token').value);
+document.getElementById('tokenfile').onchange=async(event)=>{const file=event.target.files[0];if(!file)return;if(file.size>512){msg.textContent='Select only the small operator token file';event.target.value='';return}const token=(await file.text()).trim();event.target.value='';await signIn(token)};
+function observations(snapshot){
+  const parent=document.getElementById('observations');parent.replaceChildren();
+  for(const [target,value] of Object.entries(snapshot.observations)){
+    const card=text(parent,'section','');const sample=value.sample;
+    text(card,'h3',(names[sample?.kind]||target)+' - '+(names[value.cause]||value.cause));
+    text(card,'p','Target: '+target+' on '+(snapshot.policies[target]?.node||'the canary'));
+    text(card,'p',value.detail);
+    for(const [name,label] of Object.entries(metrics))if(sample?.metrics[name]!==undefined)text(card,'p',label+': '+sample.metrics[name]);
+    text(card,'small','A cumulative error count can remain non-zero after recovery. The diagnosis uses new failures between fresh observations.');
+  }
+}
+function incidents(snapshot){
+  const parent=document.getElementById('incidents');parent.replaceChildren();
+  if(!snapshot.incidents.length)text(parent,'p','No incident recorded. The controller is observing.');
+  for(const item of [...snapshot.incidents].reverse()){
+    const card=text(parent,'section','');const before=JSON.parse(item.before);const policy=snapshot.policies[before.target];
+    text(card,'h3','#'+item.id+' - '+(names[item.cause]||item.cause)+' - '+item.status);
+    text(card,'p','Target: '+before.target+' on '+(policy?.node||'the configured canary'));
+    if(item.action&&policy)text(card,'p','Reviewed proposal: '+item.action+'; baseline '+JSON.stringify(policy.baseline)+' to '+JSON.stringify(policy.expanded)+'. Temporary lease; no process restart.');
+    else text(card,'p','Investigation-only record. No executable repair is attached to this evidence.');
+    const evidence=text(card,'details','');text(evidence,'summary','Inspect exact before / after evidence');
+    text(evidence,'pre',JSON.stringify({before:before,after:item.after?JSON.parse(item.after):null},null,2));
+    if(item.status==='pending'&&item.action){const actor=input(card,'Reviewer name','incident-'+item.id+'-actor');const reason=input(card,'Why is this repair appropriate?','incident-'+item.id+'-reason');const button=text(card,'button','Approve this bounded repair');button.onclick=()=>decision('/api/approve',{incident:item.id,actor:actor.value,reason:reason.value})}
+  }
+}
+function procedures(snapshot){
+  const parent=document.getElementById('procedures');parent.replaceChildren();
+  if(!snapshot.procedures.length)text(parent,'p','Nothing is qualified for automatic reuse yet.');
+  for(const item of snapshot.procedures){
+    const card=text(parent,'section','');text(card,'h3',(names[item.cause]||item.cause)+' - '+item.status);
+    text(card,'p','Procedure: '+item.action+'. Exact identity/policy scope: '+item.scope.slice(0,16));
+    text(card,'p',item.status==='validated'?'Automatic reuse is permitted only for a matching scoped incident.':'Automatic reuse is not permitted. Promotion requires two distinct verified occurrences.');
+    const actor=input(card,'Procedure reviewer','procedure-'+item.scope+'-actor');const active=item.status==='validated';
+    const button=text(card,'button',active?'Suspend automatic reuse':'Promote qualified procedure');
+    button.onclick=()=>decision(active?'/api/suspend':'/api/promote',{scope:item.scope,cause:item.cause,action:item.action,actor:actor.value});
+  }
+}
+async function refresh(){
+  try{const snapshot=await api('/api/status');document.getElementById('login').hidden=true;document.getElementById('content').hidden=false;
+    msg.textContent='Updated '+new Date().toLocaleTimeString();observations(snapshot);if(!document.activeElement?.closest('#incidents,#procedures')){incidents(snapshot);procedures(snapshot)}
+    document.getElementById('executions').textContent=JSON.stringify(snapshot.executions,null,2);
+    document.getElementById('audit').textContent=JSON.stringify(snapshot.audit.slice(-20),null,2);
+  }catch(error){msg.textContent=error.message}
+}
 refresh();setInterval(refresh,3000);
 </script></html>'''
 

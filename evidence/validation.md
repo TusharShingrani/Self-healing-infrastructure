@@ -6,7 +6,7 @@ Ubuntu 24.04, Linux 6.8.0-106-generic, K3s v1.36.5+k3s1, cgroup v2. Three Kubern
 
 ## Offline safety and controller tests
 
-35 passing standard-library unittest checks. Coverage includes signature/tamper refusal, target identity and expected-value refusal, bounds, stale requests, duplicate operation IDs, conflicting leases, restart reconciliation, rollback expiry/defer/conflict, missing/unknown probes, correlated diagnosis, approval, verification deadlines, ambiguous transport outcome, explicit promotion and failed-verification suspension. Mocked tests are not live recovery evidence.
+36 passing standard-library unittest checks. Coverage includes signature/tamper refusal, target identity and expected-value refusal, bounds, stale requests, duplicate operation IDs, conflicting leases, restart reconciliation, rollback expiry/defer/conflict, missing/unknown probes, correlated diagnosis, approval, verification deadlines, ambiguous transport outcome, explicit promotion and failed-verification suspension. Mocked tests are not live recovery evidence.
 
 ## Live mechanism and native workflow
 

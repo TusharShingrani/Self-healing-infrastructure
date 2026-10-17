@@ -58,7 +58,7 @@ def objects(image):
                    'ports':[{'protocol':'UDP','port':53},{'protocol':'TCP','port':53}]}]}})
     targets=[{'id':'ports-canary','baseline':[40000,40031],'expanded':[40000,40255]},
              {'id':'descriptors-canary','baseline':64,'expanded':256}]
-    for target in targets:target.update(url='http://platform-agent.platform-healer-system.svc:9119',key_file='/run/keys/node.key',lease=30)
+    for target in targets:target.update(url='http://platform-agent.platform-healer-system.svc:9119',key_file='/run/keys/node.key',lease=30,node='k8s-worker-2')
     config={'database':'/state/knowledge.db','token_file':'/run/keys/operator.token','allow_plaintext_lab':True,
             'allowed_origins':['http://127.0.0.1:8085','http://localhost:8085'],'targets':targets}
     result.append({'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':'controller-settings','namespace':controller_ns},'data':{'controller.json':json.dumps(config)}})

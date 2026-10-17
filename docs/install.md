@@ -43,7 +43,7 @@ systemctl --user enable --now platform-console-tunnel
 
 The supplied unit is specifically for the Ubuntu EduCloud inventory. Review its user, private address and key paths when adapting the lab.
 
-Open `http://127.0.0.1:8085`. Obtain the private operator token from the administrator's `~/.config/platform-healer/operator.token` file or its private laptop backup. Do not paste it into chat, a URL or Git. Browser origins are explicitly limited to localhost/127.0.0.1:8085. Corporate deployment needs HTTPS/mTLS and enterprise identity integration before use outside this lab.
+Open `http://127.0.0.1:8085`. Obtain the private operator token from the administrator's `~/.config/platform-healer/operator.token` file or its private laptop backup. You can paste it into the console or select that private token file in its sign-in form. Do not paste it into chat, a URL or Git. Browser origins are explicitly limited to localhost/127.0.0.1:8085. Corporate deployment needs HTTPS/mTLS and enterprise identity integration before use outside this lab.
 
 ## Recovery and upgrade
 

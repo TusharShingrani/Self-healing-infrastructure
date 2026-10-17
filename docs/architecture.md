@@ -162,7 +162,7 @@ Sources accessed 17 October 2026. Design decisions above are engineering interpr
 
 ## 10. Implementation boundary after the first live validation
 
-Implemented: two owned fixture plugins; 35 offline checks; root journal/leases;
+Implemented: two owned fixture plugins; 36 offline checks; root journal/leases;
 unprivileged native DaemonSet and single controller; durable incidents and
 reviewed scoped learning; approval/promotion/suspension UI; platform metrics,
 alerts and dashboard; private consistent recovery backups; standalone
