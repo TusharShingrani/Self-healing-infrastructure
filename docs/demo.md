@@ -18,6 +18,8 @@ On the management VM in this checkout run `python3 experiments/native_workflow.p
 
 It runs two distinct descriptor failures with named operator approvals, explicitly promotes the qualified procedure and runs a third occurrence without a new approval. It then tests outbound-port exhaustion with approval. It checks same identity, useful allocations/connections, the untouched host port range and baseline restoration. It saves detailed JSON privately under `~/.local/state/platform-healer/evidence/`.
 
+For a repeat rehearsal, it explicitly suspends existing automatic permissions for these two signatures before starting, retaining the old evidence. It then demonstrates two new approvals and re-promotion. This is a deliberate operator rehearsal action, not the healer forgetting its history.
+
 ## Manual video protocol
 
 Have an administrator start demand only on the owned canary fixture; the web UI intentionally cannot send arbitrary host commands or change resource policy. Stop the rehearsal first to avoid competing operators.

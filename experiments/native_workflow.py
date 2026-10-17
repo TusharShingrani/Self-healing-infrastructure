@@ -34,6 +34,14 @@ def main():
         admin.run('k8s-worker-2',f"printf '%s' {count} | sudo tee /run/platform-healer/fixtures/{kind}/desired >/dev/null")
     root=Path.home()/'.local/state/platform-healer/evidence';root.mkdir(mode=0o700,parents=True,exist_ok=True)
     evidence={'started':time.time(),'runs':[],'channel':'deployed Kubernetes controller operator API'}
+    # A repeat rehearsal must not silently auto-execute its first reviewed case.
+    # Explicitly suspend previously learned permission; retain all old evidence.
+    evidence['rehearsal_suspended_scopes']=[]
+    for procedure in status()['procedures']:
+        if procedure['status']=='validated' and procedure['cause'] in ('process_descriptor_exhaustion','outbound_port_exhaustion'):
+            api('/api/suspend',{'scope':procedure['scope'],'cause':procedure['cause'],
+                               'action':procedure['action'],'actor':'lab-rehearsal-operator'})
+            evidence['rehearsal_suspended_scopes'].append(procedure['scope'])
     host_before=admin.run('k8s-worker-2','cat /proc/sys/net/ipv4/ip_local_port_range').decode()
     try:
         for occurrence in range(3):
