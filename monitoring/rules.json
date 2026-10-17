@@ -1,0 +1,97 @@
+{
+  "groups": [
+    {
+      "name": "platform",
+      "rules": [
+        {
+          "alert": "PlatformTelemetryUnavailable",
+          "expr": "up{job=~\"platform_agent|platform_controller|platform_nodes\"} == 0",
+          "for": "20s",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "Required platform telemetry is unreachable"
+          }
+        },
+        {
+          "alert": "PlatformSampleStale",
+          "expr": "platform_sample_fresh == 0",
+          "for": "15s",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "Canary telemetry is stale: investigate, never assume healthy"
+          }
+        },
+        {
+          "alert": "PlatformBrokerUnavailable",
+          "expr": "platform_agent_broker_up == 0",
+          "for": "10s",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Native mutation/rollback broker is unreachable"
+          }
+        },
+        {
+          "alert": "PlatformLoopStalled",
+          "expr": "platform_controller_loop_fresh == 0",
+          "for": "10s",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "MAPE-K controller has stopped completing ticks"
+          }
+        },
+        {
+          "alert": "PlatformRollbackNeedsReview",
+          "expr": "platform_broker_operations{status=~\"rollback_deferred|conflict|identity_changed\"} > 0",
+          "for": "20s",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "Inspect broker journal: a historical or active lease needs review"
+          }
+        },
+        {
+          "alert": "PlatformApprovalPending",
+          "expr": "platform_incidents{status=\"pending\"} > 0",
+          "for": "30s",
+          "labels": {
+            "severity": "info"
+          },
+          "annotations": {
+            "summary": "An incident is awaiting investigation or operator approval"
+          }
+        },
+        {
+          "alert": "PlatformApiUnready",
+          "expr": "probe_success{job=\"platform_api_ready\"} == 0",
+          "for": "20s",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "Kubernetes API readiness probe failed"
+          }
+        },
+        {
+          "alert": "PlatformHostMemoryPressure",
+          "expr": "node_memory_MemAvailable_bytes{job=\"platform_nodes\"}/node_memory_MemTotal_bytes{job=\"platform_nodes\"}<0.1",
+          "for": "1m",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "Node memory headroom below ten percent; runtime tuning may be unsafe"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "modules": {
+    "k3s_ready": {
+      "prober": "http",
+      "timeout": "5s",
+      "http": {
+        "valid_status_codes": [
+          200
+        ],
+        "tls_config": {
+          "ca_file": "/etc/prometheus/healer-k3s-ca.pem"
+        }
+      }
+    }
+  }
+}
