@@ -1,0 +1,13 @@
+[Unit]
+Description=Private platform healer console tunnel
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh -N -T -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ExitOnForwardFailure=yes -o ServerAliveInterval=20 -o ServerAliveCountMax=3 -o UserKnownHostsFile=/home/ubuntu/.ssh/healer-lab-known-hosts/10.1.1.80 -i /home/ubuntu/.ssh/healer-lab-key -L 127.0.0.1:8085:10.1.1.80:30885 ubuntu@10.1.1.80
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

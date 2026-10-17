@@ -1,8 +1,0 @@
-[
-  {"id":"job_config","operations":[{"op":"restore_settings","resource":"job-settings"}],"verify":["settings","api_ready","endpoint"]},
-  {"id":"job_workers","operations":[{"op":"restore_replicas","resource":"job-worker"}],"verify":["worker_capacity","endpoint"]},
-  {"id":"job_database","operations":[{"op":"start_database","resource":"db-1"}],"verify":["database","endpoint"]},
-  {"id":"job_network","operations":[{"op":"restore_network","resource":"jobs-lab"}],"verify":["network_policy","policy_effective","endpoint"]},
-  {"id":"job_template","operations":[{"op":"restore_template","resource":"job-workloads"}],"verify":["workload_contract","api_ready","endpoint"]},
-  {"id":"job_compute","operations":[{"op":"start_workers","resource":"worker-vms"}],"verify":["worker_nodes","endpoint"]}
-]

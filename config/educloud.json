@@ -1,0 +1,13 @@
+{
+  "nodes": {
+    "k8s-control": "10.1.1.80",
+    "k8s-worker-1": "10.1.1.81",
+    "k8s-worker-2": "10.1.1.82",
+    "probe-1": "10.1.1.84",
+    "monitor": "10.1.1.50"
+  },
+  "user": "ubuntu",
+  "ssh_key": "~/.ssh/healer-lab-key",
+  "known_hosts_directory": "~/.ssh/healer-lab-known-hosts",
+  "base_image": "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1"
+}

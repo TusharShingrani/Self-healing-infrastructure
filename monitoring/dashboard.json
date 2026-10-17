@@ -1,0 +1,238 @@
+{
+  "uid": "platform-mapek",
+  "title": "Kernel & platform tuning \u00e2\u20ac\u201d MAPE-K",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": false,
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "tags": [
+    "platform",
+    "mapek"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Monitoring endpoints available",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "up{job=~\"platform_.*\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Fresh observations and controller loop",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{__name__=~\"platform_sample_fresh|platform_controller_loop_fresh\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Descriptor use and soft ceiling",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{__name__=~\"platform_resource_(open_fds|soft_limit|held_fds)\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Outbound port occupancy and connection recovery",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 9,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{__name__=~\"platform_resource_(used_ports|range_size|active_connections)\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Actual allocation failures (cumulative)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "platform_resource_allocation_errors",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Incident lifecycle",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 18,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "platform_incidents",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Procedure qualification and automatic reuse eligibility",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 27,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "platform_procedures",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Broker application and rollback journal",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 27,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "platform_broker_operations",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Host I/O stall seconds per second",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(node_pressure_io_waiting_seconds_total{job=\"platform_nodes\"}[1m])",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Host memory available",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 36,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "node_memory_MemAvailable_bytes{job=\"platform_nodes\"}",
+          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}} {{instance}}"
+        }
+      ]
+    }
+  ]
+}
