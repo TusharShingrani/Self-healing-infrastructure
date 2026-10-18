@@ -14,6 +14,11 @@ allocation failure, HAProxy connection/HTTP errors and independently healthy
 upstream evidence. HAProxy's generic `econ` counter alone is not interpreted as
 an errno: a separate namespace allocation probe supplies the errno evidence.
 
+The 32-port range, backend server-close mode and disabled backend reuse are
+deliberate lab settings that expose independent outgoing TCP allocation. They
+do not imply a default or well-pooled HTTP/2 banking gateway fails at this load.
+Production connection pooling and destination diversity require separate tests.
+
 The approved effect expands only this namespace's range to 256 ports. Neither
 HAProxy configuration nor its process is restarted. Verification requires stable
 successful transactions and the same executable/configuration/process identity.

@@ -18,6 +18,7 @@ from ..tls import client_context
 from ..transport import fixed_opener
 
 ROOT=Path('/run/platform-healer/gateway')
+REGISTRY=Path('/run/platform-healer/gateway-identity.json')
 
 
 def unix_request(path,request,limit=65536):
@@ -65,7 +66,7 @@ class Gateway:
         self.context=client_context('/etc/platform-healer/tls')
         self.observer=fixed_opener(self.context)
     def state(self):
-        registry=root_json(ROOT/'identity.json');pid=registry['pid']
+        registry=root_json(REGISTRY);pid=registry['pid']
         if type(pid)is not int or pid<=1:raise ValueError('Unsafe gateway PID')
         start=Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()[19]
         if start!=registry['start_time'] or os.stat(f'/proc/{pid}').st_uid!=self.spec['uid']:raise ValueError('Gateway process identity changed')

@@ -95,7 +95,7 @@ from pathlib import Path
 pid=int(subprocess.check_output(['systemctl','show','platform-gateway','-p','MainPID','--value']))
 assert pid>1
 start=Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()[19]
-registry=Path('/run/platform-healer/gateway/identity.json')
+registry=Path('/run/platform-healer/gateway-identity.json')
 registry.write_text(json.dumps({'pid':pid,'start_time':start}))
 os.chown(registry,0,0);registry.chmod(0o600)
 spec={'id':'gateway-ports','kind':'gateway_ports','namespace':'platform-healer-gateway',

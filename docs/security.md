@@ -15,6 +15,8 @@ The native broker remains root and uses CAP_SYS_ADMIN, CAP_NET_ADMIN, CAP_SYS_PT
 
 HAProxy itself runs as haproxy with no capabilities in a dedicated namespace. The namespace has no default route; the probe has one explicit route; its veth forwarding chain allows only the owned probe path. The upstream is a bounded loopback service. Load is confined to that gateway, at most 80 requested background connections and 30 seconds per run, with service time/memory/task/CPU bounds. Protected bastion, monitor and sole control-plane are never fault targets.
 
+The pinned identity registry is in the root-owned broker directory, outside the HAProxy-writable socket directory. Registry reads use a non-following, nonblocking descriptor and require a protected root-owned regular file; a FIFO cannot block the privileged collector.
+
 ## Remaining limits
 
 The localhost UI relies on SSH tunnelling plus a private shared operator token, not enterprise SSO or independent separation of duties. The named reviewer is an audit label, not independently verified corporate identity. Foundation node-exporter/Prometheus paths remain private HTTP. mTLS does not attest that a compromised agent reports honest telemetry. Root registry, local SQLite audit and backups are not tamper-proof. No HA, fleet-scale benchmark, OKD SCC/SELinux qualification, automated certificate revocation/rotation, SBOM assurance or production IAM is claimed.
