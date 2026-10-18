@@ -32,6 +32,10 @@ The controller runs in Kubernetes; HAProxy is a constrained host service in its 
 
 ## Human control and learning
 
+The optional [human-reviewed Gemini investigation](docs/ai-investigation.md) explains incident evidence and suggests next checks without repair authority. Operators can record manual repairs and their verification evidence. These notes do not qualify automatic procedures. Provider use is disabled until configured; tests with a fake provider are not evidence of live model accuracy.
+
+The [repeated diagnosis-quality comparison](evidence/diagnosis-quality.md) includes 42 real Gemini calls on seven constructed cases. Refined guidance improved full-report rubric compliance from two to six cases; technical caveats and single-reviewer/in-sample limits remain. Fresh-evidence admission and local safety notices protect the workflow independently of model obedience.
+
 - **Observe:** collect evidence and proposals, execute nothing.
 - **Require approval:** a named operator authorises a bounded repair with a reason.
 - **Use validated procedures:** reuse only a procedure explicitly promoted after two distinct verified occurrences in the same identity/policy scope.

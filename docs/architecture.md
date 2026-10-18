@@ -29,6 +29,8 @@ flowchart TB
   Controller <-->|mTLS / signed intents| Agent
   Controller <--> K
   Operator[Operator through SSH tunnel] --> Controller
+  Controller -->|Opt-in numeric evidence only| Advisor[Gemini advisory investigation]
+  Advisor -->|Unverified report; no execution authority| Controller
   Agent --> Metrics[Prometheus and Grafana on monitor]
   Check --> Metrics
   Controller --> Metrics

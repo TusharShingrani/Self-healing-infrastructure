@@ -19,6 +19,10 @@ The pinned identity registry is in the root-owned broker directory, outside the 
 
 ## Remaining limits
 
+Optional Gemini investigation is advisory only and disabled by default. Its numeric telemetry allowlist excludes histories and secrets. It has no broker access, tools or approval authority. Model advice and operator-reported repairs cannot qualify automation. See [AI investigation](ai-investigation.md) for provider configuration, egress, privacy and evaluation limits.
+
+Following the diagnosis-quality study, advice admission independently requires fresh supported same-identity current evidence. Local safety notices accompany the report and grant no authority. Guidance compliance is not a security boundary: model text still contains possible factual/technical errors and must not be executed as a command or treated as approval.
+
 The localhost UI relies on SSH tunnelling plus a private shared operator token, not enterprise SSO or independent separation of duties. The named reviewer is an audit label, not independently verified corporate identity. Foundation node-exporter/Prometheus paths remain private HTTP. mTLS does not attest that a compromised agent reports honest telemetry. Root registry, local SQLite audit and backups are not tamper-proof. No HA, fleet-scale benchmark, OKD SCC/SELinux qualification, automated certificate revocation/rotation, SBOM assurance or production IAM is claimed.
 
 Private Ed25519 CA is generated outside Git; leaves expire after 90 days. Deployment refuses credentials with under seven days remaining. Administrators must plan renewal and replacement; private CA and role keys are backed up off-platform. A stolen controller signing key/certificate still exposes root-policy-bounded authority. Recovery requires secure administrator access.

@@ -12,6 +12,7 @@ from pathlib import Path
 from .engine import Engine
 from .knowledge import Knowledge
 from .transport import RemoteClient
+from .investigation import GeminiAdvisor, evidence_packet, require_current_evidence
 
 PAGE = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
 <title>Platform healer</title><style>body{font:16px system-ui;max-width:1050px;margin:40px auto;padding:20px;background:#f4f6f8;color:#17273b}section{background:white;padding:20px;margin:16px 0;border-radius:10px}button,input{font:inherit;padding:9px;margin:5px}pre{white-space:pre-wrap;overflow-wrap:anywhere}small{color:#43566d}</style>
@@ -57,6 +58,20 @@ function incidents(snapshot){
     text(card,'p','Target: '+before.target+' on '+(policy?.node||'the configured canary'));
     if(item.action&&policy)text(card,'p','Reviewed proposal: '+item.action+'; baseline '+JSON.stringify(policy.baseline)+' to '+JSON.stringify(policy.expanded)+'. Temporary lease; no process restart.');
     else text(card,'p','Investigation-only record. No executable repair is attached to this evidence.');
+    const advice=snapshot.investigations.find(row=>row.incident===item.id);
+    text(card,'p','AI investigation: '+(advice?.status||'not requested')+'. Advice is unverified and cannot execute repairs. Reports describe submitted observations; check live observations before acting.');
+    if(advice?.advice){const report=JSON.parse(advice.advice);
+      if(report.safety_context){text(card,'h4','Local safety constraints (independent of AI)');for(const notice of report.safety_context.constraints)text(card,'p',notice)}
+      text(card,'pre',JSON.stringify(report,null,2));}
+    const investigator=input(card,'Investigator name','investigate-'+item.id);
+    const investigate=text(card,'button','Request Gemini investigation');
+    investigate.disabled=!!advice&&['running','complete'].includes(advice.status);
+    investigate.onclick=()=>decision('/api/investigate',{incident:item.id,actor:investigator.value});
+    const repair=input(card,'Repair performed manually','repair-'+item.id);
+    const verification=input(card,'Verification evidence and result','verification-'+item.id);
+    const record=text(card,'button','Record human repair (does not qualify automation)');
+    record.onclick=()=>decision('/api/human-repair',{incident:item.id,actor:investigator.value,detail:repair.value,verification:verification.value});
+    for(const entry of snapshot.human_repairs.filter(row=>row.incident===item.id))text(card,'pre',JSON.stringify({label:'Operator-reported repair; not independently verified',...entry},null,2));
     const evidence=text(card,'details','');text(evidence,'summary','Inspect exact before / after evidence');
     text(evidence,'pre',JSON.stringify({before:before,after:item.after?JSON.parse(item.after):null},null,2));
     if(item.status==='pending'&&item.action&&policy?.mode==='observe')text(card,'p','Observe-only mode blocks repairs. Change operating mode before approving.');
@@ -112,6 +127,32 @@ def main():
         targets[spec['id']]=dict(spec,key=Path(spec['key_file']).read_bytes(),
             client=RemoteClient(spec['url'],config.get('allow_plaintext_lab',False),spec.get('tls_directory')))
     knowledge=Knowledge(config['database']);engine=Engine(knowledge,targets)
+    # An interrupted request must not remain running forever after process restart.
+    knowledge.db.execute("UPDATE investigations SET status='unavailable' WHERE status='running'");knowledge.db.commit()
+    investigation_gate=threading.Lock()
+    def investigate(ident,actor):
+        settings=config.get('investigation',{})
+        if not settings.get('enabled',False):raise ValueError('Gemini investigation is disabled; configure model and secret first')
+        advisor=GeminiAdvisor(settings['model'])
+        if not investigation_gate.acquire(blocking=False):raise ValueError('An investigation is already running')
+        try:
+            with engine.lock:
+                row=knowledge.db.execute('SELECT * FROM incidents WHERE id=?',(ident,)).fetchone()
+                if not row or json.loads(row['before'])['target'] not in targets:raise ValueError('Not an active gateway incident')
+                recent=knowledge.db.execute('SELECT MAX(updated) FROM investigations').fetchone()[0]
+                if recent and time.time()-recent<60:raise ValueError('Wait 60 seconds between provider requests')
+                packet=evidence_packet(dict(row),engine.observations.get(json.loads(row['before'])['target']))
+                require_current_evidence(packet)
+                knowledge.begin_investigation(ident,actor)
+        except Exception:
+            investigation_gate.release();raise
+        def run():
+            try:
+                try:result=advisor.investigate(packet);passed=True
+                except Exception:result={'error':'Provider unavailable or invalid response; investigate manually'};passed=False
+                with engine.lock:knowledge.finish_investigation(ident,result,passed)
+            finally:investigation_gate.release()
+        threading.Thread(target=run,daemon=True).start()
     sessions={};last_tick=[0];last_error=['']
     def loop():
         while True:
@@ -167,6 +208,12 @@ def main():
                     return self.reply(200,{'signed_in':True},cookie='platform_session='+session+'; HttpOnly; SameSite=Strict; Path=/; Max-Age=3600'+('' if config.get('operator_http_over_ssh',False) else '; Secure'))
                 if not self.authorised():return self.reply(401,{'error':'Authentication required'})
                 if self.path=='/api/approve':engine.approve(int(data['incident']),data['actor'],data['reason'])
+                elif self.path=='/api/investigate':investigate(int(data['incident']),data['actor'])
+                elif self.path=='/api/human-repair':
+                    with engine.lock:
+                        row=knowledge.db.execute('SELECT before FROM incidents WHERE id=?',(int(data['incident']),)).fetchone()
+                        if not row or json.loads(row['before'])['target'] not in targets:raise ValueError('Not an active incident')
+                        knowledge.record_human_repair(int(data['incident']),data['actor'],data['detail'],data['verification'])
                 elif self.path=='/api/mode':engine.set_mode(data['target'],data['mode'],data['actor'],data['reason'])
                 elif self.path=='/api/promote':engine.promote(data['scope'],data['cause'],data['action'],data['actor'])
                 elif self.path=='/api/suspend':

@@ -9,6 +9,8 @@ class Knowledge:
         CREATE TABLE IF NOT EXISTS incidents(id INTEGER PRIMARY KEY,scope TEXT,cause TEXT,action TEXT,status TEXT,before TEXT,after TEXT,actor TEXT,reason TEXT,opened REAL,verified REAL);
         CREATE TABLE IF NOT EXISTS procedures(scope TEXT,cause TEXT,action TEXT,status TEXT,reviewer TEXT,PRIMARY KEY(scope,cause,action));
         CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY,at REAL,event TEXT,subject TEXT,actor TEXT,detail TEXT);
+        CREATE TABLE IF NOT EXISTS investigations(incident INTEGER PRIMARY KEY,status TEXT,advice TEXT,actor TEXT,updated REAL);
+        CREATE TABLE IF NOT EXISTS human_repairs(id INTEGER PRIMARY KEY,incident INTEGER,actor TEXT,detail TEXT,verification TEXT,at REAL);
         """)
     def audit(self,event,subject,actor,detail):
         self.db.execute('INSERT INTO audit(at,event,subject,actor,detail) VALUES(?,?,?,?,?)',(time.time(),event,str(subject),actor,detail));self.db.commit()
@@ -53,4 +55,21 @@ class Knowledge:
         self.db.execute("INSERT INTO procedures VALUES(?,?,?,'validated',?) ON CONFLICT(scope,cause,action) DO UPDATE SET status='validated',reviewer=excluded.reviewer",(scope,cause,action,reviewer));self.db.commit();self.audit('promote',scope,reviewer,action)
     def suspend(self,scope,cause,action,reviewer):
         self.db.execute("UPDATE procedures SET status='suspended' WHERE scope=? AND cause=? AND action=?",(scope,cause,action));self.db.commit();self.audit('suspend',scope,reviewer,action)
-    def export(self):return {name:[dict(r) for r in self.db.execute('SELECT * FROM '+name)] for name in ('incidents','procedures','audit')}
+    def begin_investigation(self,ident,actor):
+        if not actor.strip() or len(actor)>120:raise ValueError('Named investigator required')
+        case=self.db.execute('SELECT * FROM incidents WHERE id=?',(ident,)).fetchone()
+        if not case:raise ValueError('Unknown incident')
+        existing=self.db.execute('SELECT status FROM investigations WHERE incident=?',(ident,)).fetchone()
+        if existing and existing['status'] in ('running','complete'):raise ValueError('Investigation already requested')
+        self.db.execute('INSERT OR REPLACE INTO investigations VALUES(?,?,?,?,?)',(ident,'running','',actor,time.time()))
+        self.db.commit();self.audit('investigation_requested',ident,actor,'Advisory only; allowlisted telemetry')
+        return dict(case)
+    def finish_investigation(self,ident,result,passed):
+        self.db.execute('UPDATE investigations SET status=?,advice=?,updated=? WHERE incident=?',('complete' if passed else 'unavailable',canonical(result),time.time(),ident))
+        self.db.commit();self.audit('investigation_complete' if passed else 'investigation_unavailable',ident,'advisor','No repair authority granted')
+    def record_human_repair(self,ident,actor,detail,verification):
+        if not self.db.execute('SELECT 1 FROM incidents WHERE id=?',(ident,)).fetchone():raise ValueError('Unknown incident')
+        if not actor.strip() or len(actor)>120 or any(not 8<=len(x.strip())<=1200 for x in (detail,verification)):raise ValueError('Named operator, repair description and verification evidence required')
+        self.db.execute('INSERT INTO human_repairs(incident,actor,detail,verification,at) VALUES(?,?,?,?,?)',(ident,actor,detail,verification,time.time()))
+        self.db.commit();self.audit('human_repair_recorded',ident,actor,'Operator-reported only; not independent verification or procedure qualification')
+    def export(self):return {name:[dict(r) for r in self.db.execute('SELECT * FROM '+name)] for name in ('incidents','procedures','audit','investigations','human_repairs')}
