@@ -32,7 +32,11 @@ The preceding development comparison also passed all nine trials. The final comp
 
 ## Offline checks, archives and remaining limits
 
-71 offline unittest checks passed, including consecutive diagnosis, mode persistence/refusal, distinct independent verification observations, scope/promotion/suspension, bounds, identity, fresh telemetry, root cooldown/refused-ID replay protection, journal recovery and compare-and-set rollback. Python compilation, manifest rendering and JavaScript syntax checks passed. Mocked tests are not live fault results.
+73 offline unittest checks passed, including consecutive diagnosis, mode persistence/refusal, distinct independent verification observations, scope/promotion/suspension, bounds, identity, fresh telemetry, root cooldown/refused-ID replay protection, journal recovery, compare-and-set rollback and administrator SSH input isolation. Python compilation, manifest rendering and JavaScript syntax checks passed. Mocked tests are not live fault results.
+
+## Follow-up release acceptance — 18 October 2026
+
+The canonical source rollout at `4de6b4a` (image `selfheal/platform:5d188a25bd316c2b`) preserved the gateway identity used in the comparison and returned healthy idle baseline. Live mTLS/monitoring and reserved-port, upstream-outage, refused-ID replay and missing-observer checks passed again. The root identity registry is outside the HAProxy-writable socket directory; a real FIFO registry was refused without blocking. Private post-rollout recovery archives were copied to the laptop and their checksum manifest and SQLite integrity verified. An administrator SSH stdin-consumption defect discovered during release checking was fixed with two additional regression tests; it does not change the gateway repair algorithm.
 
 Detailed histories and private recovery archives are retained off-platform on the laptop. Archive readability/checksums and SQLite integrity are checked; these are not a full disaster-rebuild drill. The signed-in browser layout has not been visually revalidated; authenticated API workflows and delivered JavaScript syntax are verified.
 

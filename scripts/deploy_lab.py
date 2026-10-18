@@ -17,10 +17,11 @@ class Admin:
               '-o','UserKnownHostsFile='+str(Path(self.config['known_hosts_directory']).expanduser()/ip),
               '-i',str(Path(self.config['ssh_key']).expanduser()),self.config['user']+'@'+ip]
         if name not in self.verified:
-            result=subprocess.run(args+['hostname'],capture_output=True,check=True,timeout=20)
+            result=subprocess.run(args+['hostname'],stdin=subprocess.DEVNULL,capture_output=True,check=True,timeout=20)
             if result.stdout.decode().strip()!=name:raise RuntimeError('Pinned node hostname mismatch')
             self.verified.add(name)
-        result=subprocess.run(args+[command],input=data,capture_output=True,timeout=timeout)
+        stream={'input':data} if data is not None else {'stdin':subprocess.DEVNULL}
+        result=subprocess.run(args+[command],capture_output=True,timeout=timeout,**stream)
         if result.returncode:raise RuntimeError(name+' refused operation; inspect node logs (no secret output printed)')
         return result.stdout
 
