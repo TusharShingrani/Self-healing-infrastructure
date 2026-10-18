@@ -1,0 +1,13 @@
+# Operator interface simplification — 18 October 2026
+
+The everyday healer page now answers whether requests work, whether the backend responds and what permission the healer has. Current unresolved incidents are separated from past experiments and replacement gateway identities. A healthy idle view explicitly says that nothing needs a repair. Technical evidence/audit and automation controls are closed by default.
+
+Saved AI reports are displayed as a summary and expandable explanation/check lists rather than a JSON document. Empty AI sections and repair-entry forms were removed from closed incidents. Earlier-guidance reports are labelled as historical advice. The named approval/reason, manual-repair record and procedure qualification controls remain available where relevant, with their original server-side checks.
+
+Sign-in leads with the existing private access file and explains that no username is needed. Routine sign-in-required responses no longer look like connectivity failures. Request/backend status is unknown when readings are stale or unusable; connection failures invalidate the displayed health cards. Health updates continue while an operator types, while input drafts and expanded details are preserved.
+
+The Grafana overview was reduced from twelve panels to eight: four current status cards plus response time, port pressure, new errors and memory headroom. Duplicate incident/procedure/rollback/coverage history panels were removed from this overview; underlying telemetry, monitoring connections, alert rules and audit records remain retained. Status cards use instant queries so an old fallback value cannot appear beside today's status. Charts have readable legends, units and descriptions. A return link opens the healer for decisions.
+
+Validation includes 96 passing tests, JavaScript syntax checking, explicit current-reading query checks and live deployment acceptance: 11 healthy monitoring targets, populated dashboard queries, healthy gateway baseline/independent requests, mTLS/refusal checks and constrained runtime Pods. The signed-in overview, historical AI presentation and monitoring layout were inspected in the browser. Browser inspection identified and corrected mixed historical/current status cards and a text-encoding defect. No usability study with independent users or new repair-effectiveness experiment is claimed.
+
+Only presentation and a dashboard-only administrator updater changed. The runtime repair catalogue, approval requirements, Gemini execution restrictions, privileged broker and gateway service were unchanged. See [operator guide](../docs/operator-guide.md) for the new labels and workflow.

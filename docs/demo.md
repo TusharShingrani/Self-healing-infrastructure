@@ -8,7 +8,7 @@ The banking peak is motivation; the upstream is a bounded test instrument. No pa
 
 ## Screens
 
-Open the SSH-tunnelled console at localhost:8085 and sign in with the private operator token file. Use Grafana dashboard **HAProxy gateway - MAPE-K recovery**, UID platform-mapek, in a recent relative time window. Show independent client success, backend errors, allocation errno, pool occupancy/range, incidents, verification, modes and lease state.
+Open the SSH-tunnelled **Gateway care** console at localhost:8085 and sign in with the private operator token file. Start with the health cards and **What needs your attention**. Use Grafana dashboard **Gateway care - service health and recovery**, UID platform-mapek, in a recent relative time window. Show request health, new errors and port use; expand technical evidence only when explaining the underlying measurements. See the [operator guide](operator-guide.md).
 
 ## Reproducible comparison
 
@@ -20,11 +20,11 @@ The script proves no new approval on the automatic recurrence, no gateway identi
 
 Do not run a manual demonstration concurrently with the automated study. Begin at idle with range 40000-40031 and zero active backend connections. An administrator on probe-1 starts the bounded load, using the same systemd-run invocation shown in experiments/gateway_study.py. The console cannot execute arbitrary shell commands.
 
-1. Set **Require approval**, supply your name and a reason. Show the independent client's failing transactions and two correlated diagnostic observations.
+1. Open **Automation settings**, set **Ask before repairing**, and supply your name and a reason. Show the independent client's failing transactions and two correlated diagnostic observations.
 2. Inspect the incident: healthy upstream, actual namespace EADDRNOTAVAIL, new HAProxy backend/5xx failures, exact namespace identity and approved range. Show the unchanged range before approval.
-3. Approve. Show range size 256, three distinct independent successful checks and a **verified** outcome while background connections remain active. HAProxy's identity stays the same.
+3. Select **Approve this temporary repair**. Show range size 256, three distinct independent successful checks and a **Repair verified** outcome while background connections remain active. HAProxy's identity stays the same.
 4. Let bounded load finish. Show zero active connections and baseline rollback after the lease expires. Wait out cooldown before another run.
-5. Demonstrate two verified reviewed occurrences followed by explicit promotion, then **Use validated procedures**. A matching recurrence repairs without another approval. Use **Suspend automatic reuse** to revoke that permission.
+5. Demonstrate two verified reviewed occurrences followed by **Qualify for automatic reuse**, then **Reuse reviewed repairs**. A matching recurrence repairs without another approval. Use **Suspend automatic reuse** to revoke that permission.
 6. Stop only the owned upstream service as an administrator. Show dependency diagnosis and no executable repair/range change, then restore it. Unknown failures need investigation, not a blind restart or blind tuning.
 
 Observe mode executes nothing, including already approved proposals. Changing mode never cancels safe reconciliation of an existing lease. Automatic mode never manufactures a new repair or bypasses root policy. A new process/configuration/namespace scope needs fresh qualification.
