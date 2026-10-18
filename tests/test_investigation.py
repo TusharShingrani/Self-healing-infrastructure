@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from platform_healer.investigation import GeminiAdvisor, evidence_packet, validate_report, FIELDS, NoRedirect
+from platform_healer.investigation import GeminiAdvisor, evidence_packet, validate_report, FIELDS, NoRedirect, safety_context, require_current_evidence
 from platform_healer.knowledge import Knowledge
 
 
@@ -75,6 +75,32 @@ class InvestigationTests(unittest.TestCase):
 
     def test_model_path_injection_refused(self):
         with self.assertRaises(ValueError):GeminiAdvisor('../evil?key=secret','key')
+
+    def test_local_safety_notice_never_grants_execution_authority(self):
+        current={'fresh':True,'telemetry_supported':True,'telemetry_error_present':False,
+                 'metrics':{'upstream_healthy':True,'memory_available_bytes':67108864,
+                            'memory_available_ratio':.05,'reserved_conflict':True}}
+        result=safety_context({'current':current})
+        self.assertFalse(result['execution_authority'])
+        self.assertTrue(any('Memory headroom' in s for s in result['constraints']))
+        self.assertTrue(any('Reserved-port' in s for s in result['constraints']))
+
+    def test_stale_and_recovered_evidence_have_local_independent_notices(self):
+        result=safety_context({'current':{'fresh':False}})
+        self.assertIn('Current state unknown',result['constraints'][0])
+        result=safety_context({'current':{'fresh':True,'telemetry_supported':True,'telemetry_error_present':False,
+            'metrics':{'client_transaction_ok':True,'gateway_transaction_ok':True,'allocation_probe_errno':0}}})
+        self.assertTrue(any('historical counters' in s for s in result['constraints']))
+
+    def test_controller_advice_admission_refuses_unusable_current_evidence(self):
+        valid={'fresh':True,'telemetry_supported':True,'telemetry_error_present':False}
+        require_current_evidence({'current':valid})
+        for packet in ({},{'current':dict(valid,fresh=False)},
+                       {'current':dict(valid,telemetry_supported=False)},
+                       {'current':dict(valid,telemetry_error_present=True)},
+                       {'current':valid,'current_unavailable_or_identity_changed':True}):
+            with self.subTest(packet=packet):
+                with self.assertRaises(ValueError):require_current_evidence(packet)
 
     def test_advice_and_manual_repair_cannot_authorise_or_qualify(self):
         knowledge=Knowledge(':memory:')

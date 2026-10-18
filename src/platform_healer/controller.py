@@ -12,7 +12,7 @@ from pathlib import Path
 from .engine import Engine
 from .knowledge import Knowledge
 from .transport import RemoteClient
-from .investigation import GeminiAdvisor, evidence_packet
+from .investigation import GeminiAdvisor, evidence_packet, require_current_evidence
 
 PAGE = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
 <title>Platform healer</title><style>body{font:16px system-ui;max-width:1050px;margin:40px auto;padding:20px;background:#f4f6f8;color:#17273b}section{background:white;padding:20px;margin:16px 0;border-radius:10px}button,input{font:inherit;padding:9px;margin:5px}pre{white-space:pre-wrap;overflow-wrap:anywhere}small{color:#43566d}</style>
@@ -59,8 +59,10 @@ function incidents(snapshot){
     if(item.action&&policy)text(card,'p','Reviewed proposal: '+item.action+'; baseline '+JSON.stringify(policy.baseline)+' to '+JSON.stringify(policy.expanded)+'. Temporary lease; no process restart.');
     else text(card,'p','Investigation-only record. No executable repair is attached to this evidence.');
     const advice=snapshot.investigations.find(row=>row.incident===item.id);
-    text(card,'p','AI investigation: '+(advice?.status||'not requested')+'. Advice is unverified and cannot execute repairs.');
-    if(advice?.advice)text(card,'pre',JSON.stringify(JSON.parse(advice.advice),null,2));
+    text(card,'p','AI investigation: '+(advice?.status||'not requested')+'. Advice is unverified and cannot execute repairs. Reports describe submitted observations; check live observations before acting.');
+    if(advice?.advice){const report=JSON.parse(advice.advice);
+      if(report.safety_context){text(card,'h4','Local safety constraints (independent of AI)');for(const notice of report.safety_context.constraints)text(card,'p',notice)}
+      text(card,'pre',JSON.stringify(report,null,2));}
     const investigator=input(card,'Investigator name','investigate-'+item.id);
     const investigate=text(card,'button','Request Gemini investigation');
     investigate.disabled=!!advice&&['running','complete'].includes(advice.status);
@@ -140,6 +142,7 @@ def main():
                 recent=knowledge.db.execute('SELECT MAX(updated) FROM investigations').fetchone()[0]
                 if recent and time.time()-recent<60:raise ValueError('Wait 60 seconds between provider requests')
                 packet=evidence_packet(dict(row),engine.observations.get(json.loads(row['before'])['target']))
+                require_current_evidence(packet)
                 knowledge.begin_investigation(ident,actor)
         except Exception:
             investigation_gate.release();raise
