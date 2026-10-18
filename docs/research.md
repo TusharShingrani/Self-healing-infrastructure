@@ -1,5 +1,9 @@
 # Research argument and evidence boundaries
 
+## Optional AI-assisted investigation
+
+The [advisory workflow](ai-investigation.md) extends investigation of the same gateway rather than adding unrelated applications. The research question is whether evidence-constrained model advice improves investigation over deterministic classifications, measured by correct hypotheses, unsupported claims, useful next checks, unsafe advice, latency and operator corrections. The deterministic controller remains the authority for qualified repair. Provider integration success does not establish diagnostic effectiveness; new fault classes remain unqualified until independently tested. Human repair records are explicit operator reports and do not count as verified automatic learning.
+
 ## Question 1: Which infrastructure failures can be self-healed?
 
 Focus: reversible **resource-bound saturation**, with a known target, observable allocation failure and safe headroom. The primary implementation tests a real HAProxy gateway's outbound local-port exhaustion. Earlier port/descriptor fixtures remain regression evidence. Hardware failure, capacity without headroom, descriptor leaks, corruption, attack attribution and an unknown failure are not repaired by raising limits. A bounded limit increase buys capacity; it does not remove every underlying cause.
