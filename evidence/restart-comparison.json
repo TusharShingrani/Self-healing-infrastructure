@@ -1,0 +1,136 @@
+{
+  "date": "2026-10-18",
+  "protocol": {
+    "pairs": 3,
+    "treatment_order": [
+      "restart",
+      "repair",
+      "repair",
+      "restart",
+      "restart",
+      "repair"
+    ],
+    "load_seconds": 24,
+    "client_workers": 64,
+    "hold_seconds": 25,
+    "same_trigger": "Confirmed correlated exhaustion diagnosis; no deliberate approval delay",
+    "restart": "Hard restart of owned HAProxy service; effective KillSignal SIGTERM (15)",
+    "repair": "Scripted approved namespace port expansion, 32 to 256 port numbers",
+    "recovery": "First of three consecutive correct independent HTTP nonce responses after action trigger while load continues",
+    "interruption": "A request sent before the action ends with a transport error before planned load shutdown; planned cancellations excluded"
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "pair": 1,
+      "treatment": "restart",
+      "failed_client_checks": 21,
+      "client_checks": 21,
+      "action_request_duration_seconds": 0.278,
+      "post_action_observation_seconds": 21.498,
+      "action_trigger_to_stable_client_recovery_seconds": null,
+      "first_client_failure_to_stable_recovery_seconds": null,
+      "pre_action_pending_requests_transport_failed_before_planned_shutdown": 32,
+      "failure_after_stable_recovery": false
+    },
+    {
+      "trial": 2,
+      "pair": 1,
+      "treatment": "repair",
+      "failed_client_checks": 6,
+      "client_checks": 21,
+      "action_request_duration_seconds": 0.025,
+      "post_action_observation_seconds": 20.669,
+      "action_trigger_to_stable_client_recovery_seconds": 4.229,
+      "first_client_failure_to_stable_recovery_seconds": 6.599,
+      "pre_action_pending_requests_transport_failed_before_planned_shutdown": 0,
+      "failure_after_stable_recovery": false
+    },
+    {
+      "trial": 3,
+      "pair": 2,
+      "treatment": "repair",
+      "failed_client_checks": 5,
+      "client_checks": 22,
+      "action_request_duration_seconds": 0.066,
+      "post_action_observation_seconds": 22.205,
+      "action_trigger_to_stable_client_recovery_seconds": 4.032,
+      "first_client_failure_to_stable_recovery_seconds": 5.702,
+      "pre_action_pending_requests_transport_failed_before_planned_shutdown": 0,
+      "failure_after_stable_recovery": false
+    },
+    {
+      "trial": 4,
+      "pair": 2,
+      "treatment": "restart",
+      "failed_client_checks": 21,
+      "client_checks": 21,
+      "action_request_duration_seconds": 0.301,
+      "post_action_observation_seconds": 20.577,
+      "action_trigger_to_stable_client_recovery_seconds": null,
+      "first_client_failure_to_stable_recovery_seconds": null,
+      "pre_action_pending_requests_transport_failed_before_planned_shutdown": 32,
+      "failure_after_stable_recovery": false
+    },
+    {
+      "trial": 5,
+      "pair": 3,
+      "treatment": "restart",
+      "failed_client_checks": 21,
+      "client_checks": 21,
+      "action_request_duration_seconds": 0.284,
+      "post_action_observation_seconds": 20.266,
+      "action_trigger_to_stable_client_recovery_seconds": null,
+      "first_client_failure_to_stable_recovery_seconds": null,
+      "pre_action_pending_requests_transport_failed_before_planned_shutdown": 32,
+      "failure_after_stable_recovery": false
+    },
+    {
+      "trial": 6,
+      "pair": 3,
+      "treatment": "repair",
+      "failed_client_checks": 6,
+      "client_checks": 21,
+      "action_request_duration_seconds": 0.024,
+      "post_action_observation_seconds": 20.625,
+      "action_trigger_to_stable_client_recovery_seconds": 4.213,
+      "first_client_failure_to_stable_recovery_seconds": 6.598,
+      "pre_action_pending_requests_transport_failed_before_planned_shutdown": 0,
+      "failure_after_stable_recovery": false
+    }
+  ],
+  "aggregate": [
+    {
+      "treatment": "restart",
+      "trials": 3,
+      "sustained_recoveries_under_load": 0,
+      "median_action_trigger_to_recovery_seconds": null,
+      "failed_client_checks": 63,
+      "client_checks": 63,
+      "pre_action_pending_request_transport_failures": 96,
+      "median_control_request_duration_seconds": 0.284,
+      "minimum_post_action_observation_seconds": 20.266
+    },
+    {
+      "treatment": "repair",
+      "trials": 3,
+      "sustained_recoveries_under_load": 3,
+      "median_action_trigger_to_recovery_seconds": 4.213,
+      "failed_client_checks": 17,
+      "client_checks": 64,
+      "pre_action_pending_request_transport_failures": 0,
+      "median_control_request_duration_seconds": 0.025,
+      "minimum_post_action_observation_seconds": 20.625
+    }
+  ],
+  "automatic_scope_requalified": true,
+  "healthy_baseline_afterwards": true,
+  "limitations": [
+    "Three pairs in one lab; no statistical/general production claim",
+    "Hard restart only; graceful reload and HA failover not tested",
+    "Deliberately reduced range and disabled backend reuse",
+    "Held GETs model connection demand, not banking operations; no financial-loss inference",
+    "One-second independent probes cannot exclude a brief unsampled recovery",
+    "Endpoint/process identity maintenance after restart is excluded from client recovery time"
+  ]
+}

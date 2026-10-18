@@ -32,6 +32,8 @@ The preceding development comparison also passed all nine trials. The final comp
 
 ## Offline checks, archives and remaining limits
 
+The subsequent [restart comparison](restart-comparison.md) on 18 October adds three alternating-order pairs and a separate final scope-qualification occurrence. Hard restart did not produce sustained recovery during the continuing load window in any pair; targeted repair did in all pairs. The new measurement suite has 76 passing offline checks. Final live acceptance again verified 11 healthy monitoring targets, all 12 dashboard queries and qualified automatic mode on the restarted process identity. Numeric-only results are in [restart-comparison.json](restart-comparison.json); detailed timelines and refreshed archives remain private on the laptop.
+
 73 offline unittest checks passed, including consecutive diagnosis, mode persistence/refusal, distinct independent verification observations, scope/promotion/suspension, bounds, identity, fresh telemetry, root cooldown/refused-ID replay protection, journal recovery, compare-and-set rollback and administrator SSH input isolation. Python compilation, manifest rendering and JavaScript syntax checks passed. Mocked tests are not live fault results.
 
 ## Follow-up release acceptance — 18 October 2026
