@@ -1,28 +1,32 @@
-# Privilege and trust boundaries
+# Security and recovery boundaries
 
-## Implemented
+## Delivered controls
 
-- Controller: non-root, read-only image, no Linux capabilities, no service-account token, one replica/Recreate, SQLite WAL on a PVC. Operator decisions require a private token/session, checked browser origin, named reviewer and a meaningful reason.
-- Agent: non-root DaemonSet, no hostPID/hostNetwork, no service-account token, no capabilities; only a read-only mount of the dedicated broker directory and supplemental GID 64532. Read-only mounting does not make a Unix socket read-only: the fixed broker protocol is the authority boundary.
-- Host broker: administrator-installed systemd service; private root-owned policy and key; fixed target/action allowlist; HMAC intent, freshness, operation ID, expected identity, value bounds, compare-and-set and journal-before-write. Expiring leases have a separate watchdog; restart recovery reconciles the journal. Administrative changes are preserved rather than overwritten.
-- Network experiment: loopback-only namespace, no external route, at most 128 held connections, fixed destination, 120-second load-burst deadline (one-shot process lifetime capped at 900 seconds). No public scan or attack target.
-- Descriptor experiment: separate owned process, hard limit 512, at most 128 held test descriptors, 120-second load-burst deadline (one-shot process lifetime capped at 900 seconds). The root system or real K3s process is never the descriptor target.
-- Namespace inode, process start time, root-owned registry and policy digest scope action/learning. Missing or changed evidence fails closed. Deferred rollback is a visible state, not success.
+- Non-root controller/agent containers, read-only filesystems, no capabilities, no Kubernetes API token or CloudStack keys. The agent's broker-directory hostPath remains an explicit security exception.
+- Private-CA mTLS for agent and independent observer, minimum TLS 1.2, bounded responses and no redirects. The monitor client is read-only; mutation requires controller certificate identity and a separate HMAC intent. Missing TLS material never enables plaintext fallback.
+- Root-owned fixed gateway policy, private signing key, expected-value and immutable-identity checks, fresh admission, operation ID replay protection, journal-before-write, root cooldown and bounded leases. Bounds/admission/cooldown refusals are journalled; they cannot later execute under the same operation ID.
+- Only the dedicated gateway namespace port range can change. Host range, reserved-port set, HAProxy process, application configuration, Kubernetes workloads and cloud resources are not runtime repair targets.
+- Upstream failure, low absolute/relative available memory, reserved-port overlap, stale/missing independent observations, changed identity or excessive connections refuse tuning. No arbitrary AI-generated commands.
+- Operator mode changes, approvals, promotion and suspension are durable named decisions. Observe mode blocks effects even for a previously approved incident. Failed verification suspends reuse.
 
-## Explicit lab exceptions and unresolved risks
+## Privileged computing base
 
-The broker needs root and `CAP_SYS_ADMIN` for entering the dedicated network namespace, plus bounded resource/network privileges. This is a substantial trusted computing base. It is a **lab exception**, not an acceptable universal enterprise deployment policy. Separate per-plugin brokers, SELinux policy and platform-specific capability reduction need further work.
+The native broker remains root and uses CAP_SYS_ADMIN, CAP_NET_ADMIN, CAP_SYS_PTRACE, CAP_CHOWN and CAP_DAC_OVERRIDE. SYS_ADMIN enters the positively identified namespace; SYS_PTRACE permits inspecting the different-UID HAProxy process identity through /proc. No ptrace execution endpoint is exposed. SYS_RESOURCE and SYS_NICE are removed from the gateway profile. These are substantial privileges, not an enterprise-safe universal installation. The kernel, node root, broker source/policy/key and controller signing authority remain trusted.
 
-The agent's hostPath requires a Pod Security exemption; its namespace is labelled accordingly. The controller namespace remains restricted. OKD SCC/SELinux and managed-node support are untested. NetworkPolicies must be checked with the installed CNI; host/node-origin traffic has special semantics. The EduCloud overlay permits signed HTTP within the private cluster and an SSH-tunnelled HTTP UI. Signatures protect mutation integrity but do not encrypt telemetry. Production mTLS and per-node signing-key rotation are not delivered by this release.
+HAProxy itself runs as haproxy with no capabilities in a dedicated namespace. The namespace has no default route; the probe has one explicit route; its veth forwarding chain allows only the owned probe path. The upstream is a bounded loopback service. Load is confined to that gateway, at most 80 requested background connections and 30 seconds per run, with service time/memory/task/CPU bounds. Protected bastion, monitor and sole control-plane are never fault targets.
 
-PID/start-time checks reduce accidental process replacement, but Linux `prlimit(pid,...)` remains a PID-based syscall: there is a narrow identity-check/syscall race. This release restricts it to owned bounded fixtures. It must not be advertised as eliminating PID reuse races for arbitrary production processes.
+The pinned identity registry is in the root-owned broker directory, outside the HAProxy-writable socket directory. Registry reads use a non-following, nonblocking descriptor and require a protected root-owned regular file; a FIFO cannot block the privileged collector.
 
-The controller and broker keys, root registry, node kernel and container runtime are trusted. A compromised agent could lie about telemetry even though it cannot mint a signed mutation. Responses are not cryptographically attested. A stolen controller key permits the two root-policy-bounded actions; it does not grant arbitrary commands. The local SQLite audit trail is not tamper-proof or an enterprise identity/approval service.
+## Remaining limits
 
-The single controller, local PVC and native broker are availability dependencies. No HA, formal proof of stability, production overload/load-shedding policy or fleet-scale benchmark is claimed. Scope changes invalidate learned reuse and require fresh review.
+The localhost UI relies on SSH tunnelling plus a private shared operator token, not enterprise SSO or independent separation of duties. The named reviewer is an audit label, not independently verified corporate identity. Foundation node-exporter/Prometheus paths remain private HTTP. mTLS does not attest that a compromised agent reports honest telemetry. Root registry, local SQLite audit and backups are not tamper-proof. No HA, fleet-scale benchmark, OKD SCC/SELinux qualification, automated certificate revocation/rotation, SBOM assurance or production IAM is claimed.
+
+Private Ed25519 CA is generated outside Git; leaves expire after 90 days. Deployment refuses credentials with under seven days remaining. Administrators must plan renewal and replacement; private CA and role keys are backed up off-platform. A stolen controller signing key/certificate still exposes root-policy-bounded authority. Recovery requires secure administrator access.
+
+Legacy descriptor fixtures retain a PID-check/prlimit race and are restricted to isolated regression hosts. They are not enabled in the gateway profile. I/O, host-wide production tuning, reboots, node replacement, arbitrary repairs and public scanning remain unsupported.
 
 ## Recovery
 
-Drain fixture demand to zero, inspect broker lease metrics and wait for baseline restoration. A busy descriptor process defers lowering its soft limit. Administrative value changes cause conflict and require review. Stopping the controller does not stop the broker watchdog. Stopping the broker itself temporarily removes that protection; restart it and inspect its journal before further tests.
+Stop only the owned load, let active backend connections drain, and inspect range baseline, lease journal and independent client health. Lease expiry is compare-and-set: administrator changes cause visible conflict. The controller may stop while the broker watchdog continues; a broker outage temporarily removes that watchdog. Reconcile the durable journal after restart before another trial.
 
-Keep source, administrator SSH access and validated private state backups off-platform: EduCloud availability and backup retention are not guaranteed. Never commit signing keys, operator tokens, kubeconfigs, private SSH keys, incident histories or recovery archives.
+Run `python3 scripts/backup_state.py` from the management checkout, then copy its private directory off-platform. It uses SQLite's online backup API and includes Knowledge, node journal/policy/signing key, gateway configuration, operator token and management PKI. Archives do not replace verified administrator SSH access or a tested reconstruction procedure. EduCloud availability and backups are not guaranteed. Never publish keys, tokens, kubeconfigs, raw histories or private archives.

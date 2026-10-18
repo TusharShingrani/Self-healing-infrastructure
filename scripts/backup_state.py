@@ -2,7 +2,7 @@
 
 Copy the resulting directory off-platform. Never publish its contents.
 """
-import json,shlex,time
+import json,shlex,time,tarfile
 from pathlib import Path
 from deploy_lab import Admin,ROOT
 
@@ -20,6 +20,8 @@ with tempfile.TemporaryDirectory(prefix='platform-backup-') as directory:
     with sqlite3.connect('/var/lib/platform-healer/journal.db') as original,sqlite3.connect(target) as backup:original.backup(backup)
     with tarfile.open(fileobj=buffer,mode='w:gz') as archive:
         for name in ('node.key','policy.json'):archive.add('/etc/platform-healer/'+name,arcname=name)
+        for path in (Path('/etc/platform-healer/tls'),Path('/etc/platform-gateway')):
+            if path.exists():archive.add(path,arcname=path.name)
         archive.add(target,arcname='journal.db')
         for path in sorted(Path('/var/lib/platform-healer').glob('experiment-*/evidence.json')):archive.add(path,arcname='experiments/'+path.parent.name+'.json')
 sys.stdout.buffer.write(buffer.getvalue())
@@ -29,6 +31,9 @@ sys.stdout.buffer.write(buffer.getvalue())
     command='sudo k3s kubectl -n platform-healer exec deployment/platform-controller -- python -c '+shlex.quote(code)
     (destination/'knowledge.db').write_bytes(admin.run('k8s-control',command))
     (destination/'operator.token').write_bytes((Path.home()/'.config/platform-healer/operator.token').read_bytes())
+    pki=Path.home()/'.config/platform-healer/pki'
+    if pki.exists():
+        with tarfile.open(destination/'administrator-pki-private.tgz','w:gz') as archive:archive.add(pki,arcname='pki')
     for path in destination.iterdir():path.chmod(0o600)
     print('Private recovery directory:',destination)
 

@@ -25,9 +25,15 @@ def read_ports(port):
     return {'range':bounds,'range_size':bounds[1]-bounds[0]+1,'reserved':reserved,'used_ports':len(used),'active_connections':active,'time_wait':wait}
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('operation',choices=['sample','range','verify']);p.add_argument('--namespace',required=True);p.add_argument('--inode',type=int,required=True);p.add_argument('--port',type=int,default=19080);p.add_argument('--low',type=int);p.add_argument('--high',type=int);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('operation',choices=['sample','range','verify','allocate']);p.add_argument('--namespace',required=True);p.add_argument('--inode',type=int,required=True);p.add_argument('--port',type=int,default=19080);p.add_argument('--low',type=int);p.add_argument('--high',type=int);a=p.parse_args()
     if a.port!=19080:raise ValueError('Only the fixed canary infrastructure endpoint is permitted')
     enter(a.namespace,a.inode)
+    if a.operation=='allocate':
+        try:
+            with socket.create_connection(('127.0.0.1',a.port),timeout=.3):pass
+            code=0
+        except OSError as exc:code=exc.errno or -1
+        print(json.dumps({'errno':code}));return
     if a.operation=='range':
         if type(a.low)is not int or type(a.high)is not int or not 40000<=a.low<a.high<=41023:raise ValueError('Outside canary port bounds')
         reserved=read_ports(a.port)['reserved']

@@ -1,47 +1,43 @@
-# Platform validation — 17 October 2026
+# Real HAProxy gateway validation — 17 October 2026
 
-## Qualified environment
+## Environment and evidence boundary
 
-Ubuntu 24.04, Linux 6.8.0-106-generic, K3s v1.36.5+k3s1, cgroup v2. Three Kubernetes nodes: one server and two workers. The server uses SQLite, not etcd. One isolated canary worker, a management bastion, monitoring VM and independent benchmark VM are retained.
+Ubuntu 24.04, Linux 6.8.0-106-generic, cgroup v2, K3s v1.36.5+k3s1 and distribution HAProxy 2.8.16-0ubuntu0.24.04.3. Six retained VMs; three Ready Kubernetes nodes. The protected single K3s server uses SQLite. The real gateway runs as a constrained non-root host service in a dedicated namespace; its upstream is a bounded test instrument, not banking software. Reduced port range, server-close mode and disabled backend reuse deliberately expose the allocation boundary; these are not claims about stock/default or pooled banking traffic.
 
-## Offline safety and controller tests
+## Final repeated live comparison
 
-36 passing standard-library unittest checks. Coverage includes signature/tamper refusal, target identity and expected-value refusal, bounds, stale requests, duplicate operation IDs, conflicting leases, restart reconciliation, rollback expiry/defer/conflict, missing/unknown probes, correlated diagnosis, approval, verification deadlines, ambiguous transport outcome, explicit promotion and failed-verification suspension. Mocked tests are not live recovery evidence.
+Two reviewed qualification occurrences preceded nine seeded-order trials: three observe-only, three reviewed and three automatic. Each trial used the same 24-second, 64-background-connection load. A separate VM measured nonce-checked HTTP requests through HAProxy. The table excludes qualification runs.
 
-## Live mechanism and native workflow
+| Mode | Trials | Failed independent client checks / all checks | Median time to stable client recovery |
+|---|---:|---:|---:|
+| observe | 3 | 64/64 | No recovery within load window |
+| reviewed | 3 | 23/65 | 8.811 s |
+| automatic | 3 | 13/66 | 4.401 s |
 
-The root broker/engine mechanism protocol passed separately. The native Kubernetes controller then passed the following through its actual operator HTTP API; the rehearsal script deliberately acted as the named laboratory operator for approvals.
+Recovery is the first of three consecutive successful independent HTTP checks while background load remains active; it is not the instant a sysctl changes. Reviewed approval after two seconds is scripted protocol, not real operator response time. Automatic trials used the promoted procedure without a new approval. The final controller separately required three distinct successful observations spanning at least two seconds before marking repair verified. This is one seeded order, not a balanced crossover design; socket TIME_WAIT and environmental variation can differ despite baseline/readiness checks.
 
-| Resource incident | Decision | Incident-open to verified recovery | Useful operations after repair |
-|---|---|---:|---:|
-| Descriptor occurrence 1 | Operator approved | 3.410 s | 128 held descriptor allocations |
-| Descriptor occurrence 2 | Operator approved | 3.502 s | 128 held descriptor allocations |
-| Descriptor occurrence 3 | Promoted procedure reused automatically | 2.214 s | 128 held descriptor allocations |
-| Outbound port exhaustion | Operator approved | 4.499 s | 96 established connections, fresh echo verified |
+All treated occurrences verified while load continued, with unchanged gateway identity and host port range. The namespace returned to baseline between runs; no gateway restart/reload was the repair. Observe-only trials made no mutation and did not recover within the active load window. Per-trial numeric data are in [gateway-comparison.json](gateway-comparison.json). This small comparison is descriptive feasibility evidence, not statistical superiority, production throughput, predictive prevention or zero-loss proof.
 
-Each occurrence included actual allocation failures before repair. The resource/process identities did not change. The networking change was confined to the dedicated loopback namespace; the host ephemeral range stayed unchanged. The descriptor hard ceiling stayed 512. All eight leases across the separate mechanism and native protocols were subsequently observed `rolled_back`, with demand zero, descriptor soft ceiling 64 and isolated range size 32. Controller Knowledge survived the final source rollout, preserving four verified native incidents and one explicitly validated procedure; no pending/executing/failed native incident remained.
+The preceding development comparison also passed all nine trials. The final comparison was repeated after tightening independent-client diagnosis and verification, rather than treating earlier code's results as validation of those changes. Detailed histories remain private.
 
-The final runtime passed a second native rehearsal after the UI corrections. Its recovery intervals were 3.402 s, 3.425 s, 2.305 s (promoted automatic descriptor reuse) and 4.393 s (outbound ports). Existing automatic permission was explicitly suspended by the rehearsal operator before the two new reviewed occurrences; history was retained. The resulting state contains **eight verified native incidents, one validated procedure, no pending/executing/failed incident and twelve rolled-back broker leases** across the mechanism test and both native rehearsals. The final acceptance check again passed with both canaries idle at baseline.
+## Refusal, transport and monitoring acceptance
 
-These are acceptance tests, not a statistically powered comparison. The recorded durations include the scripted operator decision and polling protocol; they do not estimate real human response time. Do not claim a 37% performance improvement, prediction, 50,000 RPS, zero drops or production availability from these four observations.
+- Live unavailable-upstream diagnosis produced no tuning. A separate valid signed request was refused at the root broker during an upstream outage.
+- A namespace-only reserved-port conflict refused a valid signed request. Removing the conflict did not make that refused operation ID replayable. The exact original reservation set was restored.
+- Stopping only the independent observer produced unknown/unavailable evidence and refused a signed mutation; the observer was restored. Host memory was not deliberately exhausted; absolute/relative headroom refusals are offline tests.
+- Agent mTLS refused a missing client certificate. A monitor certificate could read evidence but received 403 for mutation; a controller certificate with an unsigned body received 409. Unauthenticated operator incident access received 401.
+- Eleven Prometheus targets healthy, all twelve gateway dashboard queries populated, nine alert rules validated, controller loop fresh and gateway idle at baseline. Expected fault alerts during injection are not normal-state health claims.
+- Two constrained non-root runtime Pods: read-only images, all capabilities dropped, no service-account token and no node-delete permission. The broker remains a privileged trusted host component.
+- Old idle descriptor/loopback fixture services were stopped/disabled and their unused namespace removed. Their historical evidence is retained [separately](fixture-validation-20261017.md); it is not counted as gateway recovery.
 
-## I/O capability finding
+## Offline checks, archives and remaining limits
 
-Three paired temporary-file durability comparisons on the dedicated benchmark VM with its active `mq-deadline` scheduler. Idle-to-best-effort competitor p95 latency ratios: **0.988, 1.012, 0.975**. No consistent material benefit was established. Automatic I/O priority repair remains unsupported. No production/control-plane datastore file was stressed or tuned; no repaired-etcd claim is made.
+73 offline unittest checks passed, including consecutive diagnosis, mode persistence/refusal, distinct independent verification observations, scope/promotion/suspension, bounds, identity, fresh telemetry, root cooldown/refused-ID replay protection, journal recovery, compare-and-set rollback and administrator SSH input isolation. Python compilation, manifest rendering and JavaScript syntax checks passed. Mocked tests are not live fault results.
 
-## Deployment and monitoring acceptance
+## Follow-up release acceptance — 18 October 2026
 
-- Native DaemonSet and controller rollout ready; non-root containers, no service-account token or RBAC grants, read-only root filesystem and dropped capabilities.
-- Root fixed-operation broker reachable, both target samples fresh, loop completing ticks.
-- Final acceptance checked ten populated dashboard queries, unsigned-action refusal, unauthenticated incident-access refusal, three Ready Kubernetes nodes and two non-root runtime Pods.
-- Ten Prometheus scrape targets up: six retained node exporters, agent, controller, Kubernetes-readiness exporter and Prometheus itself. Prometheus validated eight rules.
-- Platform-only Grafana dashboard deployed and private localhost console endpoint reachable through SSH tunnels.
-- Browser inspection verified the platform sign-in page and dashboard panels. An attempted token-file browser sign-in did not execute because automatic approval review hit a service usage limit. The authenticated API workflow and UI JavaScript checks passed, but a signed-in browser visual check remains unverified.
-- Old banking namespace, controller/console and observer retired. Obsolete database and two former nginx VMs destroyed with exact ownership/address/template checks; protected platform nodes retained.
-- Fresh old-workload recovery data and new journal/Knowledge/private-key recovery files copied to the laptop. Archive readability and SQLite integrity checked. A full infrastructure disaster restore has not been proven by these checks.
+The canonical source rollout at `4de6b4a` (image `selfheal/platform:5d188a25bd316c2b`) preserved the gateway identity used in the comparison and returned healthy idle baseline. Live mTLS/monitoring and reserved-port, upstream-outage, refused-ID replay and missing-observer checks passed again. The root identity registry is outside the HAProxy-writable socket directory; a real FIFO registry was refused without blocking. Private post-rollout recovery archives were copied to the laptop and their checksum manifest and SQLite integrity verified. An administrator SSH stdin-consumption defect discovered during release checking was fixed with two additional regression tests; it does not change the gateway repair algorithm.
 
-Detailed histories, identities, signatures, I/O measurements, deletion inventory and private backup manifests are retained on the laptop, not in this repository. This public record intentionally contains only a reviewed numeric and acceptance summary.
+Detailed histories and private recovery archives are retained off-platform on the laptop. Archive readability/checksums and SQLite integrity are checked; these are not a full disaster-rebuild drill. The signed-in browser layout has not been visually revalidated; authenticated API workflows and delivered JavaScript syntax are verified.
 
-## Remaining qualification
-
-Only two owned fixture adapters are qualified here. No arbitrary production target, generic gateway/ingress adapter, enterprise IAM/mTLS, distributed controller/HA, attested telemetry, fleet scalability, complete Linux/PID-race elimination, OKD support or DORA compliance is claimed. See the architecture and security documents before extending privileges or targets.
+Private-CA mTLS is implemented for agent/observer APIs. Enterprise IAM, independently authenticated reviewers, encrypted foundation telemetry, HA, automated certificate lifecycle, attested telemetry, fleet scalability, OKD qualification, production gateway/workload certification and DORA compliance remain outside this release. See [security](../docs/security.md) and [research](../docs/research.md).

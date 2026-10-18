@@ -12,5 +12,5 @@ evidence. A changed kernel value alone does not establish recovered useful work.
 Keep private keys, kubeconfigs, tokens, detailed histories and backups out of Git.
 
 The healer bastion, K3s server and monitor are not destructive experiment targets.
-Load only the owned bounded fixtures. Automatic I/O priority repair is unsupported
+Load only the owned bounded gateway or isolated regression fixtures. Never replace the gateway policy with the legacy fixture bootstrap. Automatic I/O priority repair is unsupported
 until its effectiveness and safe target have been separately qualified.

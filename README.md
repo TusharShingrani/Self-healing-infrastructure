@@ -1,51 +1,50 @@
-# Autonomous Kernel & Platform Tuning Engine
+# HAProxy gateway self-healing with MAPE-K
 
-A MAPE-K research prototype for **live Linux infrastructure resource saturation on Kubernetes**. It repairs a resource boundary without restarting the affected process or Kubernetes node.
+A research prototype that restores a real HTTP gateway's outgoing connection capacity without restarting the gateway. The motivating scenario is a bank's gateway during a retail traffic peak. The lab uses fictional, nonce-checked HTTP transactions; it processes no payments or customer data.
 
-The motivating use case is a bank's gateway platform under retail-event connection pressure. There is no banking application, payment processing or customer dataset in this repository. The patient is the platform's networking and process-resource layer.
+## Exactly what is healed
 
-## What it currently heals
+HAProxy forwards requests to an upstream. Each outgoing TCP connection needs a local source port. In a deliberately small, isolated namespace the approved pool has 32 port numbers. Bounded background connections can exhaust that pool, causing real client requests to fail. The healer correlates failures, proposes expanding the pool to 256, applies the temporary change after authorisation, then verifies fresh client requests while the load continues. HAProxy keeps the same process identity throughout.
 
-| Controlled failure | Detection | Bounded repair | Proof of recovery |
-|---|---|---|---|
-| Outbound source-port exhaustion | High occupancy **and new `EADDRNOTAVAIL` allocation failures** | Expand an approved range in a dedicated loopback-only network namespace | Required connections established plus a fresh independent echo transaction |
-| Process descriptor exhaustion | Near-soft-limit usage **and new `EMFILE` failures** | Raise that owned process's soft `RLIMIT_NOFILE` within its fixed hard ceiling | Required descriptor allocations succeed, same process identity, runtime limit readback |
-| Storage/control-plane pressure | Capability discovery; existing node-exporter/PSI telemetry | Investigation only in this release | No claim of repaired etcd or effective I/O priority |
+An unavailable upstream, missing observations, insufficient memory or a reserved-port conflict must **not** trigger this repair. Enlarging a port pool cannot fix those problems.
 
-**Support boundary:** Ubuntu 24.04 / Linux 6.8 / K3s lab; two administrator-owned, bounded infrastructure fixtures. Production process discovery, generic gateway integration, OKD/SCC qualification, HA and production TLS are not implemented. Do not deploy this release as an unattended production node tuner.
-
-## Architecture
+## Structure
 
 ```mermaid
 flowchart LR
-  Operator[Operator through SSH tunnel] --> UI[Approval and evidence UI]
-  UI --> Controller[Controller: Monitor → Analyse → Plan → Execute]
-  Controller <--> Knowledge[(SQLite Knowledge on PVC)]
-  Controller -->|Signed bounded intent| Agent[Unprivileged node-agent DaemonSet]
-  Agent -->|Root-owned Unix socket| Broker[Host systemd broker]
-  Broker --> Ports[Isolated network namespace]
-  Broker --> FDs[Pinned infrastructure process]
-  Broker --> Journal[(Intent journal and rollback watchdog)]
-  Agent --> Prometheus[Prometheus]
-  Controller --> Prometheus
-  Prometheus --> Grafana[Platform dashboard]
+  Client[Independent client on probe-1] --> Gateway[Real HAProxy on worker-2]
+  Gateway --> Upstream[Bounded test upstream]
+  Client -->|Fresh transaction evidence over mTLS| Monitor[Monitor and analyse]
+  Agent[Non-root node agent] -->|mTLS telemetry| Monitor
+  Monitor --> Plan[Typed repair proposal]
+  Plan --> Approval{Observe / approval / qualified automation}
+  Approval -->|Signed bounded intent over mTLS| Agent
+  Agent --> Broker[Root host broker through Unix socket]
+  Broker -->|Namespace port range only| Gateway
+  Broker --> Journal[(Durable lease and rollback journal)]
+  Approval <--> Knowledge[(SQLite Knowledge)]
+  Monitor --> Knowledge
+  Agent --> Prometheus[Prometheus and Grafana]
+  Client --> Prometheus
 ```
 
-The controller and agent have no Kubernetes API credentials or RBAC grants. Neither can delete workloads, restart nodes or invoke CloudStack. The broker accepts two fixed operations, never shell commands. Its signing key is unavailable to the agent. The host broker is an explicit administrator installation, not a privileged container with the host filesystem exposed.
+The controller runs in Kubernetes; HAProxy is a constrained host service in its own network namespace. Kubernetes hosts the control software, rather than being the failure being repaired. The broker has a fixed protocol and root-owned policy, not an arbitrary command interface. The controller and agent have no Kubernetes API token or CloudStack credential.
 
-First occurrences require human approval. Two **distinct, verified occurrences** make a procedure eligible for explicit promotion. A later matching incident can reuse it automatically within the exact identity/policy scope. Failed verification suspends reuse. This is procedural learning, not LLM training or discovery of arbitrary repairs.
+## Human control and learning
 
-## Start here
+- **Observe:** collect evidence and proposals, execute nothing.
+- **Require approval:** a named operator authorises a bounded repair with a reason.
+- **Use validated procedures:** reuse only a procedure explicitly promoted after two distinct verified occurrences in the same identity/policy scope.
 
-1. Read [the architecture specification](docs/architecture.md), [support and security limits](docs/security.md), and [the research argument](docs/research.md).
-2. Run offline checks: `python -m unittest discover -s tests -v`.
-3. Follow [installation](docs/install.md). Native components are generated by `manifests/render.py`; host installation is explicit and lab-only.
-4. Follow [the demo protocol](docs/demo.md). Detailed incident histories, secrets and recovery backups stay off GitHub.
+The gateway requires two consecutive diagnostic observations, then three distinct independent successful checks over at least two seconds for verification. Root-enforced leases, cooldown, fresh admission checks and compare-and-set rollback constrain changes. Failed verification suspends reuse. Learning means remembering verified procedures and their applicability, not LLM training or inventing arbitrary fixes.
 
-The previous bank-statement/job application, its adapters, demo faults and dashboards are intentionally removed from this branch. Historical results remain in Git history and private backups; they are not evidence for this engine.
+## Use it and evaluate it
 
-## Evidence
+1. Read [architecture](docs/architecture.md), [gateway design](docs/gateway-design.md) and [security boundaries](docs/security.md).
+2. Run `python -m unittest discover -s tests -v`.
+3. Follow the administrator-only [installation](docs/install.md) and [demo protocol](docs/demo.md).
+4. Read [validation](evidence/validation.md) and [research interpretation](docs/research.md). Detailed histories, keys and recovery archives remain private/off-platform.
 
-See [the live validation record](evidence/validation.md) for observed results and limitations. Configuration success is not evidence of useful recovery. A fresh echo/allocation check is required after mutation, and rollback must be observed after draining the fixture.
+The live comparison is `experiments/gateway_study.py`: the same bounded load under observe-only, reviewed and automatic control. Scripted approvals are labelled laboratory actions, not measured human response times. The older port/descriptor fixtures remain regression code and historical evidence; they are not additional active products or the primary gateway result.
 
-MIT-licensed original code; Python, Linux, Kubernetes, K3s, Prometheus and Grafana retain their own upstream licences. No proprietary AI provider is required. This prototype does not establish production readiness, DORA compliance, 50,000 requests/second capacity or zero packet loss.
+Support is limited to the qualified Ubuntu 24.04 / Linux 6.8 / K3s lab. No claim of universal deployment, high availability, DORA compliance, production readiness, 50,000 requests/second or zero loss is made. The real gateway uses a synthetic bounded upstream; an enterprise gateway and workload need their own qualification. Original code is MIT licensed; upstream software retains its licences.

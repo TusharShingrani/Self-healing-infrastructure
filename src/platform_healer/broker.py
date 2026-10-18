@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler,HTTPServer
 from pathlib import Path
 from .leases import Broker
 from .plugins.linux import Ports,Descriptors
+from .plugins.gateway import Gateway
 from .model import canonical
 
 class UnixServer(HTTPServer):
@@ -19,7 +20,7 @@ def main():
         metadata=os.lstat(filename)
         if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid!=0 or metadata.st_mode&0o077:
             raise ValueError('Policy and signing key must be root-owned private regular files')
-    policy=json.loads(Path(a.policy).read_text());factories={'ports':Ports,'descriptors':Descriptors};plugins={}
+    policy=json.loads(Path(a.policy).read_text());factories={'ports':Ports,'descriptors':Descriptors,'gateway_ports':Gateway};plugins={}
     for spec in policy['targets']:
         if spec['kind'] not in factories:raise ValueError('Unsupported mutation plugin')
         plugins[spec['id']]=factories[spec['kind']](spec)
@@ -34,7 +35,7 @@ def main():
                 if self.path=='/leases':
                     with b.lock:
                         counts={r[0]:r[1] for r in b.db.execute('SELECT status,count(*) FROM operations GROUP BY status')}
-                    return self.reply(200,{'counts':counts})
+                    return self.reply(200,{'counts':counts,'refusals':b.db.execute('SELECT count(*) FROM refusals').fetchone()[0]})
                 if self.path.startswith('/sample/'):
                     target=self.path.removeprefix('/sample/')
                     if target not in plugins:raise ValueError('Unknown target')

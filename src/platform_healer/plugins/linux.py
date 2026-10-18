@@ -1,13 +1,13 @@
 """Linux adapters accept only root-provisioned fixture identities in this release."""
-import hashlib,json,os,subprocess,sys,time
+import hashlib,json,os,stat,subprocess,sys,time
 from pathlib import Path
 from ..model import Sample,digest
 
 def root_json(path):
-    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
+    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
     try:
         st=os.fstat(fd)
-        if st.st_uid!=0 or st.st_mode&0o022:raise ValueError('Registry is not root-owned and write-protected')
+        if not stat.S_ISREG(st.st_mode) or st.st_uid!=0 or st.st_mode&0o022:raise ValueError('Registry is not a root-owned write-protected regular file')
         return json.loads(os.read(fd,16384))
     finally:os.close(fd)
 
