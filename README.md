@@ -47,4 +47,6 @@ The gateway requires two consecutive diagnostic observations, then three distinc
 
 The live comparison is `experiments/gateway_study.py`: the same bounded load under observe-only, reviewed and automatic control. Scripted approvals are labelled laboratory actions, not measured human response times. The older port/descriptor fixtures remain regression code and historical evidence; they are not additional active products or the primary gateway result.
 
+The follow-up [hard-restart comparison](evidence/restart-comparison.md) tests the simpler alternative: three paired trials under continuing load. Hard restart achieved no sustained recovery; targeted repair recovered in all three trials, with fewer pending-request interruptions. This result is specific to the deliberately constrained lab, not a claim that restarting is always wrong or that a known static setting needs an entire healer.
+
 Support is limited to the qualified Ubuntu 24.04 / Linux 6.8 / K3s lab. No claim of universal deployment, high availability, DORA compliance, production readiness, 50,000 requests/second or zero loss is made. The real gateway uses a synthetic bounded upstream; an enterprise gateway and workload need their own qualification. Original code is MIT licensed; upstream software retains its licences.

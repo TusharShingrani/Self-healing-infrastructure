@@ -31,4 +31,6 @@ Observe mode executes nothing, including already approved proposals. Changing mo
 
 ## Honest interpretation
 
+To answer “why not just restart?”, show the [paired restart results](../evidence/restart-comparison.md). The administrator-only command is `python3 experiments/restart_comparison.py --confirm-owned-gateway-restart`; run it only when no other demo or experiment is active. It hard-restarts only the owned test HAProxy service, keeps the same bounded load running, then repins after draining and explicitly requalifies the final process scope. Restart is not added to the runtime catalogue. Raw timelines remain private. Pending held GETs are test traffic, not payment operations, and planned shutdown cancellation is excluded from interruption counts.
+
 This demonstrates scoped procedural learning and closed-loop verification. It does not train an LLM, prevent every recurrence, fix a leak's source, or prove enterprise high availability. Failure to recover or a refused change is evidence to preserve, not a reason to suppress a safety check. Earlier fixture and I/O results are historical/regression evidence, not gateway comparison results.
