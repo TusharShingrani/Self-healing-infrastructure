@@ -44,6 +44,8 @@ The gateway requires two consecutive diagnostic observations, then three distinc
 
 ## Use it and evaluate it
 
+Start with the [plain-language operator guide](docs/operator-guide.md) for the healer page and monitoring dashboard.
+
 1. Read [architecture](docs/architecture.md), [gateway design](docs/gateway-design.md) and [security boundaries](docs/security.md).
 2. Run `python -m unittest discover -s tests -v`.
 3. Follow the administrator-only [installation](docs/install.md) and [demo protocol](docs/demo.md).
@@ -54,3 +56,5 @@ The live comparison is `experiments/gateway_study.py`: the same bounded load und
 The follow-up [hard-restart comparison](evidence/restart-comparison.md) tests the simpler alternative: three paired trials under continuing load. Hard restart achieved no sustained recovery; targeted repair recovered in all three trials, with fewer pending-request interruptions. This result is specific to the deliberately constrained lab, not a claim that restarting is always wrong or that a known static setting needs an entire healer.
 
 Support is limited to the qualified Ubuntu 24.04 / Linux 6.8 / K3s lab. No claim of universal deployment, high availability, DORA compliance, production readiness, 50,000 requests/second or zero loss is made. The real gateway uses a synthetic bounded upstream; an enterprise gateway and workload need their own qualification. Original code is MIT licensed; upstream software retains its licences.
+
+See the [operations console guide](docs/operator-guide.md) and [redesign rationale](docs/console-redesign.md).

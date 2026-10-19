@@ -1,8 +1,16 @@
 {
   "uid": "platform-mapek",
-  "title": "HAProxy gateway - MAPE-K recovery",
+  "title": "Gateway operations - performance trends",
+  "description": "Four measured trends: HTTP check duration, port pressure, new errors and memory. Current state, incidents and decisions are in the operations console.",
+  "links": [
+    {
+      "title": "Open healer and review an incident",
+      "url": "http://127.0.0.1:8085/",
+      "type": "link"
+    }
+  ],
   "schemaVersion": 39,
-  "version": 2,
+  "version": 4,
   "editable": false,
   "refresh": "5s",
   "time": {
@@ -16,7 +24,8 @@
   "panels": [
     {
       "id": 1,
-      "title": "Does the independent client receive the correct HTTP response?",
+      "title": "How quickly do requests respond?",
+      "description": "Elapsed time for the independent HTTP check. Read alongside request success; a fast error is not recovery.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -24,28 +33,6 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 0,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "platform_gateway_transaction_success",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "title": "Independent client transaction latency (seconds)",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 12,
         "y": 0,
         "w": 12,
         "h": 9
@@ -54,13 +41,88 @@
         {
           "refId": "A",
           "expr": "platform_gateway_transaction_latency_seconds",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
+          "legendFormat": "Response time"
         }
-      ]
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          },
+          "unit": "s",
+          "noValue": "Not known"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "title": "Are outgoing ports running out?",
+      "description": "Each outgoing backend connection needs a source port. The qualified repair temporarily increases the namespace pool from 32 to 256 ports.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "platform_resource_used_ports{target=\"gateway-ports\"}",
+          "legendFormat": "Ports in use"
+        },
+        {
+          "refId": "B",
+          "expr": "platform_resource_range_size{target=\"gateway-ports\"}",
+          "legendFormat": "Available port range"
+        },
+        {
+          "refId": "C",
+          "expr": "platform_resource_active_connections{target=\"gateway-ports\"}",
+          "legendFormat": "Active backend connections"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          },
+          "unit": "short",
+          "noValue": "Not known"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Available port range"
+            },
+            "properties": [
+              {
+                "id": "custom.lineInterpolation",
+                "value": "stepAfter"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": 3,
-      "title": "Gateway port capacity, occupancy and active backend connections",
+      "title": "Are new errors occurring?",
+      "description": "Estimated increase over the last minute. Old cumulative error totals do not mean the service is still failing.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -75,14 +137,34 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "{__name__=~\"platform_resource_(used_ports|range_size|active_connections)\",target=\"gateway-ports\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
+          "expr": "increase(platform_resource_gateway_5xx{target=\"gateway-ports\"}[1m])",
+          "legendFormat": "Failed HTTP responses"
+        },
+        {
+          "refId": "B",
+          "expr": "increase(platform_resource_backend_connect_errors{target=\"gateway-ports\"}[1m])",
+          "legendFormat": "Backend connection errors"
         }
-      ]
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          },
+          "unit": "short",
+          "noValue": "Not known"
+        },
+        "overrides": []
+      }
     },
     {
       "id": 4,
-      "title": "Gateway, upstream and independent client health",
+      "title": "Is there memory headroom for a repair?",
+      "description": "Host available-memory fraction. Repair also requires at least 256 MiB free; a percentage alone is not approval.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -91,72 +173,6 @@
       "gridPos": {
         "x": 12,
         "y": 9,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "{__name__=~\"platform_resource_(upstream_healthy|gateway_transaction_ok|client_transaction_ok)\",target=\"gateway-ports\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "title": "HAProxy HTTP 5xx and backend-connect errors (cumulative)",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 18,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "{__name__=~\"platform_resource_(gateway_5xx|backend_connect_errors)\",target=\"gateway-ports\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "title": "Allocation probe errno: 99 means no local port available",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 18,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "platform_resource_allocation_probe_errno{target=\"gateway-ports\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "title": "Measured host memory headroom",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 27,
         "w": 12,
         "h": 9
       },
@@ -164,119 +180,23 @@
         {
           "refId": "A",
           "expr": "platform_resource_memory_available_ratio{target=\"gateway-ports\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
+          "legendFormat": "Memory available"
         }
-      ]
-    },
-    {
-      "id": 8,
-      "title": "Gateway incidents and verification",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 27,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "platform_incidents",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "title": "Gateway learned procedure eligibility",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 36,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "platform_procedures",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "title": "Broker lease and rollback journal",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 36,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "platform_broker_operations",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
-    },
-    {
-      "id": 11,
-      "title": "Fresh gateway evidence and controller loop",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 45,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "{__name__=~\"platform_sample_fresh|platform_controller_loop_fresh|platform_agent_broker_up\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
-    },
-    {
-      "id": 12,
-      "title": "Infrastructure monitoring endpoints",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 45,
-        "w": 12,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "up{job=~\"platform_.*\"}",
-          "legendFormat": "{{__name__}} {{target}} {{node}} {{status}} {{job}}"
-        }
-      ]
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          },
+          "unit": "percentunit",
+          "noValue": "Not known"
+        },
+        "overrides": []
+      }
     }
   ]
 }

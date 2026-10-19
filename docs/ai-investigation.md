@@ -4,7 +4,7 @@ This extension keeps the same gateway use case. Unknown HTTP failures deserve an
 
 ## Operator workflow
 
-1. Open the incident and inspect its evidence. Enter your investigator name and select **Request Gemini investigation**.
+1. Open the incident under **What needs your attention**. Expand **Investigate with AI**, enter your name and select **Ask AI for an explanation**. Saved reports are available under **Read the AI investigation**.
 2. Read the summary, hypotheses, missing evidence, read-only operator checks, proposed remediation, verification and rollback prerequisites. Every model explanation is unverified advice. The model cannot collect additional evidence itself or prove a root cause.
 3. Investigate through administrator access. If a repair is necessary outside the qualified catalogue, review and perform it manually. There is no execute-AI-command button.
 4. Record the repair performed and the verification evidence/result. This creates an operator-reported Knowledge record, not an independently verified success, incident closure or executable procedure.
