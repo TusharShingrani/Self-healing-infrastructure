@@ -1,7 +1,7 @@
 {
   "uid": "platform-mapek",
-  "title": "Gateway care - service health and recovery",
-  "description": "Start with the four service checks. Charts show request performance, outgoing port pressure and new errors. Make approval decisions in Gateway care.",
+  "title": "Gateway operations - performance trends",
+  "description": "Four measured trends: HTTP check duration, port pressure, new errors and memory. Current state, incidents and decisions are in the operations console.",
   "links": [
     {
       "title": "Open healer and review an incident",
@@ -10,7 +10,7 @@
     }
   ],
   "schemaVersion": 39,
-  "version": 3,
+  "version": 4,
   "editable": false,
   "refresh": "5s",
   "time": {
@@ -24,286 +24,6 @@
   "panels": [
     {
       "id": 1,
-      "title": "Are requests working?",
-      "description": "An independent client sends a real request through HAProxy and checks its response. Missing or stale evidence is not healthy.",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 0,
-        "w": 6,
-        "h": 5
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "(platform_gateway_transaction_success and on() (platform_sample_fresh == 1)) or on() vector(-1)",
-          "legendFormat": "Independent request check",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 8
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": {
-                  "text": "Working",
-                  "color": "green"
-                },
-                "0": {
-                  "text": "Failing",
-                  "color": "red"
-                },
-                "-1": {
-                  "text": "Not known",
-                  "color": "orange"
-                }
-              }
-            }
-          ],
-          "noValue": "Not known"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "value",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 2,
-      "title": "Is the backend responding?",
-      "description": "The separate backend check helps distinguish a dependency outage from exhausted outgoing ports.",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 0,
-        "w": 6,
-        "h": 5
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "(platform_resource_upstream_healthy{target=\"gateway-ports\"} and on() (platform_sample_fresh == 1)) or on() vector(-1)",
-          "legendFormat": "Backend check",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 8
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": {
-                  "text": "Working",
-                  "color": "green"
-                },
-                "0": {
-                  "text": "Failing",
-                  "color": "red"
-                },
-                "-1": {
-                  "text": "Not known",
-                  "color": "orange"
-                }
-              }
-            }
-          ],
-          "noValue": "Not known"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "value",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 3,
-      "title": "Is the healer watching?",
-      "description": "A fresh controller cycle means monitoring and analysis are running. It does not authorise a repair.",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 0,
-        "w": 6,
-        "h": 5
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "platform_controller_loop_fresh or on() vector(-1)",
-          "legendFormat": "Healer cycle",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 8
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": {
-                  "text": "Watching",
-                  "color": "green"
-                },
-                "0": {
-                  "text": "Not updating",
-                  "color": "red"
-                },
-                "-1": {
-                  "text": "Not known",
-                  "color": "orange"
-                }
-              }
-            }
-          ],
-          "noValue": "Not known"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "value",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 4,
-      "title": "Are the readings current?",
-      "description": "Fresh evidence is required for diagnosis and repair. If this is stale, inspect monitoring before acting.",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 0,
-        "w": 6,
-        "h": 5
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "platform_sample_fresh or on() vector(-1)",
-          "legendFormat": "Evidence freshness",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 8
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": {
-                  "text": "Current",
-                  "color": "green"
-                },
-                "0": {
-                  "text": "Stale",
-                  "color": "orange"
-                },
-                "-1": {
-                  "text": "Not known",
-                  "color": "orange"
-                }
-              }
-            }
-          ],
-          "noValue": "Not known"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "value",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 5,
       "title": "How quickly do requests respond?",
       "description": "Elapsed time for the independent HTTP check. Read alongside request success; a fast error is not recovery.",
       "type": "timeseries",
@@ -313,7 +33,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 0,
         "w": 12,
         "h": 9
       },
@@ -340,7 +60,7 @@
       }
     },
     {
-      "id": 6,
+      "id": 2,
       "title": "Are outgoing ports running out?",
       "description": "Each outgoing backend connection needs a source port. The qualified repair temporarily increases the namespace pool from 32 to 256 ports.",
       "type": "timeseries",
@@ -350,7 +70,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 5,
+        "y": 0,
         "w": 12,
         "h": 9
       },
@@ -383,11 +103,24 @@
           "unit": "short",
           "noValue": "Not known"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Available port range"
+            },
+            "properties": [
+              {
+                "id": "custom.lineInterpolation",
+                "value": "stepAfter"
+              }
+            ]
+          }
+        ]
       }
     },
     {
-      "id": 7,
+      "id": 3,
       "title": "Are new errors occurring?",
       "description": "Estimated increase over the last minute. Old cumulative error totals do not mean the service is still failing.",
       "type": "timeseries",
@@ -397,7 +130,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 14,
+        "y": 9,
         "w": 12,
         "h": 9
       },
@@ -429,7 +162,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 4,
       "title": "Is there memory headroom for a repair?",
       "description": "Host available-memory fraction. Repair also requires at least 256 MiB free; a percentage alone is not approval.",
       "type": "timeseries",
@@ -439,7 +172,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 14,
+        "y": 9,
         "w": 12,
         "h": 9
       },

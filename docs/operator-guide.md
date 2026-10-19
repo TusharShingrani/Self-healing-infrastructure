@@ -1,30 +1,27 @@
-# Using Gateway care
+# Gateway operations console
 
-Open the healer at `http://127.0.0.1:8085/` through the existing SSH tunnel. Choose your private `operator.token` access file; no username is needed. You can paste the same token under the alternative sign-in section. The file is not a password reset or a new account.
+Open http://127.0.0.1:8085/ through the existing SSH tunnel and choose your private operator.token file. No username is needed.
 
-## Start here
+## Overview
 
-The top cards answer whether the independent request succeeds, how much permission the healer currently has, and whether the backend responds. **Not known** means readings are missing, stale or unusable; it does not mean healthy. A connection-loss message marks the displayed service cards unavailable. The live health cards continue updating while you type an incident decision.
+The four measurements show occupied source ports, new backend connection errors since the previous fresh reading, active backend connections and available host memory. Unknown is never zero or healthy. The request path shows independent client, gateway and backend checks. The capacity panel exposes the actual namespace range and allocation errno; Grafana provides historical trends.
 
-Under **What needs your attention**, a healthy idle system says **Nothing needs a repair right now**. Current unresolved incidents show a short explanation and the next available decision. The page does not fill this section with closed experiments or incidents for a replaced gateway identity.
+The controller panel shows monitoring liveness, current analysis and control mode. Safety checks explain whether the current observations meet the visible prerequisites. Server and root admission checks remain authoritative.
 
-## If an incident appears
+## Incidents
 
-- A diagnosed port-capacity incident can offer **Approve this temporary repair**. Enter your name and the reason. Only the already qualified namespace repair can execute, and all server/root safety checks still apply.
-- An unexplained incident has no repair approval button. Open **Investigate with AI**, enter your name and select **Ask AI for an explanation**. Read the summary first, then expand possible causes, checks or verification as needed. These are suggestions, not confirmed facts or permission to run commands.
-- If you repair something through administrator access, open **Record or review a manual repair**. Describe the change and how you checked it. The saved note does not automatically qualify future execution.
-- An executing incident reports that verification is in progress. Successful independent requests, not a setting change alone, establish recovery.
+Select an incident in the left list. Its detail contains a MAPE-K ledger based on recorded evidence, deterministic observations, optional advisory AI investigation, the fixed repair decision and independent verification. Unexposed timestamps are labelled rather than invented. Historical observations are not current health readings.
 
-## What the other sections mean
+For an eligible port-exhaustion incident, enter your name and reason, then approve the exact temporary namespace expansion. A confirmation restates the action. Stale evidence, unsafe observations or a stopped controller disable approval. The server rechecks all admission conditions. There is no arbitrary command execution or AI approval.
 
-**Past incidents** contains the latest ten past outcomes and their saved AI/evidence notes. Older records remain retained in Knowledge/private backups; they have not been deleted. Past AI text describes its submitted evidence, not the current state.
+Unknown failures can be investigated with AI. Advice may be wrong and does not execute changes. A human repair record captures an administrator's change and verification; it does not qualify automatic execution.
 
-**Automation settings** offers **Watch only**, **Ask before repairing** and **Reuse reviewed repairs**. A name and reason are recorded for mode changes. Automatic mode still requires a matching qualified procedure. Two distinct verified occurrences and explicit operator review qualify reuse; the human repair note and an AI report cannot do this.
+## Knowledge and audit
 
-**Technical evidence and audit** is for troubleshooting and research. Raw measurements, identities and audit records stay out of the everyday overview but remain available here.
+Knowledge shows procedures for the current gateway identity and their recorded outcomes. Two distinct verified occurrences after the last failure and explicit named review are required for qualification. This is scoped procedural reuse, not model training. Audit retains the named decisions and raw records.
 
-## Monitoring dashboard
+Settings offers watch-only, reviewed repair and qualified automatic reuse. Changing mode requires a recorded actor and reason; it never bypasses safety checks.
 
-The **Monitoring** link opens **Gateway care - service health and recovery** in Grafana. Start with the four status cards. The main charts then show response time, outgoing-port use, new errors in the last minute and available memory. Incident, procedure and rollback history belongs in the healer rather than this service-health dashboard. The four duplicate history/coverage panels have been removed; their measurements and alerts remain collected. A return link opens the healer for operator decisions.
+## Grafana
 
-The dashboard presents existing measurements; it does not add a new fault detector or change the repair catalogue. Prometheus scraping, alert rules, approval controls, audit retention and authentication are unchanged.
+The Grafana trends link opens four charts: independent HTTP-check duration, port use and range ceiling, new errors over one minute, and available memory. A fast failed request is not recovery. The ceiling uses step interpolation. Missing series are not healthy. Current decisions belong in the operations console; monitoring scrapes and alerts are unchanged.

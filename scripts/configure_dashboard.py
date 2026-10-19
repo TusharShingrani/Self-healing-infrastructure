@@ -6,7 +6,7 @@ from deploy_lab import Admin, ROOT
 def main():
     admin=Admin(json.loads((ROOT/'config/educloud.json').read_text()))
     dashboard=json.loads((ROOT/'monitoring/dashboard.json').read_text())
-    if dashboard.get('uid')!='platform-mapek' or len(dashboard['panels'])!=8:
+    if dashboard.get('uid')!='platform-mapek' or len(dashboard['panels'])!=4:
         raise ValueError('Unexpected gateway dashboard')
     program='''import grp,json,os,pwd,time
 from pathlib import Path
