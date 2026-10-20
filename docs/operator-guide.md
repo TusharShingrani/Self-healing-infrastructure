@@ -25,3 +25,11 @@ Settings offers watch-only, reviewed repair and qualified automatic reuse. Chang
 ## Grafana
 
 The Grafana trends link opens four charts: independent HTTP-check duration, port use and range ceiling, new errors over one minute, and available memory. A fast failed request is not recovery. The ceiling uses step interpolation. Missing series are not healthy. Current decisions belong in the operations console; monitoring scrapes and alerts are unchanged.
+
+## Control mode names
+
+| Console name | API value | Permission |
+|---|---|---|
+| Watch only | `observe` | No new effects |
+| Ask before repairing | `reviewed` | Named approval for the fixed eligible action |
+| Reuse reviewed repairs | `automatic` | Only qualified procedures for the current scope |

@@ -1,6 +1,6 @@
 # Scope
 
-This repository concerns Linux infrastructure resource saturation on Kubernetes,
+This repository concerns a VM-hosted HAProxy namespace resource constraint, managed by a Kubernetes-hosted MAPE-K controller and agent,
 not banking business logic, nginx application repair or arbitrary AI commands.
 
 Read README.md, docs/architecture.md and docs/security.md before changing effects.

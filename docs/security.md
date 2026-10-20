@@ -17,6 +17,8 @@ HAProxy itself runs as haproxy with no capabilities in a dedicated namespace. Th
 
 The pinned identity registry is in the root-owned broker directory, outside the HAProxy-writable socket directory. Registry reads use a non-following, nonblocking descriptor and require a protected root-owned regular file; a FIFO cannot block the privileged collector.
 
+The root broker also acts as an outbound mTLS client to the independent probe observer. Its gateway plugin reads the private client material under `/etc/platform-healer/tls`, generated and installed by the administrator deployment. This is a credential-bearing privileged component even though it has no Internet listener.
+
 ## Remaining limits
 
 Optional Gemini investigation is advisory only and disabled by default. Its numeric telemetry allowlist excludes histories and secrets. It has no broker access, tools or approval authority. Model advice and operator-reported repairs cannot qualify automation. See [AI investigation](ai-investigation.md) for provider configuration, egress, privacy and evaluation limits.

@@ -28,7 +28,7 @@ Storage is capability-gated. [K3s documents SQLite as the default](https://docs.
 
 ## Question 3: How can the system learn from past failures?
 
-[IBM's autonomic manager description](https://www.redbooks.ibm.com/redbooks/pdfs/sg246665.pdf) places shared knowledge beside Monitor, Analyse, Plan and Execute. Here Knowledge persists incident evidence, approvals, outcomes and procedure scope. Two separately observed verified incidents are a qualification threshold, not statistical confidence. A human explicitly promotes reuse; a future identical scoped signature may then execute automatically. Failed verification suspends it. Identity/policy change prevents reuse.
+[IBM's autonomic manager description](https://www.redbooks.ibm.com/redbooks/pdfs/sg246665.pdf) places shared knowledge beside Monitor, Analyse, Plan and Execute. Here Knowledge persists incident evidence, approvals, outcomes and procedure scope. Two separately observed verified incidents after the last failure in the exact scope are a qualification threshold, not statistical confidence. A human explicitly promotes reuse; a future identical scoped signature may then execute automatically. Failed verification suspends it. Identity/policy change prevents reuse.
 
 This is transparent case/procedure learning. It neither trains a model nor invents arbitrary shell commands. It reduces repeated manual decisions for a validated case. Prevention before an actual allocation failure is a separate future hypothesis; the current signature is reactive and must not be reported as predictive prevention.
 
