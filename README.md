@@ -26,6 +26,9 @@ flowchart LR
   Monitor --> Knowledge
   Agent --> Prometheus[Prometheus and Grafana]
   Client --> Prometheus
+  Operator[Operator through SSH tunnel] --> Approval
+  Monitor -->|Allowlisted numeric evidence| Advisor[Optional Gemini advisor]
+  Advisor -->|Unverified suggestions only| Monitor
 ```
 
 The controller runs in Kubernetes; HAProxy is a constrained host service in its own network namespace. Kubernetes hosts the control software, rather than being the failure being repaired. The broker has a fixed protocol and root-owned policy, not an arbitrary command interface. The controller and agent have no Kubernetes API token or CloudStack credential.
@@ -36,9 +39,9 @@ The optional [human-reviewed Gemini investigation](docs/ai-investigation.md) exp
 
 The [repeated diagnosis-quality comparison](evidence/diagnosis-quality.md) includes 42 real Gemini calls on seven constructed cases. Refined guidance improved full-report rubric compliance from two to six cases; technical caveats and single-reviewer/in-sample limits remain. Fresh-evidence admission and local safety notices protect the workflow independently of model obedience.
 
-- **Observe:** collect evidence and proposals, execute nothing.
-- **Require approval:** a named operator authorises a bounded repair with a reason.
-- **Use validated procedures:** reuse only a procedure explicitly promoted after two distinct verified occurrences in the same identity/policy scope.
+- **Watch only (`observe`):** collect evidence and proposals, execute nothing.
+- **Ask before repairing (`reviewed`):** a named operator authorises a bounded repair with a reason.
+- **Reuse reviewed repairs (`automatic`):** reuse only a procedure explicitly promoted after two distinct verified occurrences after the last failure in the same identity/policy scope.
 
 The gateway requires two consecutive diagnostic observations, then three distinct independent successful checks over at least two seconds for verification. Root-enforced leases, cooldown, fresh admission checks and compare-and-set rollback constrain changes. Failed verification suspends reuse. Learning means remembering verified procedures and their applicability, not LLM training or inventing arbitrary fixes.
 
@@ -58,3 +61,7 @@ The follow-up [hard-restart comparison](evidence/restart-comparison.md) tests th
 Support is limited to the qualified Ubuntu 24.04 / Linux 6.8 / K3s lab. No claim of universal deployment, high availability, DORA compliance, production readiness, 50,000 requests/second or zero loss is made. The real gateway uses a synthetic bounded upstream; an enterprise gateway and workload need their own qualification. Original code is MIT licensed; upstream software retains its licences.
 
 See the [operations console guide](docs/operator-guide.md) and [redesign rationale](docs/console-redesign.md).
+
+## Current release status
+
+The PR #15 console and four-chart dashboard were deployed and checked in the signed-in browser on 19 October 2026. Acceptance passed again on 20 October: 11 healthy scrape targets, four populated chart panels, fresh independent transactions, baseline rollback and transport/admission checks. The dashboard has seven query expressions. All 101 tests pass where Node is present; the management host executes 96 and skips five Node view-model tests. See the [completion review](docs/completion-review.md) for scope and remaining limits.

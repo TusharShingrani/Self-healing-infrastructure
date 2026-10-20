@@ -1,5 +1,8 @@
 # Hard restart versus targeted repair — 18 October 2026
 
+> Historical release record. PR #15 supersedes the earlier UI descriptions. The current dashboard has four trend panels and seven queries. Live acceptance passed on 19 and 20 October 2026. Dated results below remain unchanged. See [current acceptance](validation.md#current-console-release--19-and-20-october-2026).
+
+
 ## Answer
 
 In this controlled source-port exhaustion experiment, hard restarting HAProxy did **not** provide sustained client recovery under continuing load. Targeted capacity repair recovered in all three paired trials, without interrupting requests that were already pending. This supports choosing the targeted action for this particular diagnosed constraint; it does not establish universal superiority over restarting or justify an entire platform solely to correct a known static setting.

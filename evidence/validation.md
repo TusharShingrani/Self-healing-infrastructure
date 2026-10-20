@@ -1,5 +1,8 @@
 # Real HAProxy gateway validation — 17 October 2026
 
+> Historical release record. PR #15 supersedes the earlier UI descriptions. The current dashboard has four trend panels and seven queries. Live acceptance passed on 19 and 20 October 2026. Dated results below remain unchanged. See [current acceptance](validation.md#current-console-release--19-and-20-october-2026).
+
+
 ## Environment and evidence boundary
 
 Ubuntu 24.04, Linux 6.8.0-106-generic, cgroup v2, K3s v1.36.5+k3s1 and distribution HAProxy 2.8.16-0ubuntu0.24.04.3. Six retained VMs; three Ready Kubernetes nodes. The protected single K3s server uses SQLite. The real gateway runs as a constrained non-root host service in a dedicated namespace; its upstream is a bounded test instrument, not banking software. Reduced port range, server-close mode and disabled backend reuse deliberately expose the allocation boundary; these are not claims about stock/default or pooled banking traffic.
@@ -43,3 +46,9 @@ The canonical source rollout at `4de6b4a` (image `selfheal/platform:5d188a25bd31
 Detailed histories and private recovery archives are retained off-platform on the laptop. Archive readability/checksums and SQLite integrity are checked; these are not a full disaster-rebuild drill. The signed-in browser layout has not been visually revalidated; authenticated API workflows and delivered JavaScript syntax are verified.
 
 Private-CA mTLS is implemented for agent/observer APIs. Enterprise IAM, independently authenticated reviewers, encrypted foundation telemetry, HA, automated certificate lifecycle, attested telemetry, fleet scalability, OKD qualification, production gateway/workload certification and DORA compliance remain outside this release. See [security](../docs/security.md) and [research](../docs/research.md).
+
+## Current console release — 19 and 20 October 2026
+
+The source tree merged as `0efad89` (PR #15) was deployed on 19 October. Signed-in Overview and historical incident detail were visually checked alongside Grafana. Acceptance passed again on 20 October: 11 healthy scrape targets, four populated panels, fresh independent HTTP transactions, idle baseline rollback, mTLS client requirement, monitor write refusal, unsigned intent refusal, three Ready nodes and two constrained runtime Pods. The dashboard has seven query expressions. These are acceptance checks, not a new recovery comparison.
+
+All 101 tests pass locally and in CI with Node. The management host executes 96 and skips five Node tests. Pending/stale views were inspected with synthetic fixtures, not counted as live recovery. State backups were copied off-platform and verified for SQLite integrity and manifest checksums. Independent usability testing and a complete disaster-rebuild drill remain unperformed.

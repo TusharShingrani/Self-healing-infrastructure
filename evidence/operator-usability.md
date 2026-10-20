@@ -1,5 +1,8 @@
 # Operator interface simplification — 18 October 2026
 
+> Historical release record. PR #15 supersedes the earlier UI descriptions. The current dashboard has four trend panels and seven queries. Live acceptance passed on 19 and 20 October 2026. Dated results below remain unchanged. See [current acceptance](validation.md#current-console-release--19-and-20-october-2026).
+
+
 The everyday healer page now answers whether requests work, whether the backend responds and what permission the healer has. Current unresolved incidents are separated from past experiments and replacement gateway identities. A healthy idle view explicitly says that nothing needs a repair. Technical evidence/audit and automation controls are closed by default.
 
 Saved AI reports are displayed as a summary and expandable explanation/check lists rather than a JSON document. Empty AI sections and repair-entry forms were removed from closed incidents. Earlier-guidance reports are labelled as historical advice. The named approval/reason, manual-repair record and procedure qualification controls remain available where relevant, with their original server-side checks.
