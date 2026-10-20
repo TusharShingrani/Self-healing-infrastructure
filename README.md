@@ -14,7 +14,8 @@ An unavailable upstream, missing observations, insufficient memory or a reserved
 flowchart LR
   Client[Independent client on probe-1] --> Gateway[Real HAProxy on worker-2]
   Gateway --> Upstream[Bounded test upstream]
-  Client -->|Fresh transaction evidence over mTLS| Monitor[Monitor and analyse]
+  Monitor[Monitor and analyse]
+  Broker -->|Pull independent observer status over mTLS| Client
   Agent[Non-root node agent] -->|mTLS telemetry| Monitor
   Monitor --> Plan[Typed repair proposal]
   Plan --> Approval{Observe / approval / qualified automation}
@@ -32,6 +33,8 @@ flowchart LR
 ```
 
 The controller runs in Kubernetes; HAProxy is a constrained host service in its own network namespace. Kubernetes hosts the control software, rather than being the failure being repaired. The broker has a fixed protocol and root-owned policy, not an arbitrary command interface. The controller and agent have no Kubernetes API token or CloudStack credential.
+
+For a detailed explanation, read the [design specification](docs/design.md) and [diagram gallery](docs/diagrams/README.md), including an editable four-page draw.io file. The original architecture view is retained.
 
 ## Human control and learning
 

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1210" viewBox="0 0 1600 1210" role="img" aria-labelledby="title desc"><title id="title">03  MAPE-K and safety</title><desc id="desc">Controller stages describe an implemented decision loop, not an animated progress bar.</desc><rect width="100%" height="100%" fill="white"/><defs>
+<marker id="arrow-request" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#15803D"/></marker>
+<marker id="arrow-telemetry" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2563EB"/></marker>
+<marker id="arrow-effect" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C2410C"/></marker>
+<marker id="arrow-advice" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7C3AED"/></marker>
+<marker id="arrow-admin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748B"/></marker>
+<marker id="arrow-knowledge" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0F766E"/></marker>
+</defs>
+<text x="40" y="55" font-family="Arial,Helvetica,sans-serif" font-size="28" font-weight="bold" fill="#0F172A" text-anchor="start"><tspan x="40" dy="0">03  MAPE-K and safety</tspan></text>
+<text x="40" y="95" font-family="Arial,Helvetica,sans-serif" font-size="16" font-weight="normal" fill="#334155" text-anchor="start"><tspan x="40" dy="0">Controller stages describe an implemented decision loop, not an animated progress bar.</tspan></text>
+<text x="40" y="137" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#334155" text-anchor="start"><tspan x="40" dy="0">GREEN: HTTP workload    BLUE: telemetry requests    ORANGE: admitted effects    PURPLE: advice / investigation    GREY: administration</tspan></text>
+<rect x="60" y="160" width="1450" height="650" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-dasharray="6 4"/>
+<text x="75" y="185" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#475569" text-anchor="start"><tspan x="75" dy="0">CONTROLLER / platform-healer namespace</tspan></text>
+<path d="M 340,277.5 L 510,277.5" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-telemetry)"/>
+<rect x="367.6" y="249.5" width="114.8" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="425.0" y="265.5" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#2563EB" text-anchor="middle"><tspan x="425.0" dy="0">Fresh evidence</tspan></text>
+<path d="M 740,277.5 L 910,277.5" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-telemetry)"/>
+<rect x="728.0" y="249.5" width="194.0" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="825.0" y="265.5" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#2563EB" text-anchor="middle"><tspan x="825.0" dy="0">Two consecutive diagnoses</tspan></text>
+<path d="M 1140,277.5 L 1260,277.5" fill="none" stroke="#C2410C" stroke-width="2" marker-end="url(#arrow-effect)"/>
+<rect x="1110.2" y="249.5" width="179.6" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="1200.0" y="265.5" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#C2410C" text-anchor="middle"><tspan x="1200.0" dy="0">Eligible fixed proposal</tspan></text>
+<path d="M 1370.0,350 L 1370.0,525" fill="none" stroke="#C2410C" stroke-width="2" marker-end="url(#arrow-effect)"/>
+<rect x="1251.4" y="409.5" width="237.20000000000002" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="1370.0" y="425.5" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#C2410C" text-anchor="middle"><tspan x="1370.0" dy="0">Authorised; root still rechecks</tspan></text>
+<path d="M 1260,597.5 L 960,597.5" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-telemetry)"/>
+<rect x="1020.2" y="569.5" width="179.6" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="1110.0" y="585.5" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#2563EB" text-anchor="middle"><tspan x="1110.0" dy="0">Observe actual recovery</tspan></text>
+<path d="M 730,597.5 L 585,597.5" fill="none" stroke="#0F766E" stroke-width="2" marker-end="url(#arrow-knowledge)"/>
+<rect x="556.9" y="569.5" width="201.20000000000002" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="657.5" y="585.5" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#0F766E" text-anchor="middle"><tspan x="657.5" dy="0">Verified or failed outcome</tspan></text>
+<path d="M 447.5,525 L 447,450 L 225,450 L 225.0,350" fill="none" stroke="#0F766E" stroke-width="2" marker-end="url(#arrow-knowledge)" stroke-dasharray="7 5"/>
+<rect x="234.39999999999998" y="419" width="201.20000000000002" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="335" y="435" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#0F766E" text-anchor="middle"><tspan x="335" dy="0">Next tick + scoped history</tspan></text>
+<path d="M 447.5,525 L 447,410 L 1370,410 L 1370.0,350" fill="none" stroke="#0F766E" stroke-width="2" marker-end="url(#arrow-knowledge)" stroke-dasharray="7 5"/>
+<rect x="781.6" y="379" width="366.8" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="965" y="395" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#0F766E" text-anchor="middle"><tspan x="965" dy="0">Two verified after last failure + named promotion</tspan></text>
+<path d="M 1370.0,670 L 1365.0,900" fill="none" stroke="#C2410C" stroke-width="2" marker-end="url(#arrow-effect)"/>
+<rect x="1284.9" y="757.0" width="165.20000000000002" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="1367.5" y="773.0" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#C2410C" text-anchor="middle"><tspan x="1367.5" dy="0">HMAC intent via agent</tspan></text>
+<path d="M 1230,972.5 L 1030,972.5" fill="none" stroke="#C2410C" stroke-width="2" marker-end="url(#arrow-effect)"/>
+<rect x="989.8" y="944.5" width="280.40000000000003" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="1130.0" y="960.5" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#C2410C" text-anchor="middle"><tspan x="1130.0" dy="0">Apply / safe compare-and-set rollback</tspan></text>
+<path d="M 895.0,900 L 895,830 L 845,830 L 845.0,670" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-telemetry)" stroke-dasharray="7 5"/>
+<rect x="888.6" y="794" width="222.8" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="1000" y="810" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#2563EB" text-anchor="middle"><tspan x="1000" dy="0">Fresh client + gateway checks</tspan></text>
+<path d="M 625.0,350 L 625,465 L 45,465 L 45,855 L 235,855 L 235.0,900" fill="none" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrow-advice)" stroke-dasharray="7 5"/>
+<rect x="142.8" y="824" width="244.4" height="23" rx="4" fill="white" fill-opacity=".96"/>
+<text x="265" y="840" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="normal" fill="#7C3AED" text-anchor="middle"><tspan x="265" dy="0">Other cause: no automatic action</tspan></text>
+<svg x="189.0" y="205" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="55" height="42" rx="4"/><path d="M32 51v14M17 65h30M12 29h10l6-11 8 22 8-11h10"/><circle cx="61" cy="56" r="12"/><path d="m69 65 9 10"/></g></svg>
+<text x="225.0" y="305" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="225.0" dy="0">MONITOR</tspan></text>
+<text x="225.0" y="329" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="225.0" dy="0">Fresh same-identity sample</tspan><tspan x="225.0" dy="19.599999999999998">Agent pulls broker evidence</tspan></text>
+<svg x="589.0" y="205" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="31" r="22"/><path d="m48 47 24 24M19 35l9-13 10 17 8-10"/></g></svg>
+<text x="625.0" y="305" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="625.0" dy="0">ANALYSE</tspan></text>
+<text x="625.0" y="329" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="625.0" dy="0">Correlate repeated failures</tspan><tspan x="625.0" dy="19.599999999999998">Healthy backend + errno 99</tspan></text>
+<svg x="989.0" y="205" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 9h50v63H15Z"/><path d="M26 25h27M26 40h27M26 55h17M21 9V4h38v5"/></g></svg>
+<text x="1025.0" y="305" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="1025.0" dy="0">PLAN</tspan></text>
+<text x="1025.0" y="329" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="1025.0" dy="0">Fixed range 32 to 256</tspan><tspan x="1025.0" dy="19.599999999999998">Identity, expected value, lease</tspan></text>
+<svg x="1334.0" y="205" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#C2410C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M40 5 68 16v23c0 20-28 35-28 35S12 59 12 39V16Z"/><rect x="27" y="32" width="26" height="23" rx="3"/><path d="M31 32v-8a9 9 0 0 1 18 0v8"/><circle cx="40" cy="43" r="2"/></g></svg>
+<text x="1370.0" y="305" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="1370.0" dy="0">MODE GATE</tspan></text>
+<text x="1370.0" y="329" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="1370.0" dy="0">Watch / named approval /</tspan><tspan x="1370.0" dy="19.599999999999998">qualified scoped reuse</tspan></text>
+<svg x="1334.0" y="525" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#C2410C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 23 40 7l32 16v34L40 73 8 57Z"/><path d="m8 23 32 17 32-17M40 40v33M24 15l32 17"/></g></svg>
+<text x="1370.0" y="625" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="1370.0" dy="0">EXECUTE</tspan></text>
+<text x="1370.0" y="649" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="1370.0" dy="0">Persist HMAC operation</tspan><tspan x="1370.0" dy="19.599999999999998">Send once, reconcile by ID</tspan></text>
+<svg x="809.0" y="525" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="40" cy="40" r="32"/><path d="m21 40 13 13 25-29"/></g></svg>
+<text x="845.0" y="625" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="845.0" dy="0">VERIFY</tspan></text>
+<text x="845.0" y="649" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="845.0" dy="0">Three distinct client successes</tspan><tspan x="845.0" dy="19.599999999999998">At least 2 s, deadline 20 s</tspan></text>
+<svg x="411.5" y="525" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#0F766E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18v45c0 14 56 14 56 0V18"/><ellipse cx="40" cy="18" rx="28" ry="11"/><path d="M12 39c0 14 56 14 56 0M12 57c0 14 56 14 56 0"/></g></svg>
+<text x="447.5" y="625" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="447.5" dy="0">KNOWLEDGE</tspan></text>
+<text x="447.5" y="649" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="447.5" dy="0">Incidents, outcomes, decisions</tspan><tspan x="447.5" dy="19.599999999999998">Candidate / validated / suspended</tspan></text>
+<svg x="1329.0" y="900" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#C2410C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M40 5 68 16v23c0 20-28 35-28 35S12 59 12 39V16Z"/><rect x="27" y="32" width="26" height="23" rx="3"/><path d="M31 32v-8a9 9 0 0 1 18 0v8"/><circle cx="40" cy="43" r="2"/></g></svg>
+<text x="1365.0" y="1000" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="1365.0" dy="0">Root admission + lease</tspan></text>
+<text x="1365.0" y="1024" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="1365.0" dy="0">Fresh safety recheck</tspan><tspan x="1365.0" dy="19.599999999999998">Journal before mutation</tspan></text>
+<svg x="859.0" y="900" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#15803D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="40" cy="40" r="34"/><path d="M15 29h48m-10-9 10 9-10 9M65 51H17m10-9-10 9 10 9"/></g></svg>
+<text x="895.0" y="1000" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="895.0" dy="0">Managed gateway</tspan></text>
+<text x="895.0" y="1024" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="895.0" dy="0">Namespace-only sysctl</tspan><tspan x="895.0" dy="19.599999999999998">Useful requests + same identity</tspan></text>
+<svg x="199.0" y="900" width="72" height="72" viewBox="0 0 80 80"><g fill="white" stroke="#7C3AED" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="40" cy="19" r="12"/><path d="M17 68v-9c0-23 46-23 46 0v9Z"/></g></svg>
+<text x="235.0" y="1000" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="bold" fill="#0F172A" text-anchor="middle"><tspan x="235.0" dy="0">Operator investigation</tspan></text>
+<text x="235.0" y="1024" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#475569" text-anchor="middle"><tspan x="235.0" dy="0">Unknown / backend / unsafe</tspan><tspan x="235.0" dy="19.599999999999998">Optional advisory Gemini</tspan></text>
+<text x="1120" y="730" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#334155" text-anchor="start"><tspan x="1120" dy="0">Watch only: no new dispatch.</tspan><tspan x="1120" dy="19.599999999999998">Approval records permission, not a direct write.</tspan></text>
+<text x="70" y="1130" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="normal" fill="#334155" text-anchor="start"><tspan x="70" dy="0">Failure suspends automatic reuse. A new gateway identity requires qualification again. Broker lease reconciliation runs independently of the controller and defers unsafe rollback instead of forcing it.</tspan></text>
+</svg>
