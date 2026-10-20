@@ -10,7 +10,7 @@ Arrows identify request initiators; replies use the same channel. The incident a
 
 ![Whole solution](solution.svg)
 
-[SVG](solution.svg) · [Mermaid source](solution.mmd)
+[SVG](solution.svg) Â· [Mermaid source](solution.mmd)
 
 ```mermaid
 flowchart LR
@@ -49,7 +49,7 @@ flowchart LR
 
 ![Network and deployment](network.svg)
 
-[SVG](network.svg) · [Mermaid source](network.mmd)
+[SVG](network.svg) Â· [Mermaid source](network.mmd)
 
 ```mermaid
 flowchart TB
@@ -74,7 +74,7 @@ flowchart TB
 
 ![MAPE-K and safety](mapek.svg)
 
-[SVG](mapek.svg) · [Mermaid source](mapek.mmd)
+[SVG](mapek.svg) Â· [Mermaid source](mapek.mmd)
 
 ```mermaid
 flowchart LR
@@ -103,7 +103,7 @@ flowchart LR
 
 ![One incident, end to end](incident.svg)
 
-[SVG](incident.svg) · [Mermaid source](incident.mmd)
+[SVG](incident.svg) Â· [Mermaid source](incident.mmd)
 
 ```mermaid
 sequenceDiagram
@@ -151,7 +151,7 @@ sequenceDiagram
   alt Lease expires, identity/value match and connections drained
     B->>H: Compare-and-set baseline restoration
   else Busy, changed value or replaced identity
-    B->>B: Deferred rollback or visible conflict; no unsafe write
+    B->>B: Deferred rollback or visible conflict, no unsafe write
   end
 ```
 

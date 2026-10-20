@@ -43,5 +43,5 @@ sequenceDiagram
   alt Lease expires, identity/value match and connections drained
     B->>H: Compare-and-set baseline restoration
   else Busy, changed value or replaced identity
-    B->>B: Deferred rollback or visible conflict; no unsafe write
+    B->>B: Deferred rollback or visible conflict, no unsafe write
   end
