@@ -2,6 +2,8 @@
 
 **Baseline:** qualified EduCloud gateway profile, reviewed 20 October 2026. This describes the implemented solution and its configuration. Addresses and settings are lab inventory, not a generic enterprise template. No credentials or private histories are included.
 
+Start with the [concrete failure-to-recovery example](worked-example.md) if the component names are unfamiliar.
+
 ## Read this first
 
 The system restores **outgoing connection capacity at one real HAProxy gateway**. A deliberately small pool of 32 source ports in an isolated Linux network namespace can become exhausted under bounded held connections. New backend connections and client transactions then fail. The approved action temporarily expands that namespace's pool to 256 ports. The controller verifies useful requests; the broker later restores baseline safely. It does not restart HAProxy or change the host-wide port range.

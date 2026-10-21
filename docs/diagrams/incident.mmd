@@ -13,21 +13,21 @@ sequenceDiagram
   loop Fresh controller ticks
     C->>A: GET /sample/gateway-ports over mTLS
     A->>B: Unix socket sample
-    B->>H: Read namespace, stats and local transaction
+    B->>H: Read used_ports/range_size, HAProxy errors, local transaction
     B->>P: GET /status over mTLS
     P-->>B: Separate-host result and observation time
-    B-->>A: Sample with pinned identity
+    B-->>A: Sample: port use, errno, rising errors, HTTP results, safety
     A-->>C: Relayed evidence
   end
-  C->>K: Capture confirmed eligible incident
-  O->>C: Approve fixed action with name and reason
+  C->>K: Confirm twice: >=85% ports, errno 99, rising errors, both HTTP checks fail
+  O->>C: Approve expand_port_range with name and reason
   C->>K: Store approved state
   Note over C,K: Approval does not directly dispatch a mutation
   C->>K: Later tick: persist exact HMAC operation ID
   C->>A: POST /execute, mTLS controller identity
   A->>B: Forward HMAC intent
   B->>B: Authenticate, validate identity/value/safety, journal first
-  B->>H: Expand only namespace range to 256
+  B->>H: Namespace ip_local_port_range: 40000-40031 to 40000-40255, lease 30 s
   H-->>B: Readback
   B-->>A: Applied lease
   A-->>C: Applied status
@@ -35,13 +35,13 @@ sequenceDiagram
     C->>A: GET operation, sample and verify
     A->>B: Query journal and fresh checks
     B->>P: Pull a fresh independent result
-    B-->>A: Current bound, result, probe time
+    B-->>A: Range readback, HTTP status/body, distinct probe time
     A-->>C: Evidence for verification
   end
   C->>K: Verified outcome, or failure and suspended reuse
   Note over B,H: Broker watchdog continues if controller stops
   alt Lease expires, identity/value match and connections drained
-    B->>H: Compare-and-set baseline restoration
+    B->>H: With zero active connections, restore 40000-40031 if identity/value match
   else Busy, changed value or replaced identity
     B->>B: Deferred rollback or visible conflict, no unsafe write
   end

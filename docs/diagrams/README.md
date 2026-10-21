@@ -1,6 +1,6 @@
 # Design diagram gallery
 
-Start with the [design specification](../design.md). The existing [runtime architecture](../architecture.md#runtime-map) is retained.
+Start with [what breaks and exactly what changes](../worked-example.md), then the [design specification](../design.md). The existing [runtime architecture](../architecture.md#runtime-map) is retained.
 
 Download [the four-page draw.io file](haproxy-system-design.drawio), open it in diagrams.net, and select a page at the bottom. Symbols are original generic vector icons, not official vendor logos. Labels, symbols, boundaries and connectors can be moved separately. SVG previews need no editor.
 
@@ -10,7 +10,7 @@ Arrows identify request initiators; replies use the same channel. The incident a
 
 ![Whole solution](solution.svg)
 
-[SVG](solution.svg) Â· [Mermaid source](solution.mmd)
+[SVG](solution.svg) · [Mermaid source](solution.mmd)
 
 ```mermaid
 flowchart LR
@@ -49,7 +49,7 @@ flowchart LR
 
 ![Network and deployment](network.svg)
 
-[SVG](network.svg) Â· [Mermaid source](network.mmd)
+[SVG](network.svg) · [Mermaid source](network.mmd)
 
 ```mermaid
 flowchart TB
@@ -74,7 +74,7 @@ flowchart TB
 
 ![MAPE-K and safety](mapek.svg)
 
-[SVG](mapek.svg) Â· [Mermaid source](mapek.mmd)
+[SVG](mapek.svg) · [Mermaid source](mapek.mmd)
 
 ```mermaid
 flowchart LR
@@ -103,7 +103,7 @@ flowchart LR
 
 ![One incident, end to end](incident.svg)
 
-[SVG](incident.svg) Â· [Mermaid source](incident.mmd)
+[SVG](incident.svg) · [Mermaid source](incident.mmd)
 
 ```mermaid
 sequenceDiagram
@@ -121,21 +121,21 @@ sequenceDiagram
   loop Fresh controller ticks
     C->>A: GET /sample/gateway-ports over mTLS
     A->>B: Unix socket sample
-    B->>H: Read namespace, stats and local transaction
+    B->>H: Read used_ports/range_size, HAProxy errors, local transaction
     B->>P: GET /status over mTLS
     P-->>B: Separate-host result and observation time
-    B-->>A: Sample with pinned identity
+    B-->>A: Sample: port use, errno, rising errors, HTTP results, safety
     A-->>C: Relayed evidence
   end
-  C->>K: Capture confirmed eligible incident
-  O->>C: Approve fixed action with name and reason
+  C->>K: Confirm twice: >=85% ports, errno 99, rising errors, both HTTP checks fail
+  O->>C: Approve expand_port_range with name and reason
   C->>K: Store approved state
   Note over C,K: Approval does not directly dispatch a mutation
   C->>K: Later tick: persist exact HMAC operation ID
   C->>A: POST /execute, mTLS controller identity
   A->>B: Forward HMAC intent
   B->>B: Authenticate, validate identity/value/safety, journal first
-  B->>H: Expand only namespace range to 256
+  B->>H: Namespace ip_local_port_range: 40000-40031 to 40000-40255, lease 30 s
   H-->>B: Readback
   B-->>A: Applied lease
   A-->>C: Applied status
@@ -143,13 +143,13 @@ sequenceDiagram
     C->>A: GET operation, sample and verify
     A->>B: Query journal and fresh checks
     B->>P: Pull a fresh independent result
-    B-->>A: Current bound, result, probe time
+    B-->>A: Range readback, HTTP status/body, distinct probe time
     A-->>C: Evidence for verification
   end
   C->>K: Verified outcome, or failure and suspended reuse
   Note over B,H: Broker watchdog continues if controller stops
   alt Lease expires, identity/value match and connections drained
-    B->>H: Compare-and-set baseline restoration
+    B->>H: With zero active connections, restore 40000-40031 if identity/value match
   else Busy, changed value or replaced identity
     B->>B: Deferred rollback or visible conflict, no unsafe write
   end

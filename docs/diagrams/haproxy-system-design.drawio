@@ -661,156 +661,136 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="incident" name="04  One incident, end to end">
-    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1110" math="0" shadow="0">
+  <diagram id="incident" name="04  What actually breaks, and what is repaired">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1630" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" value="04  One incident, end to end" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=28;fontColor=#0F172A;fontStyle=1;" parent="1" vertex="1">
-          <mxGeometry x="40" y="24" width="1520" height="48" as="geometry" />
+        <mxCell id="title" value="04  What actually breaks, and what is repaired" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=28;fontColor=#0F172A;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="24" width="1420" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="subtitle" value="A technical reading path for the demo. Steps are causal order, not measured latency." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=16;fontColor=#334155;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="40" y="75" width="1520" height="40" as="geometry" />
+        <mxCell id="subtitle" value="Illustrative readings explain the implemented rule. They are not a new measured trial. Follow the numbered arrows." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=16;fontColor=#334155;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="75" width="1420" height="40" as="geometry" />
         </mxCell>
         <mxCell id="legend" value="GREEN: HTTP workload   BLUE: telemetry requests   ORANGE: admitted effects   PURPLE: advice / investigation   GREY: administration" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#334155;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="40" y="120" width="1520" height="25" as="geometry" />
+          <mxGeometry x="40" y="120" width="1420" height="25" as="geometry" />
         </mxCell>
         <mxCell id="edge0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#15803D;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="load" target="failure">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-label0" value="Requests consume outgoing ports" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#15803D;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="315.0" y="255.5" width="280" height="30" as="geometry" />
+        <mxCell id="edge-label0" value="HTTP workload" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#15803D;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="605.0" y="273.0" width="280" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="edge1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="failure" target="diagnosis">
+        <mxCell id="edge1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="failure" target="diagnosis">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-label1" value="Broker / agent evidence" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="795.0" y="255.5" width="280" height="30" as="geometry" />
+        <mxCell id="edge-label1" value="Measurements via broker + agent" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="980.0" y="448.0" width="280" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="edge2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="diagnosis" target="approval">
+        <mxCell id="edge2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="diagnosis" target="approval">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-label2" value="Only known eligible action" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="1060.0" y="420.5" width="280" height="30" as="geometry" />
+        <mxCell id="edge-label2" value="Cause: outgoing port exhaustion" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="605.0" y="623.0" width="280" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="edge3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#C2410C;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="approval" target="change">
+        <mxCell id="edge3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#C2410C;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="approval" target="change">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-label3" value="HMAC bounded intent via agent" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#C2410C;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="795.0" y="585.5" width="280" height="30" as="geometry" />
+        <mxCell id="edge-label3" value="Later tick sends authenticated fixed intent" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#C2410C;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="230.0" y="798.0" width="280" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="edge4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="change" target="success">
+        <mxCell id="edge4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="change" target="success">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-label4" value="Re-read bound and real transactions" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="315.0" y="585.5" width="280" height="30" as="geometry" />
+        <mxCell id="edge-label4" value="Readback + fresh HTTP checks" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="605.0" y="973.0" width="280" height="30" as="geometry" />
         </mxCell>
         <mxCell id="edge5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#0F766E;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="success" target="learn">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-label5" value="Outcome + evidence" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#0F766E;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="90.0" y="745.5" width="280" height="30" as="geometry" />
+        <mxCell id="edge-label5" value="Pass records success; failure suspends reuse" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#0F766E;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="980.0" y="1148.0" width="280" height="30" as="geometry" />
         </mxCell>
         <mxCell id="edge6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#C2410C;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1" source="change" target="rollback">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-label6" value="Independent broker watchdog" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#C2410C;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="540.0" y="745.5" width="280" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="edge7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#7C3AED;strokeWidth=2;exitX=1;exitY=0.5;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;dashed=1;" parent="1" edge="1" source="diagnosis" target="refusal">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1470" y="282" />
-              <mxPoint x="1470" y="932" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="edge-label7" value="Different cause: investigate" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#7C3AED;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="1320" y="745" width="280" height="30" as="geometry" />
+        <mxCell id="edge-label6" value="Separate watchdog, not a controller stage" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontColor=#C2410C;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="230.0" y="1148.0" width="280" height="30" as="geometry" />
         </mxCell>
         <mxCell id="load" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="90" y="210" width="280" height="145" as="geometry" />
+          <mxGeometry x="90" y="190" width="560" height="220" as="geometry" />
         </mxCell>
         <mxCell id="load-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%2315803D%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%225%22%20y%3D%229%22%20width%3D%2255%22%20height%3D%2242%22%20rx%3D%224%22%2F%3E%3Cpath%20d%3D%22M32%2051v14M17%2065h30M12%2029h10l6-11%208%2022%208-11h10%22%2F%3E%3Ccircle%20cx%3D%2261%22%20cy%3D%2256%22%20r%3D%2212%22%2F%3E%3Cpath%20d%3D%22m69%2065%209%2010%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="load" vertex="1">
-          <mxGeometry x="104.0" y="0" width="72" height="72" as="geometry" />
+          <mxGeometry x="244.0" y="0" width="72" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="load-label" value="1  Controlled pressure&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Bounded client holds connections&lt;br&gt;Separate probe VM&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="load" vertex="1">
-          <mxGeometry x="0" y="80" width="280" height="65" as="geometry" />
+        <mxCell id="load-label" value="1  Make real requests&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;probe-1 -&amp;gt; HAProxy :18080 -&amp;gt; backend :19080&lt;br&gt;Held connections occupy outgoing source ports.&lt;br&gt;Baseline namespace range: 40000-40031 (32 ports).&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="load" vertex="1">
+          <mxGeometry x="0" y="80" width="560" height="140" as="geometry" />
         </mxCell>
         <mxCell id="failure" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="540" y="210" width="280" height="145" as="geometry" />
+          <mxGeometry x="840" y="190" width="560" height="220" as="geometry" />
         </mxCell>
         <mxCell id="failure-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%2315803D%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%2234%22%2F%3E%3Cpath%20d%3D%22M15%2029h48m-10-9%2010%209-10%209M65%2051H17m10-9-10%209%2010%209%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="failure" vertex="1">
-          <mxGeometry x="104.0" y="0" width="72" height="72" as="geometry" />
+          <mxGeometry x="244.0" y="0" width="72" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="failure-label" value="2  Observable failure&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Pool 32/32, errno 99, errors&lt;br&gt;Independent HTTP requests fail&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="failure" vertex="1">
-          <mxGeometry x="0" y="80" width="280" height="65" as="geometry" />
+        <mxCell id="failure-label" value="2  New requests fail&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Example: used_ports=32, range_size=32.&lt;br&gt;Backend connect errors and HTTP 5xx rise.&lt;br&gt;Allocation probe returns errno 99: no local address.&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="failure" vertex="1">
+          <mxGeometry x="0" y="80" width="560" height="140" as="geometry" />
         </mxCell>
         <mxCell id="diagnosis" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="1050" y="210" width="300" height="145" as="geometry" />
+          <mxGeometry x="840" y="540" width="560" height="220" as="geometry" />
         </mxCell>
         <mxCell id="diagnosis-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%232563EB%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2231%22%20r%3D%2222%22%2F%3E%3Cpath%20d%3D%22m48%2047%2024%2024M19%2035l9-13%2010%2017%208-10%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="diagnosis" vertex="1">
-          <mxGeometry x="114.0" y="0" width="72" height="72" as="geometry" />
+          <mxGeometry x="244.0" y="0" width="72" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="diagnosis-label" value="3  Correlated diagnosis&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Backend still healthy&lt;br&gt;Two confirming observations&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="diagnosis" vertex="1">
-          <mxGeometry x="0" y="80" width="300" height="65" as="geometry" />
+        <mxCell id="diagnosis-label" value="3  Rule identifies the cause&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Port use &amp;gt;=85%; both transaction checks fail.&lt;br&gt;Upstream healthy; memory safe; no reserved overlap.&lt;br&gt;Two consecutive eligible diagnoses are required.&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="diagnosis" vertex="1">
+          <mxGeometry x="0" y="80" width="560" height="140" as="geometry" />
         </mxCell>
         <mxCell id="approval" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="1050" y="540" width="300" height="145" as="geometry" />
+          <mxGeometry x="90" y="540" width="560" height="220" as="geometry" />
         </mxCell>
         <mxCell id="approval-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%2364748B%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2219%22%20r%3D%2212%22%2F%3E%3Cpath%20d%3D%22M17%2068v-9c0-23%2046-23%2046%200v9Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="approval" vertex="1">
-          <mxGeometry x="114.0" y="0" width="72" height="72" as="geometry" />
+          <mxGeometry x="244.0" y="0" width="72" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="approval-label" value="4  Review fixed action&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Named approval, or already&lt;br&gt;qualified scope in automatic mode&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="approval" vertex="1">
-          <mxGeometry x="0" y="80" width="300" height="65" as="geometry" />
+        <mxCell id="approval-label" value="4  Operator authorises this repair&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Console: approve expand_port_range with a reason.&lt;br&gt;Watch mode does not execute. Automatic mode needs&lt;br&gt;a matching, explicitly promoted procedure.&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="approval" vertex="1">
+          <mxGeometry x="0" y="80" width="560" height="140" as="geometry" />
         </mxCell>
         <mxCell id="change" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="540" y="540" width="280" height="145" as="geometry" />
+          <mxGeometry x="90" y="890" width="560" height="220" as="geometry" />
         </mxCell>
         <mxCell id="change-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%23C2410C%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M40%205%2068%2016v23c0%2020-28%2035-28%2035S12%2059%2012%2039V16Z%22%2F%3E%3Crect%20x%3D%2227%22%20y%3D%2232%22%20width%3D%2226%22%20height%3D%2223%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M31%2032v-8a9%209%200%200%201%2018%200v8%22%2F%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2243%22%20r%3D%222%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="change" vertex="1">
-          <mxGeometry x="104.0" y="0" width="72" height="72" as="geometry" />
+          <mxGeometry x="244.0" y="0" width="72" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="change-label" value="5  Root applies lease&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Validate, journal, range 256&lt;br&gt;HAProxy identity unchanged&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="change" vertex="1">
-          <mxGeometry x="0" y="80" width="280" height="65" as="geometry" />
+        <mxCell id="change-label" value="5  Change one Linux setting&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Root broker checks identity and expected old value.&lt;br&gt;In namespace only: ip_local_port_range becomes&lt;br&gt;40000-40255 (256 ports), with a 30-second lease.&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="change" vertex="1">
+          <mxGeometry x="0" y="80" width="560" height="140" as="geometry" />
         </mxCell>
         <mxCell id="success" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="90" y="540" width="280" height="145" as="geometry" />
+          <mxGeometry x="840" y="890" width="560" height="220" as="geometry" />
         </mxCell>
         <mxCell id="success-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%232563EB%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%2232%22%2F%3E%3Cpath%20d%3D%22m21%2040%2013%2013%2025-29%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="success" vertex="1">
-          <mxGeometry x="104.0" y="0" width="72" height="72" as="geometry" />
+          <mxGeometry x="244.0" y="0" width="72" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="success-label" value="6  Verify useful work&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Three distinct successful checks&lt;br&gt;While load continues in study&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="success" vertex="1">
-          <mxGeometry x="0" y="80" width="280" height="65" as="geometry" />
+        <mxCell id="success-label" value="6  Prove requests work again&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Controller checks the new range and probe results.&lt;br&gt;Require 3 distinct successes spanning &amp;gt;=2 seconds,&lt;br&gt;within 20 seconds. A kernel write alone is not success.&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="success" vertex="1">
+          <mxGeometry x="0" y="80" width="560" height="140" as="geometry" />
         </mxCell>
         <mxCell id="learn" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="90" y="860" width="280" height="145" as="geometry" />
+          <mxGeometry x="840" y="1240" width="560" height="220" as="geometry" />
         </mxCell>
         <mxCell id="learn-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%230F766E%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%2018v45c0%2014%2056%2014%2056%200V18%22%2F%3E%3Cellipse%20cx%3D%2240%22%20cy%3D%2218%22%20rx%3D%2228%22%20ry%3D%2211%22%2F%3E%3Cpath%20d%3D%22M12%2039c0%2014%2056%2014%2056%200M12%2057c0%2014%2056%2014%2056%200%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="learn" vertex="1">
-          <mxGeometry x="104.0" y="0" width="72" height="72" as="geometry" />
+          <mxGeometry x="244.0" y="0" width="72" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="learn-label" value="7  Retain outcome&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Update scoped Knowledge&lt;br&gt;Failure suspends reuse&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="learn" vertex="1">
-          <mxGeometry x="0" y="80" width="280" height="65" as="geometry" />
+        <mxCell id="learn-label" value="7  Remember the verified procedure&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Store incident, exact scope, action and outcome.&lt;br&gt;After 2 verified occurrences since the last failure,&lt;br&gt;a named operator may promote reuse for that scope.&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="learn" vertex="1">
+          <mxGeometry x="0" y="80" width="560" height="140" as="geometry" />
         </mxCell>
         <mxCell id="rollback" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="540" y="860" width="280" height="145" as="geometry" />
+          <mxGeometry x="90" y="1240" width="560" height="220" as="geometry" />
         </mxCell>
         <mxCell id="rollback-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%23C2410C%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%2232%22%2F%3E%3Cpath%20d%3D%22M40%2017v25l17%2010%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="rollback" vertex="1">
-          <mxGeometry x="104.0" y="0" width="72" height="72" as="geometry" />
+          <mxGeometry x="244.0" y="0" width="72" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="rollback-label" value="8  Reconcile lease&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Expiry + zero active connections&lt;br&gt;Compare value, restore range 32&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="rollback" vertex="1">
-          <mxGeometry x="0" y="80" width="280" height="65" as="geometry" />
+        <mxCell id="rollback-label" value="8  Safely return to baseline&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Broker watchdog runs even if controller stops.&lt;br&gt;After lease expiry AND zero active connections,&lt;br&gt;restore 40000-40031 only if identity/value match.&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="rollback" vertex="1">
+          <mxGeometry x="0" y="80" width="560" height="140" as="geometry" />
         </mxCell>
-        <mxCell id="refusal" value="" style="group;" parent="1" vertex="1">
-          <mxGeometry x="1050" y="860" width="300" height="145" as="geometry" />
-        </mxCell>
-        <mxCell id="refusal-symbol" value="" style="shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%237C3AED%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M25%205h30l20%2020v30L55%2075H25L5%2055V25Z%22%2F%3E%3Cpath%20d%3D%22M23%2040h34%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E;" parent="refusal" vertex="1">
-          <mxGeometry x="114.0" y="0" width="72" height="72" as="geometry" />
-        </mxCell>
-        <mxCell id="refusal-label" value="Wrong repair refused&lt;br&gt;&lt;font style=&quot;font-size:14px;color:#475569&quot;&gt;Backend outage / stale evidence&lt;br&gt;Unsafe memory / reserved conflict&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=17;fontStyle=1;fontFamily=Helvetica;" parent="refusal" vertex="1">
-          <mxGeometry x="0" y="80" width="300" height="65" as="geometry" />
-        </mxCell>
-        <mxCell id="note0" value="Recovery and rollback are different events. A verified repair may still have an active lease. Safe rollback waits for drain; changed values or identity become visible conflicts, not overwritten administrator work." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=14;fontColor=#334155;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="70" y="1050" width="1440" height="70" as="geometry" />
+        <mxCell id="note0" value="Only the namespace port pool is repaired: no HAProxy restart, VM resize, backend repair or host-wide sysctl change.&lt;br&gt;If the backend is down or evidence is missing, this action is refused. Gemini may explain evidence but cannot invent or run repairs." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=14;fontColor=#334155;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="70" y="1510" width="1350" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
