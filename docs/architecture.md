@@ -2,6 +2,8 @@
 
 The single use case is recovery of a real HAProxy gateway suffering outgoing local-port exhaustion during bounded connection pressure. See the detailed [gateway design](gateway-design.md) for identity, admission and evidence contracts. A bank's traffic peak motivates this infrastructure problem; the project does not simulate a banking application or claim DORA certification.
 
+The [design specification](design.md) adds network, MAPE-K and incident views, with [editable Mermaid and draw.io diagrams](diagrams/README.md). The runtime map below remains the original architecture view.
+
 ## Runtime map
 
 ```mermaid

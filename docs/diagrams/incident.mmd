@@ -1,0 +1,47 @@
+sequenceDiagram
+  actor O as Operator
+  participant C as Controller
+  participant K as Knowledge SQLite
+  participant A as Node agent
+  participant B as Root broker
+  participant H as HAProxy namespace
+  participant P as Probe host
+  loop Independent client checks
+    P->>H: HTTP nonce transaction
+    H-->>P: Status and expected body
+  end
+  loop Fresh controller ticks
+    C->>A: GET /sample/gateway-ports over mTLS
+    A->>B: Unix socket sample
+    B->>H: Read used_ports/range_size, HAProxy errors, local transaction
+    B->>P: GET /status over mTLS
+    P-->>B: Separate-host result and observation time
+    B-->>A: Sample: port use, errno, rising errors, HTTP results, safety
+    A-->>C: Relayed evidence
+  end
+  C->>K: Confirm twice: >=85% ports, errno 99, rising errors, both HTTP checks fail
+  O->>C: Approve expand_port_range with name and reason
+  C->>K: Store approved state
+  Note over C,K: Approval does not directly dispatch a mutation
+  C->>K: Later tick: persist exact HMAC operation ID
+  C->>A: POST /execute, mTLS controller identity
+  A->>B: Forward HMAC intent
+  B->>B: Authenticate, validate identity/value/safety, journal first
+  B->>H: Namespace ip_local_port_range: 40000-40031 to 40000-40255, lease 30 s
+  H-->>B: Readback
+  B-->>A: Applied lease
+  A-->>C: Applied status
+  loop Three distinct successes over at least two seconds
+    C->>A: GET operation, sample and verify
+    A->>B: Query journal and fresh checks
+    B->>P: Pull a fresh independent result
+    B-->>A: Range readback, HTTP status/body, distinct probe time
+    A-->>C: Evidence for verification
+  end
+  C->>K: Verified outcome, or failure and suspended reuse
+  Note over B,H: Broker watchdog continues if controller stops
+  alt Lease expires, identity/value match and connections drained
+    B->>H: With zero active connections, restore 40000-40031 if identity/value match
+  else Busy, changed value or replaced identity
+    B->>B: Deferred rollback or visible conflict, no unsafe write
+  end

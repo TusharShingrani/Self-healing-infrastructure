@@ -1,0 +1,30 @@
+flowchart LR
+  U([Operator]) -->|SSH tunnel and console session| C
+  subgraph K1["Kubernetes: worker-1"]
+    C["MAPE-K controller and console"]
+    K[("Knowledge: SQLite on PVC")]
+    C -->|Read and persist| K
+  end
+  subgraph W2["worker-2 VM"]
+    A["Kubernetes node agent"]
+    B["Native root broker and lease journal"]
+    subgraph NS["Isolated Linux network namespace"]
+      H["HAProxy gateway"] -->|HTTP loopback| T["Synthetic backend"]
+    end
+    A -->|Unix requests and forwarded intent| B
+    B -->|Namespace-only admitted effect| H
+  end
+  C -->|mTLS GET sample and HMAC POST execute| A
+  P["Separate probe VM"] -->|Nonce HTTP request| H
+  B -->|Pull observer status over mTLS| P
+  M["Prometheus and Grafana"] -.->|Scrape agent| A
+  M -.->|Scrape observer| P
+  M -.->|Scrape controller| C
+  C -.->|Opt-in numeric evidence| G["Gemini advisor"]
+  G -.->|Unverified report for UI| K
+  classDef service fill:#eff6ff,stroke:#2563eb,color:#0f172a
+  classDef effect fill:#fff7ed,stroke:#c2410c,color:#0f172a
+  classDef advisory fill:#faf5ff,stroke:#7c3aed,color:#0f172a
+  class C,A,M service
+  class B effect
+  class G advisory

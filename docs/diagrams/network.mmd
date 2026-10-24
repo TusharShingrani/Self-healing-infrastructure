@@ -1,0 +1,16 @@
+flowchart TB
+  L["Laptop: OpenVPN and local browser"] -->|SSH to forwarding IP :22| F["10.53.14.225:22"]
+  F -->|Port forward| B["healer-ubuntu 10.1.1.205"]
+  subgraph LAB["Private EduCloud lab"]
+    B -->|SSH local forward to NodePort :30885| C["k8s-control 10.1.1.80"]
+    C -->|Controller service to Pod :8085| W1["worker-1 10.1.1.81"]
+    W1 -->|In-cluster agent service mTLS :9119| W2["worker-2 10.1.1.82"]
+    W2 -->|Broker pulls /status mTLS :9106| P["probe-1 10.1.1.84"]
+    P -->|Route /32 via .82; HTTP :18080| H["Namespace frontend 10.203.0.2:18080"]
+    W2 ---|veth host .1 and peer .2 on 10.203.0.0/30| H
+    H -->|Namespace loopback HTTP| T["127.0.0.1:19080 synthetic backend"]
+    M["monitor 10.1.1.50"] -.->|Scrape controller :30885 and agent :30919| C
+    M -.->|Scrape mTLS observer :9106| P
+  end
+  W1 -.->|Optional HTTPS :443| G["External Gemini API"]
+  N["Monitoring also scrapes six node exporters :9100 and K3s readiness via blackbox.<br/>Laptop forwards localhost :3000 and :9090 through bastion to monitor."]

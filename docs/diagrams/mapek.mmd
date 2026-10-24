@@ -1,0 +1,20 @@
+flowchart LR
+  subgraph CT["Controller decision loop"]
+    M["MONITOR<br/>Fresh same-identity sample via agent and broker"] --> A["ANALYSE<br/>Correlate failures; confirm twice"]
+    A -->|Known eligible cause| P["PLAN<br/>Fixed namespace range, expected value, identity, lease"]
+    P --> G{"Mode and permission?"}
+    G -->|Watch only| WAIT["Record; do not dispatch"]
+    G -->|Reviewed mode: named approval| E["EXECUTE<br/>Persist HMAC operation before dispatch"]
+    G -->|Automatic mode: matching qualified scope| E
+    E --> V["VERIFY in controller<br/>Fresh bound and three distinct probe successes<br/>At least 2 s within 20 s"]
+    V -->|Outcome| K[("KNOWLEDGE<br/>Incidents, audit, procedures, advice, human notes")]
+    K -.->|History for next tick| M
+    K -.->|Two verified after last failure plus named promotion| G
+  end
+  A -->|Other cause or unknown| I["Operator investigation; no automatic port repair"]
+  E -->|mTLS agent; HMAC intent; Unix socket| B["Root broker<br/>Fresh admission, journal, bounded write"]
+  B --> H["HAProxy namespace<br/>32 to 256 source ports"]
+  H -.->|Probe-host results relayed by broker and agent| V
+  B --> R["Independent lease watchdog<br/>Drain then compare-and-set rollback"]
+  V -->|Failure suspends reuse| K
+  I -.->|Reported notes; cannot qualify execution| K
