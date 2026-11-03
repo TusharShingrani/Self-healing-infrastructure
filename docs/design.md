@@ -55,6 +55,8 @@ Qualification covers Ubuntu 24.04 / Linux 6.8 / K3s 1.36 and the recorded distri
 
 ### Management access
 
+The optional recording setup adds laptop localhost:8086 -> bastion localhost:8086. That service-check server requests a fresh result from the independent observer's mTLS `/check`; the observer sends a real request through the existing gateway route. It has no repair authority. See [recording setup and protocol](recording.md). This optional presentation path supplements the diagrams below; it does not alter controller, broker or repair paths.
+
 1. The laptop connects to EduCloud OpenVPN. Its VPN address may change.
 2. Existing forwarding IP `10.53.14.225:22` maps SSH to bastion `.205:22`. Source rules must admit the actual authorised VPN address. This forwarding IP is not the VPN server.
 3. Laptop localhost `8085` forwards to bastion localhost `8085`. Bastion user service `platform-console-tunnel` SSHes to `.80`, forwarding to `.80:30885`, the controller NodePort. The service forwards to the controller Pod on worker-1 port `8085`.

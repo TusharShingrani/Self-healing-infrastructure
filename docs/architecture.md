@@ -6,6 +6,16 @@ The [design specification](design.md) adds network, MAPE-K and incident views, w
 
 ## Runtime map
 
+The optional recording page runs on the management VM at loopback port 8086. Its read-only server uses the existing monitor certificate to ask probe-1 for a fresh `/check` over mTLS. Probe-1 sends a nonce request through HAProxy to the test upstream. The returned HTTP status, verified response outcome and duration drive the page. The page remains available separately during a gateway failure, and has no repair API or operator token. This presentation path is separate from the controller's periodic evidence collection and does not authorise changes.
+
+```mermaid
+flowchart LR
+  Browser[Service-check page through SSH tunnel] --> Page[Management VM loopback 8086]
+  Page -->|Read-only mTLS fresh check| Observer[Independent probe]
+  Observer -->|Real nonce HTTP request| Gateway[HAProxy gateway]
+  Gateway --> Backend[Test upstream]
+```
+
 ```mermaid
 flowchart TB
   subgraph Probe[probe-1: independent host]

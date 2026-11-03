@@ -18,6 +18,8 @@ The script proves no new approval on the automatic recurrence, no gateway identi
 
 ## Manual video
 
+Use the [recording walkthrough](recording.md) and `experiments/video_demo.py` for a single controlled run. Unlike the automated study, reviewed video mode has **no scripted approval** and automatic video mode has **no scripted promotion**. The separate service-check page displays fresh real HTTP outcomes rather than controller metrics.
+
 Do not run a manual demonstration concurrently with the automated study. Begin at idle with range 40000-40031 and zero active backend connections. An administrator on probe-1 starts the bounded load, using the same systemd-run invocation shown in experiments/gateway_study.py. The console cannot execute arbitrary shell commands.
 
 1. Open **Settings** and its **Automation policy** drawer, set **Ask before repairing**, and supply your name and a reason. Show the independent client's failing transactions and two correlated diagnostic observations.

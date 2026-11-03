@@ -21,6 +21,8 @@ The root broker also acts as an outbound mTLS client to the independent probe ob
 
 ## Remaining limits
 
+The optional service-check page binds only management localhost:8086 and is reached through SSH. It accepts only loopback Host headers, uses fixed endpoints, bounds responses and concurrent checks, and exposes no repair controls. Its server holds the read-only monitor certificate; no certificate, operator token or secret reaches browser JavaScript. `/check` on the observer requires the existing mTLS authentication and performs one bounded nonce HTTP request. Observation errors display as unknown rather than fabricated gateway failures. The demo runner is an administrator CLI with SSH access, not a new runtime controller API: it starts at most 30 seconds of qualified probe traffic and never submits approval or promotion. Do not expose either demonstration interface publicly.
+
 Optional Gemini investigation is advisory only and disabled by default. Its numeric telemetry allowlist excludes histories and secrets. It has no broker access, tools or approval authority. Model advice and operator-reported repairs cannot qualify automation. See [AI investigation](ai-investigation.md) for provider configuration, egress, privacy and evaluation limits.
 
 Following the diagnosis-quality study, advice admission independently requires fresh supported same-identity current evidence. Local safety notices accompany the report and grant no authority. Guidance compliance is not a security boundary: model text still contains possible factual/technical errors and must not be executed as a command or treated as approval.

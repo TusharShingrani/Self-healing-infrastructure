@@ -52,6 +52,8 @@ The gateway requires two consecutive diagnostic observations, then three distinc
 
 Start with the [plain-language operator guide](docs/operator-guide.md) for the healer page and monitoring dashboard.
 
+For a presentation, use the [recording walkthrough](docs/recording.md). The separate, loopback-only service-check page shows real gateway requests failing and recovering. `experiments/video_demo.py reviewed --actor YOUR_NAME` waits for your UI approval; `automatic` refuses until that exact procedure is qualified. The runner never approves or promotes a procedure.
+
 1. Read [architecture](docs/architecture.md), [gateway design](docs/gateway-design.md) and [security boundaries](docs/security.md).
 2. Run `python -m unittest discover -s tests -v`.
 3. Follow the administrator-only [installation](docs/install.md) and [demo protocol](docs/demo.md).
