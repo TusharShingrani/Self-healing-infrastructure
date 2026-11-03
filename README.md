@@ -69,4 +69,6 @@ See the [operations console guide](docs/operator-guide.md) and [redesign rationa
 
 ## Current release status
 
+The 3 November recording workflow adds the separate real-request page and manual/automatic demo CLI. All 114 local tests pass. Live reviewed and automatic validation both recovered while 64 backend connections remained active; the automatic incident had no fresh approval. Test qualification was revoked afterward. These are [recording readiness checks](evidence/video-demo-validation.json), not additional repetitions in the original comparison dataset.
+
 The PR #15 console and four-chart dashboard were deployed and checked in the signed-in browser on 19 October 2026. Acceptance passed again on 20 October: 11 healthy scrape targets, four populated chart panels, fresh independent transactions, baseline rollback and transport/admission checks. The dashboard has seven query expressions. All 101 tests pass where Node is present; the management host executes 96 and skips five Node view-model tests. See the [completion review](docs/completion-review.md) for scope and remaining limits.

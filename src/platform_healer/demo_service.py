@@ -40,7 +40,7 @@ class Probe:
         return validate_result(json.loads(raw))
 
 def make_server(probe,port=8086):
-    gate=threading.BoundedSemaphore(1)
+    gate=threading.BoundedSemaphore(2)
     class Handler(BaseHTTPRequestHandler):
         def setup(self):super().setup();self.connection.settimeout(5)
         def reply(self,status,value,kind='application/json'):

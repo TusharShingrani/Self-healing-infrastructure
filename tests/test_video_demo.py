@@ -41,6 +41,22 @@ class DemoHTTPTests(unittest.TestCase):
     def test_page_is_read_only_and_unknown_routes_are_refused(self):
         self.assertEqual(self.request('/')[0],200);self.assertEqual(self.request('/api/approve')[0],404);self.probe.check.assert_not_called()
     def test_dns_rebinding_host_is_refused(self):self.assertEqual(self.request('/api/check','evil.example:8086')[0],403);self.probe.check.assert_not_called()
+    def test_two_viewers_work_and_additional_concurrency_is_bounded(self):
+        from concurrent.futures import ThreadPoolExecutor
+        release=threading.Event();entered=threading.Event();lock=threading.Lock();count=[0]
+        def blocking_check():
+            with lock:
+                count[0]+=1
+                if count[0]==2:entered.set()
+            release.wait(3)
+            return {'time':time.time(),'success':True,'status':200,'latency_seconds':.1}
+        self.probe.check.side_effect=blocking_check
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            first=pool.submit(self.request,'/api/check');second=pool.submit(self.request,'/api/check')
+            try:
+                self.assertTrue(entered.wait(2));self.assertEqual(self.request('/api/check')[0],429)
+            finally:release.set()
+            self.assertEqual(first.result()[0],200);self.assertEqual(second.result()[0],200)
 
 class VideoAdmissionTests(unittest.TestCase):
     def snapshot(self):
