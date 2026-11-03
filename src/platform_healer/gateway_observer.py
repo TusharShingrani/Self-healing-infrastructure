@@ -29,6 +29,11 @@ def main():
     class Handler(BaseHTTPRequestHandler):
         def setup(self):super().setup();self.connection.settimeout(3)
         def do_GET(self):
+            # A read-only demonstration request follows the same real gateway
+            # path as monitoring. It does not inject load or grant authority.
+            if self.path=='/check':
+                body=json.dumps(check()).encode()
+                self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Cache-Control','no-store');self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body);return
             with lock:value=dict(latest);counter=dict(counts);recent=list(history)
             if self.path=='/status':body=json.dumps(value).encode();kind='application/json'
             elif self.path=='/history':body=json.dumps(recent).encode();kind='application/json'

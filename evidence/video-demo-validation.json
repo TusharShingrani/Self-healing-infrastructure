@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-03",
+  "scope": "Recording-workflow validation, not added to the original comparison dataset",
+  "reviewed_approval": "Separate scripted validation operator, not the video CLI; presenter approves manually when recording",
+  "automatic_qualification": "Explicit validation reviewer promotion between runs; reuse suspended again after validation",
+  "runs": [
+    {
+      "mode": "reviewed",
+      "verified": true,
+      "fresh_incident_approval": true,
+      "page_checks": 68,
+      "page_failed_checks": 18,
+      "page_successful_checks": 50,
+      "failure_http_codes": [
+        503
+      ],
+      "verified_active_connections": 64,
+      "same_gateway_identity": true
+    },
+    {
+      "mode": "automatic",
+      "verified": true,
+      "fresh_incident_approval": false,
+      "page_checks": 51,
+      "page_failed_checks": 3,
+      "page_successful_checks": 48,
+      "failure_http_codes": [
+        503
+      ],
+      "verified_active_connections": 64,
+      "same_gateway_identity": true
+    }
+  ],
+  "local_tests": 114,
+  "local_tests_passed": true,
+  "final_baseline_range": [
+    40000,
+    40031
+  ],
+  "page_concurrency_bound": 2,
+  "capture_note": "A separate screenshot collector initially hit the intentional concurrent-check limit; its run was not counted as a successful validation. A subsequent reviewed run supplied the real HTTP 503 and HTTP 200 browser captures."
+}

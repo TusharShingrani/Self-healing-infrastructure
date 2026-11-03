@@ -1,0 +1,17 @@
+[Unit]
+Description=Read-only gateway connection demonstration page
+After=network-online.target
+[Service]
+Type=simple
+WorkingDirectory=%h/projects/platform-tuning-engine
+Environment=PYTHONPATH=%h/projects/platform-tuning-engine/src
+ExecStart=/usr/bin/python3 -m platform_healer.demo_service
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+PrivateTmp=yes
+UMask=0077
+MemoryMax=64M
+TasksMax=24
+[Install]
+WantedBy=default.target
